@@ -1,4 +1,4 @@
-########################## TSDem Risk Factors #######################
+########################## TSDem Risk Factors #################################
 
 # Initiate -----
 
@@ -7,10 +7,9 @@ library(dplyr)
 
 ## Set path -----
 path <- "/Users/clara/Desktop/Masterarbeit/endireh_documents/2021/data/"
-setwd(path)
 
 ## Load data -------
-load("TSDem.RData")
+load(paste0(path,"TSDem.RData"))
 
 # Risk Factors ------
 
