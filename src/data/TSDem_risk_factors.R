@@ -88,7 +88,7 @@ TSDem$indigena <- factor(TSDem$indigena, levels = c("no", "yes", NA))
 # Summary Stat:
 table(TSDem$indigena, useNA = "ifany")
 
-## PARTNER STATUS ------
+## RELATIONSHIP STATUS ------
 # Variable name: P2_16
 # Outcomes: 1 - cohabiting
 #           2 - separated
@@ -98,10 +98,10 @@ table(TSDem$indigena, useNA = "ifany")
 #           6 - single
 #           b - blank
 # Levels: cohabiting/married (1), other (2)
-TSDem$partner_status <- ifelse(TSDem$P2_16 == "1" | TSDem$P2_16 == "5", 1, 2)
-TSDem$partner_status <- factor(TSDem$partner_status, levels = c(1, 2), labels = c("cohabiting/married", "other"))
+TSDem$rel_status <- ifelse(TSDem$P2_16 == "1" | TSDem$P2_16 == "5", 1, 2)
+TSDem$rel_status <- factor(TSDem$rel_status, levels = c(1, 2), labels = c("cohabiting/married", "other"))
 # Summary Stat:
-table(TSDem$partner_status, useNA = "ifany")
+table(TSDem$rel_status, useNA = "ifany")
 
 # Finalize -----
 
@@ -109,7 +109,7 @@ table(TSDem$partner_status, useNA = "ifany")
 
 # Keep relevant rows:
 # partner_status = "cohabiting/married"
-TSDem_final <- filter(TSDem, partner_status == "cohabiting/married")
+TSDem_final <- filter(TSDem, rel_status == "cohabiting/married")
 
 # chosen women in survey older than 15
 # Variable name: CODIGO
@@ -127,8 +127,8 @@ TSDem_final <- TSDem_final %>%
                           "FAC_VIV", "FAC_MUJ", "DOMINIO", "ESTRATO", 
                           "EST_DIS", "UPM_DIS", "niv_ed", "niv_edlow", 
                           "niv_edmedium", "niv_edhigh", "niv_edNA", 
-                          "indigena", "partner_status"))
-
+                          "indigena", "rel_status"))
+rm(TSDem)
 
 ## Save data -----
 save_path <- "/Users/clara/Desktop/Masterarbeit/r_projects/ipv_risk_factors/data/"
