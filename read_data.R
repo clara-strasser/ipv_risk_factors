@@ -1,11 +1,13 @@
-# Read Data and Save ---------
+######################### Read Data and Save ##################################
+
+# Prepare ----
 
 ## Set path ----
-path <- "/Users/clara/Desktop/Masterarbeit/endireh_documents/2021/data"
+path <- "/Users/clara/Desktop/Masterarbeit/endireh_documents/2021/data/"
 setwd(path)
 
 ## Load data ----
-endireh2021 <- load("bd_endireh_2021.RData")
+load("bd_endireh_2021.RData")
 
 ## Save separated ----
 save(TB_SEC_III, file = "TB_SEC_III.RData")
