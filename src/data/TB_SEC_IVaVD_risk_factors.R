@@ -144,13 +144,6 @@ TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
 table(TB_SEC_IVaVD$ingm_par, useNA = "ifany") # 56889 NAs
 
 
-## SEXUAL VIOLENCE EXPERIENCE CHILDHOOD WOMAN
-# Variable name: P12_14_1 - P12_14_6
-# Remark: childhood refers to all experiences <15 years 
-# Outcome:
-# Levels
-
-
 
 ## VIOLENCE WITNESS CHILDHOOD WOMAN -------
 # Variable name: P12_4 and P12_5
@@ -184,6 +177,16 @@ TB_SEC_IVaVD$vio_exp_inf <- factor(ifelse(TB_SEC_IVaVD$P12_6 == "1" | TB_SEC_IVa
 table(TB_SEC_IVaVD$vio_exp_inf, useNA = "ifany") 
 #  yes    no 
 # 42499 67628 
+
+
+## SEXUAL VIOLENCE EXPERIENCE CHILDHOOD WOMAN --------
+# Variable name: P12_14_1 - P12_14_6
+# Remark: childhood refers to all experiences <15 years 
+# Outcome: 1 - yes
+#          2 - no
+#          b - does not remember
+# Levels: 1 (yes), 2 (no)
+
 
 ## VIOLENCE EXPERIENCE CHILDHOOD PARTNER -------
 # Variable name: P12_8
