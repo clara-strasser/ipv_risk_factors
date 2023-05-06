@@ -13,7 +13,7 @@ load(paste0(path,"TB_SEC_III.RData"))
 
 # Risk Factors -----
 
-## RELATIONSHIP STATUS BEFORE VERIFICATION
+## RELATIONSHIP STATUS BEFORE VERIFICATION -------
 # Remark: the relationship status was asked before asking verification questions
 # Variable name: P3_1
 # Outcomes: 1 - cohabiting
@@ -30,7 +30,7 @@ table(TB_SEC_III$rel_status_ver, useNA = "ifany")
 # cohabiting/married     other 
 #     68574              41553       
 
-## RELATIONSHIP STATUS AFTER VERIFICATION
+## RELATIONSHIP STATUS AFTER VERIFICATION ------
 # Remark: the relationship status was verified with preceding questions
 # Variable name: P3_8
 # Outcomes: A1 - cohabiting or married with partner resident
