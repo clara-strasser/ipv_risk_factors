@@ -687,6 +687,8 @@ head(TB_SEC_IVaVD[, c("feminist", "not_feminist", "feminist_grad", "feminist_gra
 #                4 - family
 #                5 - someone else
 #                6 - no one    
+# Remarks: for each question there are three response possibilities, the respondant can answer with more than one person
+# However: not relevant the list of people
 redsoc <- paste0("P16_3_", 1:6, "_1")
 
 # Recode the values and convert to factors
@@ -773,6 +775,36 @@ TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
 
 # Summary stat:
 head(TB_SEC_IVaVD[, c("rout_yes", "rout_no", "rout_grad", "rout_gradhigh", "rout_gradmedium", "rout_gradlow")], n = 35)
+
+
+## DIVISION OF HOUSEWORK --------
+# Variable name: P17_1_1_1 - P17_1_2_1 (the same for: _2 and _3 at the end)
+# Questions:
+# cuidar o apoyar a las niñas y niños que viven aquí?
+# cuidar o apoyar a las ancianas y ancianos que viven aquí?
+# hacer los quehaceres domésticos (cocinar, lavar, planchar, asear la casa)?
+# hacer los trámites y compras para el hogar (pagos de luz, teléfono, ir al banco, al mercado, etcétera)?
+# atender o apoyar a las personas con alguna discapacidad?
+# hacer reparaciones a su vivienda, muebles, vehículos o aparatos electrodomésticos?
+# atender a personas enfermas? 
+# Outcome: 
+# Remarks: for each question there are 3 response possibilities
+tareas <- paste0(rep(paste0("P17_1_", 1:7, "_"), each = 3), 1:3)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
