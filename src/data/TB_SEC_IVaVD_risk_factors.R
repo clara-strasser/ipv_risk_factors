@@ -843,23 +843,26 @@ head(TB_SEC_IVaVD[, c("P17_1_1_1", "P17_1_1_2", "P17_1_1_3", "P17_1_2_1", "P17_1
 
 # Create variables
 TB_SEC_IVaVD <- TB_SEC_IVaVD %>% 
-  mutate(lib_eco_grad = ifelse(high_lib_eco > pmax(medium_lib_eco, low_lib_eco), "high",
-                               ifelse(low_lib_eco > pmax(high_lib_eco, medium_lib_eco), "low",
-                                      lib_eco_grad)),
-         lib_eco_grad = ifelse(high_lib_eco == 0 & medium_lib_eco == 0 & low_lib_eco == 0, NA_character_, lib_eco_grad))
-head(TB_SEC_IVaVD[, c("P15_1AB_1", "P15_1AB_3", "P15_1AB_4", "high_lib_eco", "medium_lib_eco", "low_lib_eco", "lib_eco_grad")], n = 35)
-# Remarks: in case "high" and "low" equal, it is set to "medium"
+  mutate(act_dist = ifelse(females > males, "females",
+                               ifelse(males > females, "males",
+                                      "both")),
+         act_dist = ifelse(females == 0 & males == 0 & both == 0, NA_character_, act_dist))
+head(TB_SEC_IVaVD[, c("P17_1_1_1", "P17_1_1_2", "P17_1_1_3", "P17_1_2_1", "P17_1_2_2", "P17_1_2_3", "P17_1_3_1", "P17_1_3_2", "P17_1_3_3", "P17_1_4_1",
+                      "P17_1_4_2", "P17_1_4_3", "P17_1_5_1", "P17_1_5_2", "P17_1_5_3", "P17_1_6_1", "P17_1_6_2", "P17_1_6_3", "P17_1_7_1", "P17_1_7_2",
+                      "P17_1_7_3", "females", "males", "both", "act_dist")], n = 35)
+# Remarks: same threshold as authors
 
 TB_SEC_IVaVD <- TB_SEC_IVaVD %>% 
-  mutate(lib_eco_gradhigh = ifelse(lib_eco_grad == "high", "yes", "no"),
-         lib_eco_gradmedium = ifelse(lib_eco_grad == "medium", "yes", "no"),
-         lib_eco_gradlow = ifelse(lib_eco_grad == "low", "yes", "no"),
-         lib_eco_gradNA = ifelse(is.na(lib_eco_grad), "yes", "no")) %>%
-  mutate(lib_eco_gradhigh = factor(lib_eco_gradhigh, levels = c("no", "yes")),
-         lib_eco_gradmedium = factor(lib_eco_gradmedium, levels = c("no", "yes")),
-         lib_eco_gradlow = factor(lib_eco_gradlow, levels = c("no", "yes")),
-         lib_eco_gradNA = factor(lib_eco_gradNA, levels = c("no", "yes")))  
+  mutate(act_distfemales = ifelse(act_dist == "females", "yes", "no"),
+         act_distmales = ifelse(act_dist == "males", "yes", "no"),
+         act_distboth = ifelse(act_dist == "both", "yes", "no"),
+         act_distNA = ifelse(is.na(act_dist), "yes", "no")) %>%
+  mutate(act_distfemales = factor(act_distfemales, levels = c("no", "yes")),
+         act_distmales = factor(act_distmales, levels = c("no", "yes")),
+         act_distboth = factor(act_distboth, levels = c("no", "yes")),
+         act_distNA = factor(act_distNA, levels = c("no", "yes")))  
 
+head(TB_SEC_IVaVD[, c("females", "males", "both", "act_dist", "act_distfemales", "act_distmales", "act_distboth", "act_distNA")], n = 35)
 
 
 
