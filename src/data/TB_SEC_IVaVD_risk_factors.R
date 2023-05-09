@@ -787,9 +787,93 @@ head(TB_SEC_IVaVD[, c("rout_yes", "rout_no", "rout_grad", "rout_gradhigh", "rout
 # atender o apoyar a las personas con alguna discapacidad?
 # hacer reparaciones a su vivienda, muebles, vehículos o aparatos electrodomésticos?
 # atender a personas enfermas? 
-# Outcome: 
+# Outcome:  1 - women (F)
+#           2 - husband or partner (M)
+#           3 - both (both)
+#           4 - daughters (F)
+#           5 - sons (M)
+#           6 - mother(F)
+#           7 - father (M)
+#           8 - both parents (both)
+#           9 - sisters (F)
+#          10 - brothers (M)
+#          11 - someone external (NA)
+#          12 - someone from the household (NA)
+#          13 - someone outside the household (NA)
+#          14 - no one (NA)
+#          15 - other (NA)
+#          99 - not specified (NA)
 # Remarks: for each question there are 3 response possibilities
 tareas <- paste0(rep(paste0("P17_1_", 1:7, "_"), each = 3), 1:3)
+
+table(TB_SEC_IVaVD$P17_1_1_1, useNA = "ifany")
+table(TB_SEC_IVaVD$P17_1_1_2, useNA = "ifany")
+
+# Recode the values and convert to factors
+TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
+  mutate_at(vars(any_of(tareas)), ~recode(.,
+                                        "01" = "females",
+                                        "02" = "males",
+                                        "03" = "both",
+                                        "04" = "females",
+                                        "05" = "males",
+                                        "06" = "females",
+                                        "07" = "males",
+                                        "08" = "both",
+                                        "09" = "females",
+                                        "10" = "males",
+                                        "11" = NA_character_,
+                                        "12" = NA_character_,
+                                        "13" = NA_character_,
+                                        "14" = NA_character_,
+                                        "15" = NA_character_,
+                                        "99" = NA_character_)) %>%
+  mutate_at(vars(any_of(tareas)), factor)
+
+# Sum
+TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
+  mutate(
+    females = rowSums(select(., all_of(tareas)) == "females", na.rm = TRUE),
+    males = rowSums(select(., all_of(tareas)) == "males", na.rm = TRUE),
+    both = rowSums(select(., all_of(tareas)) == "both", na.rm = TRUE)
+  )
+head(TB_SEC_IVaVD[, c("P17_1_1_1", "P17_1_1_2", "P17_1_1_3", "P17_1_2_1", "P17_1_2_2", "P17_1_2_3", "P17_1_3_1", "P17_1_3_2", "P17_1_3_3", "P17_1_4_1",
+                      "P17_1_4_2", "P17_1_4_3", "P17_1_5_1", "P17_1_5_2", "P17_1_5_3", "P17_1_6_1", "P17_1_6_2", "P17_1_6_3", "P17_1_7_1", "P17_1_7_2",
+                      "P17_1_7_3", "females", "males", "both")], n = 35)
+
+# Create variables
+TB_SEC_IVaVD <- TB_SEC_IVaVD %>% 
+  mutate(lib_eco_grad = ifelse(high_lib_eco > pmax(medium_lib_eco, low_lib_eco), "high",
+                               ifelse(low_lib_eco > pmax(high_lib_eco, medium_lib_eco), "low",
+                                      lib_eco_grad)),
+         lib_eco_grad = ifelse(high_lib_eco == 0 & medium_lib_eco == 0 & low_lib_eco == 0, NA_character_, lib_eco_grad))
+head(TB_SEC_IVaVD[, c("P15_1AB_1", "P15_1AB_3", "P15_1AB_4", "high_lib_eco", "medium_lib_eco", "low_lib_eco", "lib_eco_grad")], n = 35)
+# Remarks: in case "high" and "low" equal, it is set to "medium"
+
+TB_SEC_IVaVD <- TB_SEC_IVaVD %>% 
+  mutate(lib_eco_gradhigh = ifelse(lib_eco_grad == "high", "yes", "no"),
+         lib_eco_gradmedium = ifelse(lib_eco_grad == "medium", "yes", "no"),
+         lib_eco_gradlow = ifelse(lib_eco_grad == "low", "yes", "no"),
+         lib_eco_gradNA = ifelse(is.na(lib_eco_grad), "yes", "no")) %>%
+  mutate(lib_eco_gradhigh = factor(lib_eco_gradhigh, levels = c("no", "yes")),
+         lib_eco_gradmedium = factor(lib_eco_gradmedium, levels = c("no", "yes")),
+         lib_eco_gradlow = factor(lib_eco_gradlow, levels = c("no", "yes")),
+         lib_eco_gradNA = factor(lib_eco_gradNA, levels = c("no", "yes")))  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
