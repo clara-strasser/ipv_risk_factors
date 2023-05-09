@@ -672,16 +672,59 @@ TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
 # Summary stat:
 head(TB_SEC_IVaVD[, c("feminist", "not_feminist", "feminist_grad", "feminist_gradhigh", "feminist_gradmedium", "feminist_gradlow")], n = 35)
 
+## WOMENS PERCEPTION ABOUT SUPPORT FROM SOCIAL NETWORKS --------
+# Variable name: P16_3_1_1, P16_3_2_1, P16_3_3_1, P16_3_4_1, P16_3_5_1, P16_3_6_1
+# Questions:
+# cuidar un rato a sus hijas/hijos cuando tiene alguna emergencia o se enferman?
+# hacer alguna tarea o labor?
+# cuando usted se enferma?
+# para platicar de sus problemas o preocupaciones?
+# consejos u orientación cuando tiene dificultades con su esposo o pareja?
+# cuando tiene alguna dificultad o problema económico?
+# Outcome:       1 - neighbor
+#                2 - friend
+#                3 - college
+#                4 - family
+#                5 - someone else
+#                6 - no one    
+redsoc <- paste0("P16_3_", 1:6, "_1")
 
+# Recode the values and convert to factors
+TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
+  mutate_at(vars(any_of(redsoc)), ~recode(.,
+                                           "1" = "yes",
+                                           "2" = "yes",
+                                           "3" = "yes",
+                                           "4" = "yes",
+                                           "5" = "yes",
+                                           "6" = "no")) %>%
+  mutate_at(vars(any_of(redsoc)), factor)
 
+# Sum
+TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
+  mutate(
+    red_soc_yes = rowSums(select(., all_of(redsoc)) == "yes", na.rm = TRUE),
+    red_soc_no = rowSums(select(., all_of(redsoc)) == "no", na.rm = TRUE))
+head(TB_SEC_IVaVD[, c("P16_3_1_1", "P16_3_2_1", "P16_3_3_1", "P16_3_4_1", "P16_3_5_1", "P16_3_6_1", "red_soc_yes", "red_soc_no")], n = 35)
 
+# Create variables
+TB_SEC_IVaVD <- TB_SEC_IVaVD %>% 
+  mutate(redsoc_grad = ifelse(red_soc_yes >= 5, "high",
+                                ifelse(red_soc_yes <= 1, "low",
+                                       "medium")))
+head(TB_SEC_IVaVD[, c("P16_3_1_1", "P16_3_2_1", "P16_3_3_1", "P16_3_4_1", "P16_3_5_1", "P16_3_6_1", "red_soc_yes", "red_soc_no", "redsoc_grad" )], n = 35)
+# Remark: same thresholds as authors, same number of columns
 
+TB_SEC_IVaVD <- TB_SEC_IVaVD %>% 
+  mutate(redsoc_gradhigh = ifelse(redsoc_grad == "high", "yes", "no"),
+         redsoc_gradmedium = ifelse(redsoc_grad == "medium", "yes", "no"),
+         redsoc_gradlow = ifelse(redsoc_grad == "low", "yes", "no")) %>%
+  mutate(redsoc_gradhigh = factor(redsoc_gradhigh, levels = c("no", "yes")),
+         redsoc_gradmedium = factor(redsoc_gradmedium, levels = c("no", "yes")),
+         redsoc_gradlow = factor(redsoc_gradlow, levels = c("no", "yes")))  
 
-
-
-
-
-
+# Summary stat:
+head(TB_SEC_IVaVD[, c("red_soc_yes", "red_soc_no", "redsoc_grad", "redsoc_gradhigh", "redsoc_gradmedium", "redsoc_gradlow")], n = 35)
 
 
 
