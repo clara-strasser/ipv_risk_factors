@@ -84,7 +84,7 @@ cngmd <- cngmd %>% filter(cvemun != "000")
 
 ## FEMALE AND MALE SHARE OF MIGRANT POPULATION --------
 # Variable name: pres_2020_f and pres_2020_m
-# Outcome: share
+# Outcome: %
 # Level: municipality
 
 migracion_inegi <- read_excel(paste0(path,"migracion_inegi_2020.xlsx"), sheet = 1, col_names = TRUE)
@@ -106,9 +106,27 @@ migracion_inegi <- migracion_inegi %>%
   rename(cveent = "cve_entidad") %>%
   select(-c("cve_municipio"))
 
+## WOMEN HOUSEHOLD HEADSHIP ------
+# Variable name: phogjef_f
+# Outcome: %
+# Level: municipality
+intercensal <- read_excel(paste0(path,"intercensal_survey_2020.xlsx"), sheet = 1, skip = 4, col_names = TRUE)
+intercensal <- intercensal[intercensal$indicador %in% c("Hogares censales",
+                                                        "Hogares con jefatura femenina"),]
 
+intercensal <- intercensal[intercensal$cve_municipio != "0", ]
 
-
+intercensal <- intercensal %>%
+  select(-c("id_indicador", "desc_entidad", "desc_municipio","unidad_medida")) %>%
+  mutate(hogar_total = ifelse(indicador == "Hogares censales", `2020`, NA_character_),
+         hogar_fem = ifelse(indicador == "Hogares con jefatura femenina", `2020`, NA_character_)) %>%
+  group_by(cve_entidad, cve_municipio) %>%
+  summarise(hogar_total = max(hogar_total, na.rm = TRUE), hogar_fem = max(hogar_fem, na.rm = TRUE)) %>%
+  ungroup() %>%
+  mutate(phogjef_f = as.numeric(hogar_fem)/as.numeric(hogar_total),
+         cvegeo=paste0(cve_entidad, cve_municipio)) %>%
+  rename(cveent = "cve_entidad") %>%
+  select(-c("cve_municipio", "hogar_total", "hogar_fem"))
 
 
 
