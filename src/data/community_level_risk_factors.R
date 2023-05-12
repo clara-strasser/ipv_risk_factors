@@ -82,9 +82,29 @@ cngmd <- cngmd %>%
   select(-c("Mujeres", "Total"))
 cngmd <- cngmd %>% filter(cvemun != "000")
 
+## FEMALE AND MALE SHARE OF MIGRANT POPULATION --------
+# Variable name: pres_2020_f and pres_2020_m
+# Outcome: share
+# Level: municipality
 
+migracion_inegi <- read_excel(paste0(path,"migracion_inegi_2020.xlsx"), sheet = 1, col_names = TRUE)
+migracion_inegi <- migracion_inegi[migracion_inegi$indicador %in% c("Porcentaje de población masculina nacida en otro país residente en México",
+                                                        "Porcentaje de población femenina nacida en otro país residente en México"),]
+migracion_inegi <- migracion_inegi[migracion_inegi$cve_municipio != "0", ]
+migracion_inegi <- migracion_inegi %>%
+  mutate(pres_2020_f = ifelse(indicador == "Porcentaje de población femenina nacida en otro país residente en México", `2020`, NA),
+         pres_2020_m = ifelse(indicador == "Porcentaje de población masculina nacida en otro país residente en México", `2020`, NA)) %>%
+  select(-c("indicador", "2020"))
 
+migracion_inegi <- migracion_inegi %>%
+  group_by(cve_entidad, cve_municipio) %>%
+  summarise(pres_2020_f = max(pres_2020_f, na.rm = TRUE), pres_2020_m = max(pres_2020_m, na.rm = TRUE)) %>%
+  ungroup()
 
+migracion_inegi <- migracion_inegi %>%
+  mutate(cvegeo=paste0(cve_entidad, cve_municipio)) %>%
+  rename(cveent = "cve_entidad") %>%
+  select(-c("cve_municipio"))
 
 
 
