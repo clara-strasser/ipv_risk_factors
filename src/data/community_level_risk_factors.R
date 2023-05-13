@@ -128,8 +128,36 @@ intercensal <- intercensal %>%
   rename(cveent = "cve_entidad") %>%
   select(-c("cve_municipio", "hogar_total", "hogar_fem"))
 
+## TYPE OF COMMUNITY -----
+# Variable name: rural, type_comlow_urban, type_commedium_urban, type_comhigh_urban
+# Outcome: no (1), yes (2)
+# Level: binary
+# Remarks: variable "pobtot" (Total population in the municipality is needed) for 2020
+conapo <- read_excel(paste0(path,"conapo_2020.xls"), sheet = 2,col_names = TRUE)
+conapo <- conapo %>%
+  select(c("CVE_ENT", "CVE_MUN", "POB_TOT")) %>%
+  rename(cveent = "CVE_ENT",
+         cvegeo = "CVE_MUN")
 
+conapo <- conapo %>%
+  mutate(Type_com = case_when(
+    POB_TOT < 2500 ~ "rural",
+    POB_TOT >= 2500 & POB_TOT < 15000 ~ "low_urban",
+    POB_TOT >= 15000 & POB_TOT < 100000 ~ "medium_urban",
+    POB_TOT >= 100000 ~ "high_urban"
+  )) %>%
+  mutate(Type_com = factor(Type_com)) 
 
+conapo <- conapo %>% 
+  mutate(Type_comrural = ifelse(Type_com == "rural", "yes", "no"),
+         Type_comlow_urban = ifelse(Type_com == "low_urban", "yes", "no"),
+         Type_commedium_urban = ifelse(Type_com == "medium_urban", "yes", "no"),
+         Type_comhigh_urban = ifelse(Type_com == "high_urban", "yes", "no")) %>%
+  mutate(Type_comrural = factor(Type_comrural, levels = c("no", "yes")),
+         Type_comlow_urban = factor(Type_comlow_urban, levels = c("no", "yes")),
+         Type_commedium_urban = factor(Type_commedium_urban, levels = c("no", "yes")),
+         Type_comhigh_urban = factor(Type_comhigh_urban, levels = c("no", "yes")))  %>%
+  select(-c("Type_com", "POB_TOT"))
 
 
 
