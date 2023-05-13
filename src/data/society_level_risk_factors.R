@@ -56,5 +56,32 @@ envipe <- envipe %>%
   rename(cveent = "cve_entidad") %>%
   select(-c("cve_municipio"))
 
+## SHARE OF POPULATION THAT CONSIDERED CORRUPTION A PROBLEM --------
+# Variable name: cor19
+# Outcome: share, 0-1
+# Level: state
+encig <- read_excel(paste0(path,"encig_2019.xlsx"), sheet = 3, range = cell_rows(10:44), col_names = TRUE)
+encig <- encig %>%
+  slice(-1) %>%
+  select(1,5,8) %>%
+  slice(-1) %>%
+  rename(entidad = 1, rel1 = 2, rel2= 3) %>%
+  mutate(cor19 = (as.numeric(rel1) + as.numeric(rel2))/100) %>%
+  mutate(cve_ent = sprintf("%02d", 1:32)) %>%
+  select(-c("entidad", "rel1", "rel2"))
+
+
+## SHARE OF POPULATION SATISFIED WITH BASIC PUBLIC SERVICES ----------
+# Variable name: satis25
+# Outcome:
+# Level: state
+
+
+
+
+
+
+
+
 
 
