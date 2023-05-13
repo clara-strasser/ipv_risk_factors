@@ -72,7 +72,7 @@ encig <- encig %>%
 
 
 ## SHARE OF POPULATION SATISFIED WITH BASIC PUBLIC SERVICES ----------
-# Variable name: satis25
+# Variable name: satis19
 # Outcome:
 # Level: state
 
