@@ -129,7 +129,7 @@ intercensal <- intercensal %>%
   select(-c("cve_municipio", "hogar_total", "hogar_fem"))
 
 ## TYPE OF COMMUNITY -----
-# Variable name: rural, type_comlow_urban, type_commedium_urban, type_comhigh_urban
+# Variable name: Type_comrural, Type_comlow_urban, Type_commedium_urban, Type_comhigh_urban
 # Outcome: no (1), yes (2)
 # Level: binary
 # Remarks: variable "pobtot" (Total population in the municipality is needed) for 2020
@@ -159,8 +159,27 @@ conapo <- conapo %>%
          Type_comhigh_urban = factor(Type_comhigh_urban, levels = c("no", "yes")))  %>%
   select(-c("Type_com", "POB_TOT"))
 
-
-
+## SOCIAL MARGINALIZATION --------
+# Variable name: Marg15high, Marg15low, Marg15medium, Marg15very_high, Marg15very_low
+# Outcome: no (1), yes (2)
+# Level: binary
+conapo <- read_excel(paste0(path,"conapo_2020.xls"), sheet = 2,col_names = TRUE)
+conapo <- conapo %>%
+  select(c("CVE_ENT", "CVE_MUN", "GM_2020")) %>%
+  rename(cveent = "CVE_ENT",
+         cvegeo = "CVE_MUN")
+conapo <- conapo %>% 
+  mutate(Marg15high = ifelse(GM_2020 == "Alto", "yes", "no"),
+         Marg15low = ifelse(GM_2020 == "Bajo", "yes", "no"),
+         Marg15medium = ifelse(GM_2020 == "Medio", "yes", "no"),
+         Marg15very_high = ifelse(GM_2020 == "Muy alto", "yes", "no"),
+         Marg15very_low = ifelse(GM_2020 == "Muy bajo", "yes", "no")) %>%
+  mutate(Marg15high = factor(Marg15high, levels = c("no", "yes")),
+         Marg15low = factor(Marg15low, levels = c("no", "yes")),
+         Marg15medium = factor(Marg15medium, levels = c("no", "yes")),
+         Marg15very_high = factor(Marg15very_high, levels = c("no", "yes")),
+         Marg15very_low = factor(Marg15very_low, levels = c("no", "yes")))  %>%
+  select(-c("GM_2020"))
 
 
 
