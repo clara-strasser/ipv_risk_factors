@@ -131,7 +131,7 @@ intercensal <- intercensal %>%
 ## TYPE OF COMMUNITY -----
 # Variable name: Type_comrural, Type_comlow_urban, Type_commedium_urban, Type_comhigh_urban
 # Outcome: no (1), yes (2)
-# Level: binary
+# Level: municipality
 # Remarks: variable "pobtot" (Total population in the municipality is needed) for 2020
 conapo <- read_excel(paste0(path,"conapo_2020.xls"), sheet = 2,col_names = TRUE)
 conapo <- conapo %>%
@@ -162,7 +162,7 @@ conapo <- conapo %>%
 ## SOCIAL MARGINALIZATION --------
 # Variable name: Marg15high, Marg15low, Marg15medium, Marg15very_high, Marg15very_low
 # Outcome: no (1), yes (2)
-# Level: binary
+# Level: municipality
 conapo <- read_excel(paste0(path,"conapo_2020.xls"), sheet = 2,col_names = TRUE)
 conapo <- conapo %>%
   select(c("CVE_ENT", "CVE_MUN", "GM_2020")) %>%
