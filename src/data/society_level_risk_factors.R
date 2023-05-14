@@ -75,7 +75,14 @@ encig <- encig %>%
 # Variable name: satis19
 # Outcome:
 # Level: state
-
+encig_ev <- read_excel(paste0(path,"encig_evaluacion_2019.xlsx"), sheet = 15, range = cell_rows(11:43), col_names = FALSE)
+encig_ev <- encig_ev %>%
+  select(1,5) %>%
+  slice(-1) %>%
+  rename(entidad = 1, rel1 = 2) %>%
+  mutate(satis19 = as.numeric(rel1)/100) %>%
+  mutate(cve_ent = sprintf("%02d", 1:32)) %>%
+  select(-c("entidad", "rel1"))
 
 
 

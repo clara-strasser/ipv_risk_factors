@@ -15,6 +15,17 @@ path <- "/Users/clara/Desktop/Masterarbeit/endireh_documents/2021/data/"
 
 # Risk Factors -----
 
+## HOMOCIDE RATE MAN/WOMEN/TOTAL --------
+# Variable name: mhr15, fhr15, ghr15
+# Outcome:
+# Level:municipality
+
+
+
+
+
+
+
 ## GINI INDEX ----
 # Variable name: gini20
 # Outcome: 0-1
