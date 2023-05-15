@@ -26,8 +26,7 @@ homicidios <- read_excel(paste0(path,"INEGI_homicidios_totales.xlsx"), sheet = 1
 homicidios <- homicidios %>%
   filter(ent != "No especificado") %>%
   filter(is.na(cvegeo)) %>%
-  select(-c("cvegeo"))
-homicidios <- homicidios %>% 
+  select(-c("cvegeo")) %>% 
   left_join(codigo %>% select(NOM_MUN, CVE_ENT, CVE_MUN, cvegeo), by = c("ent" = "NOM_MUN", "cveent" = "CVE_ENT"), keep = FALSE)  %>%
   dplyr::filter(!(ent == "San Juan Mixtepec" & `2019` == "4" & CVE_MUN == "209")) %>%
   dplyr::filter(!(ent == "San Juan Mixtepec" & `2019` == "1" & CVE_MUN == "208")) %>%
@@ -39,10 +38,10 @@ homicidios <- homicidios %>%
   left_join(conapo_pop, by = c("cvegeo" = "CVE_MUN"))
 # create variable
 homicidios <- homicidios %>% 
-  mutate_at(vars(`2017`:`2021`), ~ ifelse(grepl("\\.", .), as.numeric(round(as.numeric(.)*1000)), as.numeric(.)))
-homicidios <- homicidios %>%
-  mutate(ghr15 = (`2017` + `2018` + `2019` + `2020` + `2021`) / as.numeric(POB_TOT) * 100000)
-
+  mutate_at(vars(`2017`:`2021`), ~ ifelse(grepl("\\.", .), as.numeric(round(as.numeric(.)*1000)), as.numeric(.))) %>%
+  mutate(sum_col = rowSums(select(., `2017`:`2021`), na.rm = TRUE),
+         ghr20 = sum_col / as.numeric(POB_TOT) * 100000) %>%
+  select(c("cvegeo", "ghr20"))
 
 
 ## HOMOCIDE RATE MEN/WOMEN --------
