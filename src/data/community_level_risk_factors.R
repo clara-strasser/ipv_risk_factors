@@ -6,6 +6,7 @@
 ## Load packages ------
 library(dplyr)
 library(readxl)
+library(stringr)
 
 ## Set path -----
 path <- "/Users/clara/Desktop/Masterarbeit/endireh_documents/2021/data/"
@@ -18,11 +19,11 @@ path <- "/Users/clara/Desktop/Masterarbeit/endireh_documents/2021/data/"
 ## HOMOCIDE RATE TOTAL --------
 # Variable name: ghr15
 # Outcome:
-# Level: state
+# Level: municipality
 codigo <- read_excel(paste0(path,"INEGI_codigo.xlsx"), sheet = 1, skip = 3, col_names = TRUE)
 codigo <- codigo %>%
   mutate(cvegeo = paste0(CVE_ENT,CVE_MUN))
-homicidios <- read_excel(paste0(path,"INEGI_homicidios_totales.xlsx"), sheet = 1, range = cell_rows(15:2151), col_names = TRUE, col_types = c("text", "text", "text", "text", "text", "text", "text", "text"))
+homicidios <- read_excel(paste0(path,"INEGI_homicidios.xlsx"), sheet = 1, range = cell_rows(15:2151), col_names = TRUE, col_types = c("text", "text", "text", "text", "text", "text", "text", "text"))
 homicidios <- homicidios %>%
   filter(ent != "No especificado") %>%
   filter(is.na(cvegeo)) %>%
@@ -44,10 +45,50 @@ homicidios <- homicidios %>%
   select(c("cvegeo", "ghr20"))
 
 
-## HOMOCIDE RATE MEN/WOMEN --------
-# Variable name: mhr15, fhr15
+## HOMOCIDE RATE MEN --------
+# Variable name: mhr20
 # Outcome:
-# Level: state
+# Level: municipality
+homicidios_hombres <- read_excel(paste0(path,"INEGI_homicidios.xlsx"), sheet = 2, range = cell_rows(6:2112), col_names = TRUE,  col_types = rep("text", 18)) %>%
+  select(1,2,18) %>%
+  filter(Column2 != "No especificado") %>%
+  filter(Column2 != "Total") %>%
+  filter(!Column1 %in% as.character(1:32)) %>%
+  mutate(cvegeo = str_replace_all(Column1, " ", "")) %>%
+  select(-c("Column1", "Column2")) %>%
+  mutate(Sum = as.numeric(Sum)) %>%
+  mutate_at(vars(Sum), ~ ifelse(grepl("\\.", .), as.numeric(round(as.numeric(.))), as.numeric(.))) 
+# left join with male population of 2020
+pob_hombres <- read_excel(paste0(path,"poblacion_INEGI.xlsx"), sheet = 1, col_names = TRUE,  col_types = rep("text", 51)) %>%
+  select(1,3,6,46)  %>%
+  filter(indicador == "Población total hombres" | indicador == "Población total mujeres")
+pob_hombres  <- pob_hombres[pob_hombres $cve_municipio != "0", ]
+pob_hombres <- pob_hombres %>%
+  mutate(pob_h = ifelse(indicador == "Población total hombres", `2020`, NA),
+         pob_m = ifelse(indicador == "Población total mujeres", `2020`, NA)) %>%
+  select(-c("indicador", "2020"))
+pob_hombres <- pob_hombres %>%
+  group_by(cve_entidad, cve_municipio) %>%
+  summarise(pob_h = max(pob_h, na.rm = TRUE), pob_m = max(pob_m, na.rm = TRUE)) %>%
+  ungroup() %>%
+  mutate(cvegeo=paste0(cve_entidad, cve_municipio)) %>%
+  rename(cveent = "cve_entidad") %>%
+  select(-c("cve_municipio", "cveent"))
+# left join
+homicidios_hombres <- homicidios_hombres %>%
+  left_join(pob_hombres, by = "cvegeo") %>%
+  mutate(mhr20 = as.numeric(Sum)/as.numeric(pob_h)*100000) %>%
+  select(c("cvegeo", "mhr20"))
+
+## HOMOCIDE RATE WOMEN --------
+# Variable name: fhr20
+# Outcome:
+# Level: municipality
+
+
+
+
+
 ## GINI INDEX ----
 # Variable name: gini20
 # Outcome: 0-1
