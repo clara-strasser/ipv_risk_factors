@@ -59,15 +59,14 @@ homicidios_hombres <- read_excel(paste0(path,"INEGI_homicidios.xlsx"), sheet = 2
   mutate(Sum = as.numeric(Sum)) %>%
   mutate_at(vars(Sum), ~ ifelse(grepl("\\.", .), as.numeric(round(as.numeric(.))), as.numeric(.))) 
 # left join with male population of 2020
-pob_hombres <- read_excel(paste0(path,"poblacion_INEGI.xlsx"), sheet = 1, col_names = TRUE,  col_types = rep("text", 51)) %>%
+poblacion <- read_excel(paste0(path,"poblacion_INEGI.xlsx"), sheet = 1, col_names = TRUE,  col_types = rep("text", 51)) %>%
   select(1,3,6,46)  %>%
   filter(indicador == "Población total hombres" | indicador == "Población total mujeres")
-pob_hombres  <- pob_hombres[pob_hombres $cve_municipio != "0", ]
-pob_hombres <- pob_hombres %>%
+poblacion  <- poblacion[poblacion$cve_municipio != "0", ]
+poblacion <- poblacion %>%
   mutate(pob_h = ifelse(indicador == "Población total hombres", `2020`, NA),
          pob_m = ifelse(indicador == "Población total mujeres", `2020`, NA)) %>%
-  select(-c("indicador", "2020"))
-pob_hombres <- pob_hombres %>%
+  select(-c("indicador", "2020")) %>%
   group_by(cve_entidad, cve_municipio) %>%
   summarise(pob_h = max(pob_h, na.rm = TRUE), pob_m = max(pob_m, na.rm = TRUE)) %>%
   ungroup() %>%
@@ -76,7 +75,7 @@ pob_hombres <- pob_hombres %>%
   select(-c("cve_municipio", "cveent"))
 # left join
 homicidios_hombres <- homicidios_hombres %>%
-  left_join(pob_hombres, by = "cvegeo") %>%
+  left_join(poblacion, by = "cvegeo") %>%
   mutate(mhr20 = as.numeric(Sum)/as.numeric(pob_h)*100000) %>%
   select(c("cvegeo", "mhr20"))
 
@@ -84,10 +83,20 @@ homicidios_hombres <- homicidios_hombres %>%
 # Variable name: fhr20
 # Outcome:
 # Level: municipality
-
-
-
-
+homicidios_mujeres <- read_excel(paste0(path,"INEGI_homicidios.xlsx"), sheet = 3, range = cell_rows(6:1484), col_names = TRUE,  col_types = rep("text", 18)) %>%
+  select(1,2,18) %>%
+  filter(Column2 != "No especificado") %>%
+  filter(Column2 != "Total") %>%
+  filter(!(Column1 %in% c(paste0("0", 1:9), 10:32))) %>%
+  mutate(cvegeo = str_replace_all(Column1, " ", "")) %>%
+  select(-c("Column1", "Column2")) %>%
+  mutate(Sum = as.numeric(Sum)) %>%
+  mutate_at(vars(Sum), ~ ifelse(grepl("\\.", .), as.numeric(round(as.numeric(.))), as.numeric(.))) 
+# left join with female population 2020
+homicidios_mujeres <- homicidios_mujeres %>%
+  left_join(poblacion, by = "cvegeo") %>%
+  mutate(fhr20 = as.numeric(Sum)/as.numeric(pob_m)*100000) %>%
+  select(c("cvegeo", "fhr20"))
 
 ## GINI INDEX ----
 # Variable name: gini20
