@@ -97,7 +97,7 @@ head(TSDem[, c("NIV", "niv_ed", "niv_edlow", "niv_edmedium", "niv_edhigh", "niv_
 
 # Finalize ------
 
-## Keep relevant
+## Keep relevant variables
 individual_demographic <- TSDem %>%
   select(c("ID_VIV", "ID_PER", "SEXO", "EDAD", "indigena", "niv_edlow", "niv_edmedium", "niv_edhigh"))
 

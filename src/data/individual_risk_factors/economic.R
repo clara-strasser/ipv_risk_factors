@@ -28,11 +28,11 @@ load(paste0(path, "TB_SEC_IVaVD.RData"))
 # Remarks: set to NA if >999997
 # Set to 0 if woman does not work (the reason why NA decreases from 61147 to 3995)
 table(TB_SEC_IVaVD$P4_2, useNA = "ifany") # 61147
-
 TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
   mutate(ing_muj = as.numeric(as.character(P4_2)),
          ing_muj = ifelse(ing_muj > 999997, NA , ing_muj),
          ing_muj = ifelse(P4_1 == 2, 0, ing_muj))
+
 # Summary stat:
 table(TB_SEC_IVaVD$ing_muj, useNA = "ifany")
 head(TB_SEC_IVaVD[, c("P4_1", "P4_2", "ing_muj")], n = 60)
@@ -64,7 +64,7 @@ head(TB_SEC_IVaVD[, c("P4_1", "P4_2", "ing_muj", "P4_2_1",  "P4_2_1_new", "ingm_
 
 # Finalize ------
 
-## Keep relevant
+## Keep relevant variables
 economic <- TB_SEC_IVaVD %>%
   select(c("ID_VIV", "ID_PER", "ing_muj", "ingm_muj"))
 
