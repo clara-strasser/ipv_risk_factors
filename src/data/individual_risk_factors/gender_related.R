@@ -262,8 +262,16 @@ head(TB_SEC_IVaVD[, c("P12_14_1" ,"P12_14_2" ,"P12_14_3", "P12_14_4", "P12_14_5"
 # Finalize ------
 
 ## Keep relevant variables ------
-gender_related <- TB_SEC_IVaVD %>%
-  select(c("ID_VIV", "ID_PER", "vio_inf", "vio_exp_inf", "vio_sex_inf", "num_hij", "eda_hij", "eda_sex", "con_sex", "eda_mat", "mot_mat", "feminist_gradhigh", "feminist_gradmedium", "feminist_gradlow"))
+individual_gender_related <- TB_SEC_IVaVD %>%
+  select(c("ID_VIV", "ID_PER", "CVE_ENT", "CVE_MUN", "T_INSTRUM", "vio_inf", "vio_exp_inf", "vio_sex_inf", "num_hij", "eda_hij", "eda_sex", "con_sex", "eda_mat", "mot_mat", "feminist_gradhigh", "feminist_gradmedium", "feminist_gradlow"))
+
+## Save data -----
+path_rf <- "/Users/clara/Desktop/master_thesis/data/risk_factors/"
+save(individual_gender_related, file = paste0(path_rf,"individual_gender_related.RData"))
+
+
+
+
 
 
 

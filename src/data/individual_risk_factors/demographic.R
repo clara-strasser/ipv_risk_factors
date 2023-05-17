@@ -97,10 +97,14 @@ head(TSDem[, c("NIV", "niv_ed", "niv_edlow", "niv_edmedium", "niv_edhigh", "niv_
 
 # Finalize ------
 
-## Keep relevant variables -------
+## Keep relevant variables ------
 individual_demographic <- TSDem %>%
-  select(c("ID_VIV", "ID_PER", "SEXO", "EDAD", "indigena", "niv_edlow", "niv_edmedium", "niv_edhigh"))
+  select(c("ID_VIV", "ID_PER", "CVE_ENT", "CVE_MUN", "SEXO", "EDAD", "indigena", "niv_edlow", "niv_edmedium", "niv_edhigh"))
 
+## Save data -----
+
+path_rf <- "/Users/clara/Desktop/master_thesis/data/risk_factors/"
+save(individual_demographic, file = paste0(path_rf,"individual_demographic.RData"))
 
 
 
