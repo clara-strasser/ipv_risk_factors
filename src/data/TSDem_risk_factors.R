@@ -31,6 +31,7 @@ summary(TSDem$SEXO)
 table(TSDem$EDAD, useNA = "ifany") # no NAs
 TSDem <- TSDem %>%
   mutate(EDAD = ifelse(EDAD>=97, NA, as.numeric(EDAD))) # set to NA if age not specified and age>=97
+
 # Summary Stat:
 summary(TSDem$EDAD)
 
