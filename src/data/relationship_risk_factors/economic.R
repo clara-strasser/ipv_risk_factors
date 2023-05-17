@@ -65,5 +65,28 @@ table(TB_SEC_IVaVD$ingm_par, useNA = "ifany") # 47396 NAs
 head(TB_SEC_IVaVD[, c("P4_5_AB", "P4_3", "ing_par", "P4_5_1_AB", "P4_5_1_AB_new", "ingm_par")], n = 60)
 
 
+# Finalize ------
+
+## Keep relevant variables ------
+relationship_economic <- TB_SEC_IVaVD %>%
+  select(c("ID_VIV", "ID_PER", "CVE_ENT", "CVE_MUN", "T_INSTRUM", "ing_par", "ingm_par"))
+
+## Save data -----
+
+path_rf <- "/Users/clara/Desktop/master_thesis/data/risk_factors/"
+save(relationship_economic, file = paste0(path_rf,"relationship_economic.RData"))
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

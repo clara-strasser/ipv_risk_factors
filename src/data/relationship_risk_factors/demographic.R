@@ -69,11 +69,77 @@ TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
   left_join(TSDem %>% select(c("ID_VIV", "ID_PER","EDAD")), by = c("ID_VIV", "ID_PER"))
 TB_SEC_IVaVD$eda_par2 <- TB_SEC_IVaVD$eda_par + (TB_SEC_IVaVD$EDAD - TB_SEC_IVaVD$eda_mat)
 
+
+## EDUCATION PARTNER -----
+# Variable name: P4BC_2
+# Outcomes: 00 - no education
+#           01 to 11 - different education levels
+#           98 - does not know
+#           b - blank
+# Explanation:  Ninguno                   - Low
+#               Pre-Escolar (from 3 to 6) - Low
+#               Primaria (from 6 to 12)   - Low
+#               Secundaria (12 to 15)     - Medium
+#               Preparatoria o bachillerato (15 to 18) - Medium
+#               Estudios técnicos (months to 2 years, provide knowledge for particular career path) - Medium
+#               Normal con primaria o secundaria (teacher training program for primary and secondary) - Medium
+#               Normal licenciatura (teacher training program for higher education level) - High
+#               Licenciatura o profesional (undergraduate programs at the university level) - High
+#               Posgrado (graduate programs like Masters or PhD) - High
+# Levels: 1 (no), 2 (yes)
+# Aim: create three variables "niv_edlow", "niv_edmedium" and "niv_edhigh"
+# Remark: convert outcome "98" into NA
+table(TB_SEC_IVaVD$P4BC_2, useNA = "ifany")  # 73389 NAs and 397 "98"
+TB_SEC_IVaVD$P4BC_2 <- ifelse(TB_SEC_IVaVD$P4BC_2 == "98", NA, TB_SEC_IVaVD$P4BC_2)
+table(TB_SEC_IVaVD$P4BC_2, useNA = "ifany") # 73786 NAs
+TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
+  mutate(P4BC_2= as.numeric(P4BC_2),
+         edu_par = ifelse(is.na(P4BC_2), "NA",
+                          ifelse(P4BC_2  <= 2, "low",
+                                 ifelse(P4BC_2  >= 3 & P4BC_2  <= 8, "medium",
+                                        ifelse(P4BC_2  >= 9, "high", NA)))))
+
+# Summary Stat:
+table(TB_SEC_IVaVD$edu_par) # 73786 NAs
+
+# Create variables
+TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
+  mutate(edu_parlow = factor(ifelse(edu_par == "low", "yes", ifelse(edu_par == "NA", NA_character_, "no")), levels = c("no", "yes")),
+         edu_parmedium = factor(ifelse(edu_par == "medium", "yes", ifelse(edu_par == "NA", NA_character_, "no")), levels = c("no", "yes")),
+         edu_parhigh = factor(ifelse(edu_par == "high", "yes", ifelse(edu_par == "NA", NA_character_, "no")), levels = c("no", "yes")),
+         edu_parNA = factor(ifelse(edu_par == "NA", "yes", "no"), levels = c("no", "yes")))
+
+# Summary stat:
+head(TB_SEC_IVaVD[, c("P4BC_2", "edu_par", "edu_parlow", "edu_parmedium", "edu_parhigh")], n = 60)
+table(TB_SEC_IVaVD$edu_parlow)
+table(TB_SEC_IVaVD$edu_parmedium)
+table(TB_SEC_IVaVD$edu_parhigh)
+
+## INDIGENOUS PARTNER ------
+# Variable name: P4BC_3
+# Outcomes: 1 - si            - yes
+#           2 - si, en parte  - yes
+#           3 - no            - no
+#           8 - no sabe       - NA
+#           b - blank         - NA
+# Create variable "ind_par"
+# Levels: 1 (yes), 2 (no)
+table(TB_SEC_IVaVD$P4BC_3, useNA = "ifany") # 73389 NAs
+TB_SEC_IVaVD$ind_par <- ifelse(TB_SEC_IVaVD$P4BC_3 %in% c("1", "2"), "yes",
+                               ifelse(TB_SEC_IVaVD$P4BC_3 == "3", "no",
+                                      ifelse(TB_SEC_IVaVD$P4BC_3 == "8", NA, NA)))
+TB_SEC_IVaVD$ind_par <- factor(TB_SEC_IVaVD$ind_par, levels = c("no", "yes", NA))
+
+# Summary Stat:
+table(TB_SEC_IVaVD$ind_par, useNA = "ifany") # 76549 NAs
+
+
+
 # Finalize ------
 
 ## Keep relevant variables ------
 relationship_demographic <- TB_SEC_IVaVD %>%
-  select(c("ID_VIV", "ID_PER", "CVE_ENT", "CVE_MUN", "T_INSTRUM", "eda_par2"))
+  select(c("ID_VIV", "ID_PER", "CVE_ENT", "CVE_MUN", "T_INSTRUM", "eda_par2", "edu_parlow", "edu_parmedium", "edu_parhigh", "ind_par"))
 
 ## Save data -----
 
