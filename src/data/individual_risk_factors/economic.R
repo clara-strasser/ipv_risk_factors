@@ -64,7 +64,7 @@ head(TB_SEC_IVaVD[, c("P4_1", "P4_2", "ing_muj", "P4_2_1",  "P4_2_1_new", "ingm_
 
 # Finalize ------
 
-## Keep relevant variables
+## Keep relevant variables ------
 economic <- TB_SEC_IVaVD %>%
   select(c("ID_VIV", "ID_PER", "ing_muj", "ingm_muj"))
 
