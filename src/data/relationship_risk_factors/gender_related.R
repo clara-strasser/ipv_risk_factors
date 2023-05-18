@@ -15,6 +15,111 @@ load(paste0(path,"TB_SEC_IVaVD.RData"))
 
 # Risk Factors -----
 
+## GENDER OF PARTNER ----------
+# Variable name: P13_5
+# Outcomes:   1 - man
+#             2 - woman
+#             9 - not specified
+#             b - blank
+# Label: male (1), female (2)
+# Aim: create variable "par_sex"
+table(TB_SEC_IVaVD$P13_5, useNA = "ifany") # 4849 NAs
+TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
+  mutate(par_sex = factor(ifelse(P13_5 == 1, "male", ifelse(P13_5 == 2, "female", NA)), 
+                          levels = c("male", "female")))
+table(TB_SEC_IVaVD$par_sex, useNA = "ifany") # 4911 NAs
+# Summary stat:
+#   male    female    NA 
+#  104656    560     4911 
+
+
+## VIOLENCE EXPERIENCE CHILDHOOD PARTNER -------
+# Variable name: P12_8
+# Remark: types of violence are physical (beating) and
+# emotional (insulting and offending)
+# Outcomes:     1 - sometimes
+#               2 - more often
+#               3 - no 
+#               8 - does not know
+#               b - blank
+# Labels: 1 (no), 2 (yes)
+# Aim: create variable "vio_exp_inf_par"
+table(TB_SEC_IVaVD$P12_8, useNA = "ifany") # 4849 NAs
+TB_SEC_IVaVD$P12_8[TB_SEC_IVaVD$P12_8 == "8"] <- NA
+TB_SEC_IVaVD$vio_exp_inf_par <- factor(ifelse(TB_SEC_IVaVD$P12_8 == "1" | TB_SEC_IVaVD$P12_8 == "2", "1", "2"), levels = c("2", "1"), labels = c("no", "yes"))
+
+# Summary Stat:
+table(TB_SEC_IVaVD$vio_exp_inf_par, useNA = "ifany") # 32863 NAs
+#    no   yes    NA 
+#  46563 30701 32863  
+
+
+## VIOLENCE WITNESS CHILDHOOD PARTNER -------
+# Variable name: P12_9
+# Remark: types of violence are physical IPV (father beats mother)
+# Outcomes:     1 - yes
+#               2 - no
+#               8 - does not know
+#               b - blank
+# Labels: 1 (no), 2 (yes)
+# Aim: create variable "vio_inf_par"
+table(TB_SEC_IVaVD$P12_9, useNA = "ifany") # 4849 NAs
+TB_SEC_IVaVD$P12_9[TB_SEC_IVaVD$P12_9 == "8"] <- NA
+TB_SEC_IVaVD$vio_inf_par <- factor(ifelse(TB_SEC_IVaVD$P12_9 == "1", "1", "2"), levels = c("2", "1"), labels = c("no", "yes"))
+
+# Summary Stat:
+table(TB_SEC_IVaVD$vio_inf_par, useNA = "ifany") # 38657 NAs
+#   no   yes    NA 
+#  50471 20999 38657  
+
+
+## VIOLENCE PREVIOUS PARTNER --------
+# Variable name:
+# Physical violence: P13_17_1 and P13_17_2
+# Emotional violence: P13_17_3
+# Sexual violence: P13_17_5
+# Economical violence: P13_17_6
+# Outcomes:     1 - yes
+#               2 - no
+#               b - blank
+# Label: yes (1), no (2)
+# Aim: create variables vio_fis_ex, vio_emo_ex, vio_eco_ex, vio_sex_ex
+table(TB_SEC_IVaVD$P13_17_1, useNA = "ifany") # 85137 NAs
+table(TB_SEC_IVaVD$P13_17_2, useNA = "ifany") # 85137 NAs
+table(TB_SEC_IVaVD$P13_17_3, useNA = "ifany") # 85137 NAs
+table(TB_SEC_IVaVD$P13_17_5, useNA = "ifany") # 85137 NAs
+table(TB_SEC_IVaVD$P13_17_6, useNA = "ifany") # 85137 NAs
+
+
+# Set columns
+vio_fis <- paste0("P13_17_", 1:2) 
+vio_emo <- paste0("P13_17_", 3) 
+vio_sex <- paste0("P13_17_", 5) 
+vio_eco <- paste0("P13_17_", 6)
+
+# Create columns
+TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
+  mutate(vio_fis_ex = ifelse(rowSums(select(., any_of(vio_fis)) == "1", na.rm = TRUE) > 0, "1", 
+                             ifelse(rowSums(select(., any_of(vio_fis)) == "2", na.rm = TRUE) > 0, "2", NA_character_)),
+         vio_emo_ex = ifelse(rowSums(select(., any_of(vio_emo)) == "1", na.rm = TRUE) > 0, "1", 
+                             ifelse(rowSums(select(., any_of(vio_emo)) == "2", na.rm = TRUE) > 0, "2", NA_character_)),
+         vio_sex_ex = ifelse(rowSums(select(., any_of(vio_sex)) == "1", na.rm = TRUE) > 0, "1", 
+                             ifelse(rowSums(select(., any_of(vio_sex)) == "2", na.rm = TRUE) > 0, "2", NA_character_)),
+         vio_eco_ex = ifelse(rowSums(select(., any_of(vio_eco)) == "1", na.rm = TRUE) > 0, "1", 
+                             ifelse(rowSums(select(., any_of(vio_eco)) == "2", na.rm = TRUE) > 0, "2", NA_character_))) %>%
+  mutate(vio_fis_ex = factor(vio_fis_ex, levels = c("2", "1"), labels = c("no", "yes")),
+         vio_emo_ex = factor(vio_emo_ex, levels = c("2", "1"), labels = c("no", "yes")),
+         vio_sex_ex = factor(vio_sex_ex, levels = c("2", "1"), labels = c("no", "yes")),
+         vio_eco_ex = factor(vio_eco_ex, levels = c("2", "1"), labels = c("no", "yes")))
+
+# Summary stat:
+table(TB_SEC_IVaVD$vio_fis_ex, useNA = "ifany") # 85137 NAs
+table(TB_SEC_IVaVD$vio_emo_ex, useNA = "ifany") # 85137 NAs
+table(TB_SEC_IVaVD$vio_sex_ex, useNA = "ifany") # 85137 NAs
+table(TB_SEC_IVaVD$vio_eco_ex, useNA = "ifany") # 85137 NAs
+head(TB_SEC_IVaVD[, c("P13_17_1", "P13_17_2", "vio_fis_ex", "P13_17_3", "vio_emo_ex")], n = 65)
+
+
 ## WOMANS LEVEL AUTONOMY ABOUT SEX LIFE ------
 # Variable name: P15_1AB_12 - P15_1AB_17
 # Questions:
@@ -235,6 +340,8 @@ head(TB_SEC_IVaVD[, c("P15_1AB_2", "P15_1AB_5", "P15_1AB_6", "P15_1AB_9", "lib_s
 ## Keep relevant variables ------
 relationship_gender_related <- TB_SEC_IVaVD %>%
   select(c("ID_VIV", "ID_PER", "CVE_ENT", "CVE_MUN", "T_INSTRUM",
+           "vio_exp_inf_par", "vio_inf_par", "par_sex", 
+           "vio_fis_ex", "vio_emo_ex", "vio_sex_ex", "vio_eco_ex",
            "lib_sex_gradhigh", "lib_sex_gradmedium", "lib_sex_gradlow",
            "lib_eco_gradhigh", "lib_eco_gradmedium", "lib_eco_gradlow",
            "lib_soc_gradhigh", "lib_soc_gradmedium", "lib_soc_gradlow"))
