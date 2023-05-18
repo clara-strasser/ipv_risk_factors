@@ -349,7 +349,7 @@ relationship_gender_related <- TB_SEC_IVaVD %>%
 ## Save data -----
 
 path_rf <- "/Users/clara/Desktop/master_thesis/data/risk_factors/"
-save(relationship_gender_related, file = paste0(path_rf,"relationship_demographic.RData"))
+save(relationship_gender_related, file = paste0(path_rf,"relationship_gender_related.RData"))
 
 
 
