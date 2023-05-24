@@ -73,6 +73,9 @@ endireh_2021 %>%
 # Education partner:
 # 63152! All observations are missing, observations not given for A1 and A2
 
+# Indiginous partner:
+# 63152! All observations are missing, observations not given for A1 and A2
+
 # Income partner:
 # ing_par: 10556
 # ingm_par: 10592
@@ -82,7 +85,6 @@ endireh_2021 %>%
 
 # Violence witness partner:
 # vio_inf_par: 16230 
-
 
 # Violence experience women:
 # vio_fis_ex/ vio_emo_ex/ vio_sex_ex / vio_eco_ex: 52950 (only 10202 have observations, the 19 %)
@@ -102,7 +104,6 @@ endireh_2021 %>%
 # IDH:
 # idh2020: 81
 
-
 # ParPolF:
 # ParPolF: 1459
 
@@ -118,11 +119,30 @@ endireh_2021 %>%
 # Emotional IPV:
 # vio_emo_año: 42728
 
+# Subset and Test Part I
+endireh_2021_test <- endireh_2021 %>%
+  filter(!is.na(vio_emo_año))
+endireh_2021_test <- endireh_2021_test %>%
+  select(-c("edu_parlow", "edu_parmedium", "edu_parhigh", "ind_par", 
+            "vio_fis_ex", "vio_emo_ex", "vio_sex_ex", "vio_eco_ex", 
+            "vio_exp_inf_par", "vio_inf_par", "ing_muj", "ing_par", "vio_sex_inf"))
+endireh_2021_test %>%
+  summarise_all(list(missing = ~sum(is.na(.))))
 
+# Remove following columns:
+endireh_2021_test <- endireh_2021_test[complete.cases(endireh_2021_test), ]
 
+# Subset and Test Part II
+endireh_2021_test_2 <- endireh_2021
+endireh_2021_test_2 <- endireh_2021_test_2 %>%
+  select(-c("edu_parlow", "edu_parmedium", "edu_parhigh", "ind_par", 
+            "vio_fis_ex", "vio_emo_ex", "vio_sex_ex", "vio_eco_ex", "vio_emo_año",
+            "vio_exp_inf_par", "vio_inf_par", "ing_muj", "ing_par", "vio_sex_inf"))
+endireh_2021_test_2 %>%
+  summarise_all(list(missing = ~sum(is.na(.))))
 
-
-
+# Remove following columns:
+endireh_2021_test_2 <- endireh_2021_test_2[complete.cases(endireh_2021_test_2), ]
 
 
 
