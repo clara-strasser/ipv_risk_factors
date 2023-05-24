@@ -24,11 +24,11 @@ rel_part1 <- left_join(relationship_demographic, relationship_household, by = c(
 rel_part2 <- left_join(rel_part1, relationship_economic, by = c("ID_PER", "ID_VIV", "CVE_ENT", "CVE_MUN", "T_INSTRUM"))
 rel_part3 <- left_join(rel_part2, relationship_gender_related, by = c("ID_PER", "ID_VIV", "CVE_ENT", "CVE_MUN", "T_INSTRUM"))
 rel_part4 <- left_join(rel_part3, relationship_community, by = c("ID_PER", "ID_VIV", "CVE_ENT", "CVE_MUN", "T_INSTRUM"))
-rel_part5 <- left_join(rel_part4, relationship_womens_role, by = c("ID_PER", "ID_VIV", "CVE_ENT", "CVE_MUN", "T_INSTRUM"))
+relationship_risk_factors <- left_join(rel_part4, relationship_womens_role, by = c("ID_PER", "ID_VIV", "CVE_ENT", "CVE_MUN", "T_INSTRUM"))
 
 
 ## Save data -----
 path_rf <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/"
-save(rel_part5, file = paste0(path_rf,"relationship_risk_factors.RData"))
+save(relationship_risk_factors, file = paste0(path_rf,"relationship_risk_factors.RData"))
 
 

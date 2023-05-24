@@ -6,7 +6,7 @@
 library(dplyr)
 
 ## Set path -----
-path <- "/Users/clara/Desktop/Masterarbeit/endireh_documents/2021/data/"
+path <- "/Users/clara/Desktop/master_thesis/data/"
 
 ## Load data -------
 load(paste0(path,"TB_SEC_III.RData"))
