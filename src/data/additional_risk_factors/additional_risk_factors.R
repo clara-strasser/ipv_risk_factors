@@ -53,6 +53,7 @@ head(TB_SEC_IVaVD[, c("P8_4", "desempleo")], n = 35)
 #          5 - patrona (contrata trabajadores/as)
 #          6 - trabajadora sin pago en un negocio familiar o no familiar?
 #          b - blanco
+# Remark: create new category 7 - sin_empleo in case "desempleo" = yes
 # Level: category
 # Aim: create variable "tipo_empl" 
 table(TB_SEC_IVaVD$P8_5, useNA = "ifany") # 54799 NAs
@@ -71,6 +72,9 @@ TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
 # Summary Stat:
 table(TB_SEC_IVaVD$tipo_empl, useNA = "ifany") # 54799 NAs
 
+# Add new value
+TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
+  mutate(tipo_empl = ifelse(desempleo == "yes" & is.na(tipo_empl), "desempleo", tipo_empl))
 
 ## Living Abroad Childhood Women -----
 # Variable name: P12_2
@@ -150,7 +154,7 @@ additional_risk_factors <- TB_SEC_IVaVD %>%
 ## Save data -----
 
 path_rf <- "/Users/clara/Desktop/master_thesis/data/risk_factors/"
-save(community_demographic_part2, file = paste0(path_rf,"community_demographic.RData"))
+save(additional_risk_factors, file = paste0(path_rf,"additional_risk_factors.RData"))
 
 
 
