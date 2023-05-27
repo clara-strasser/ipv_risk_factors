@@ -11,7 +11,19 @@ library(purrr)
 path <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/"
 
 ## Load data -------
-load(paste0(path, "endireh_2021.RData"))
+load(paste0(path, "endireh_2021.RData")) # main data set
+load(paste0(path, "additional_risk_factors.RData")) # additional risk factors
+load(paste0(path, "emotional_ipv_vida.RData")) # additional risk factors
+
+## Join additional risk factors ------
+endireh_2021 <- endireh_2021 %>%
+  left_join(additional_risk_factors, by = c("ID_PER", "ID_VIV", "CVE_ENT", "CVE_MUN", "T_INSTRUM"))
+
+
+## Join alternative emotional ipv ------
+endireh_2021 <- endireh_2021 %>%
+  left_join(emotional_ipv_vida, by = c("ID_PER", "ID_VIV", "CVE_ENT", "CVE_MUN", "T_INSTRUM"))
+
 
 # Subset Main ---------
 # Beginning: 110127 observations
@@ -38,111 +50,112 @@ endireh_2021 <- subset(endireh_2021, as.numeric(num_hij) > 0)
 
 # Subset NA Observations -----
 
+
 # Calculate NAs of all variables
-endireh_2021 %>%
-  summarise_all(list(missing = ~sum(is.na(.))))
+missing_counts <- sapply(endireh_2021, function(x) sum(is.na(x)))
+missing_counts <- missing_counts[order(missing_counts, decreasing = TRUE)]
+print(missing_counts)
 
-# Income Women:
-# ing_muj: 1893
-# ingm_muj: 1908
+# Remove risk factors with missings > 30 %
+# edu_parlow
+# edu_parmedium
+# edu_parhigh        
+# ind_par 
+# sep_ex 
+# vio_fis_ex 
+# vio_emo_ex 
+# vio_sex_ex  
+# vio_eco_ex  
+# tipo_empl
+# desempleo
+endireh_2021 <- endireh_2021 %>%
+  select(-c("edu_parlow", "edu_parmedium", "edu_parhigh", "ind_par", 
+            "sep_ex", "vio_fis_ex", "vio_emo_ex", "vio_sex_ex", "vio_eco_ex",
+            "desempleo", "tipo_empl"))
 
-# Age Women:
-# EDAD: 44
+# Distribution of emotional ipv
+# vio_emo_año:
+table(endireh_2021$vio_emo_año)
+# no   yes 
+# 5993 14431
+# ratio no/yes: 0.41
 
-# Indigena Women:
-# indigena: 733
+# vio_emo_año_alt
+table(endireh_2021$vio_emo_año_alt)
+#  no   yes 
+# 48721 14431 
+# ratio no/yes: 3.3
 
-# Sexual Violence Experience Women:
-# vio_sex_inf: 2683
+# vio_emo_vida
+table(endireh_2021$vio_emo_vida)
+#   no   yes 
+# 42728 20424
+# ratio no/yes: 2.1
 
-# Age at first child:
-# eda_hij: 424
 
-# Age at first sexual intercourse:
-# eda_sex: 1344
+# Create two data frames
+# First: final_alt1 --> vio_emo_año 
+# Second: final_alt2 --> vio_emo_año_alt
 
-# Age at first marriage:
-# eda_mat: 599
+final_alt1 <- endireh_2021 %>%
+  select(-c( "vio_emo_año_alt"))
+final_alt2 <- endireh_2021 %>%
+  select(-c( "vio_emo_año"))
 
-# Age partner first marriage:
-# mot_mat: 1699
 
-# Age partner:
-# eda_par2: 1555
+# Alternative 1:
+# Step 1: Remove missings of "vio_emo_año"
+# Step 2: Find combination of columns with least missings
+# Step 3: create df with no misisngs
 
-# Education partner:
-# 63152! All observations are missing, observations not given for A1 and A2
-
-# Indiginous partner:
-# 63152! All observations are missing, observations not given for A1 and A2
-
-# Income partner:
-# ing_par: 10556
-# ingm_par: 10592
-
-# Violence experience partner:
-# vio_exp_inf: 12989
-
-# Violence witness partner:
-# vio_inf_par: 16230 
-
-# Violence experience women:
-# vio_fis_ex/ vio_emo_ex/ vio_sex_ex / vio_eco_ex: 52950 (only 10202 have observations, the 19 %)
-
-# Sexual Liberty:
-# lib_sex: 1286 
-
-# Economical Liberty:
-# lib_eco: 161
-
-# Social Liberty:
-# lib_soc: 91
-
-# Household distribution:
-# act_dist: 217
-
-# IDH:
-# idh2020: 81
-
-# ParPolF:
-# ParPolF: 1459
-
-# Total homocide rate:
-# ghr20:934
-
-# Men homocide rate:
-# mhr20: 996
-
-# Women homocide rate:
-# fhr20:  5573
-
-# Emotional IPV:
-# vio_emo_año: 42728
-
-# Subset and Test Part I
-endireh_2021_test <- endireh_2021 %>%
+# STEP 1:
+final_alt1 <- final_alt1 %>%
   filter(!is.na(vio_emo_año))
-endireh_2021_test <- endireh_2021_test %>%
-  select(-c("edu_parlow", "edu_parmedium", "edu_parhigh", "ind_par", 
-            "vio_fis_ex", "vio_emo_ex", "vio_sex_ex", "vio_eco_ex", 
-            "vio_exp_inf_par", "vio_inf_par", "ing_muj", "ing_par", "vio_sex_inf"))
-endireh_2021_test %>%
-  summarise_all(list(missing = ~sum(is.na(.))))
 
-# Remove following columns:
-endireh_2021_test <- endireh_2021_test[complete.cases(endireh_2021_test), ]
+# STEP 2:
+# Remove:
+# vio_inf_par
+# vio_exp_inf_par
+final_alt1 <- final_alt1 %>%
+  select(-c( "vio_inf_par", "vio_exp_inf_par"))
 
-# Subset and Test Part II
-endireh_2021_test_2 <- endireh_2021
-endireh_2021_test_2 <- endireh_2021_test_2 %>%
-  select(-c("edu_parlow", "edu_parmedium", "edu_parhigh", "ind_par", 
-            "vio_fis_ex", "vio_emo_ex", "vio_sex_ex", "vio_eco_ex", "vio_emo_año",
-            "vio_exp_inf_par", "vio_inf_par", "ing_muj", "ing_par", "vio_sex_inf"))
-endireh_2021_test_2 %>%
-  summarise_all(list(missing = ~sum(is.na(.))))
+# STEP 3:
+# Keep non-missing
+final_alt1 <- final_alt1[complete.cases(final_alt1), ]
 
-# Remove following columns:
-endireh_2021_test_2 <- endireh_2021_test_2[complete.cases(endireh_2021_test_2), ]
+
+# STEP 4:
+# n = 13.097
+
+
+# Alternative 2:
+
+# STEP 1:
+
+# STEP 2:
+# Remove:
+# vio_inf_par
+# vio_exp_inf_par
+final_alt2 <- final_alt2 %>%
+  select(-c( "vio_inf_par"))
+
+# STEP 3:
+# Keep non-missing
+final_alt2 <- final_alt2[complete.cases(final_alt2), ]
+
+
+# STEP 4:
+# n = 32.597
+
+
+
+missing_counts <- sapply(final_alt2, function(x) sum(is.na(x)))
+missing_counts <- missing_counts[order(missing_counts, decreasing = TRUE)]
+missing_counts
+
+
+
+
 
 
 

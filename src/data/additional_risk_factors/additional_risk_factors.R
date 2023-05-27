@@ -153,7 +153,7 @@ additional_risk_factors <- TB_SEC_IVaVD %>%
 
 ## Save data -----
 
-path_rf <- "/Users/clara/Desktop/master_thesis/data/risk_factors/"
+path_rf <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/"
 save(additional_risk_factors, file = paste0(path_rf,"additional_risk_factors.RData"))
 
 
