@@ -13,7 +13,7 @@ path <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/"
 ## Load data -------
 load(paste0(path, "endireh_2021.RData")) # main data set
 load(paste0(path, "additional_risk_factors.RData")) # additional risk factors
-load(paste0(path, "emotional_ipv_vida.RData")) # additional risk factors
+load(paste0(path, "emotional_ipv_vida.RData")) # additional outcome variables
 
 ## Join additional risk factors ------
 endireh_2021 <- endireh_2021 %>%
@@ -49,7 +49,6 @@ table(endireh_2021$num_hij)
 endireh_2021 <- subset(endireh_2021, as.numeric(num_hij) > 0)
 
 # Subset NA Observations -----
-
 
 # Calculate NAs of all variables
 missing_counts <- sapply(endireh_2021, function(x) sum(is.na(x)))
@@ -91,6 +90,36 @@ table(endireh_2021$vio_emo_vida)
 #   no   yes 
 # 42728 20424
 # ratio no/yes: 2.1
+
+
+# Save data -----
+save(endireh_2021, file = paste0(path,"endireh_2021.RData"))
+
+
+# Plausibility Analysis ---------
+
+## vio_emo_año_alt and vio_emo_vida
+# vio_emo_año and vio_emo_vida
+# Explanation: vio_emo_año_alt may not be "yes" if vio_emo_vida is "no"
+# vio_emo_año may not be "yes" if vio_emo_vida is "no"
+plaus_1a <- endireh_2021[endireh_2021$vio_emo_año_alt == "yes" & endireh_2021$vio_emo_vida == "no", ]
+plaus_1b <- endireh_2021[endireh_2021$vio_emo_año == "yes" & !is.na(endireh_2021$vio_emo_año) & endireh_2021$vio_emo_vida == "no", ]
+
+## eda_sex
+# Explanation: Women’s age at first sexual intercourse cannot be greater than women’s age at the time of being surveyed
+plaus_2 <- endireh_2021[!is.na(endireh_2021$eda_sex) & !is.na(endireh_2021$EDAD) & endireh_2021$eda_sex > endireh_2021$EDAD, ]
+
+## eda_mat
+# Explanation: Women’s age at first marriage (or at cohabitation) cannot be greater than women’s age at the time of being surveyed
+plaus_3 <- endireh_2021[!is.na(endireh_2021$eda_mat) & !is.na(endireh_2021$EDAD) & endireh_2021$eda_mat > endireh_2021$EDAD, ]
+
+## eda_hij
+# Explanation: Women’s age at first childbirth cannot be greater than women’s age at the time of being surveyed
+plaus_4 <- endireh_2021[!is.na(endireh_2021$eda_hij) & !is.na(endireh_2021$EDAD) & endireh_2021$eda_hij > endireh_2021$EDAD, ]
+
+
+# Results: no implausible results found!
+
 
 
 # Create two data frames
