@@ -75,12 +75,6 @@ endireh_2021 <- endireh_2021 %>%
 # Distribution of emotional ipv
 # vio_emo_año:
 table(endireh_2021$vio_emo_año)
-# no   yes 
-# 5993 14431
-# ratio no/yes: 0.41
-
-# vio_emo_año_alt
-table(endireh_2021$vio_emo_año_alt)
 #  no   yes 
 # 48721 14431 
 # ratio no/yes: 3.3
@@ -120,42 +114,7 @@ plaus_4 <- endireh_2021[!is.na(endireh_2021$eda_hij) & !is.na(endireh_2021$EDAD)
 
 # Results: no implausible results found!
 
-
-
-# Create two data frames
-# First: final_alt1 --> vio_emo_año 
-# Second: final_alt2 --> vio_emo_año_alt
-
-final_alt1 <- endireh_2021 %>%
-  select(-c( "vio_emo_año_alt"))
-final_alt2 <- endireh_2021 %>%
-  select(-c( "vio_emo_año"))
-
-
-# Alternative 1:
-# Step 1: Remove missings of "vio_emo_año"
-# Step 2: Find combination of columns with least missings
-# Step 3: create df with no misisngs
-
-# STEP 1:
-final_alt1 <- final_alt1 %>%
-  filter(!is.na(vio_emo_año))
-
-# STEP 2:
-# Remove:
-# vio_inf_par
-# vio_exp_inf_par
-final_alt1 <- final_alt1 %>%
-  select(-c( "vio_inf_par", "vio_exp_inf_par"))
-
-# STEP 3:
-# Keep non-missing
-final_alt1 <- final_alt1[complete.cases(final_alt1), ]
-
-
-# STEP 4:
-# n = 13.097
-
+# Remove NA observations
 
 # Alternative 2:
 
@@ -165,12 +124,12 @@ final_alt1 <- final_alt1[complete.cases(final_alt1), ]
 # Remove:
 # vio_inf_par
 # vio_exp_inf_par
-final_alt2 <- final_alt2 %>%
-  select(-c( "vio_inf_par"))
+emo_ipv_final <- endireh_2021 %>%
+  select(-c( "vio_inf_par", "vio_exp_inf_par"))
 
 # STEP 3:
 # Keep non-missing
-final_alt2 <- final_alt2[complete.cases(final_alt2), ]
+emo_ipv_final <- emo_ipv_final[complete.cases(emo_ipv_final), ]
 
 
 # STEP 4:
