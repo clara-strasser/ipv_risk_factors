@@ -6,6 +6,7 @@
 library(dplyr)
 library(tidyr)
 library(purrr)
+library(readxl)
 
 ## Set path -----
 path <- "/Users/clara/Desktop/master_thesis/data/"

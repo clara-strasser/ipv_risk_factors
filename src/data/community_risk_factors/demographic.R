@@ -6,6 +6,7 @@
 library(dplyr)
 library(tidyr)
 library(purrr)
+library(readxl)
 
 ## Set path -----
 path <- "/Users/clara/Desktop/master_thesis/data/"
@@ -29,14 +30,14 @@ conapo_1 <- conapo_1 %>%
     POB_TOT >= 100000 ~ "high_urban"
   )) %>%
   mutate(Type_com = factor(Type_com)) %>%
-  mutate(Type_comrural = ifelse(Type_com == "rural", "yes", "no"),
-         Type_comlow_urban = ifelse(Type_com == "low_urban", "yes", "no"),
-         Type_commedium_urban = ifelse(Type_com == "medium_urban", "yes", "no"),
-         Type_comhigh_urban = ifelse(Type_com == "high_urban", "yes", "no")) %>%
-  mutate(Type_comrural = factor(Type_comrural, levels = c("no", "yes")),
-         Type_comlow_urban = factor(Type_comlow_urban, levels = c("no", "yes")),
-         Type_commedium_urban = factor(Type_commedium_urban, levels = c("no", "yes")),
-         Type_comhigh_urban = factor(Type_comhigh_urban, levels = c("no", "yes")))  %>%
+  mutate(Type_comrural = ifelse(Type_com == "rural", "2", "1"),
+         Type_comlow_urban = ifelse(Type_com == "low_urban", "2", "1"),
+         Type_commedium_urban = ifelse(Type_com == "medium_urban", "2", "1"),
+         Type_comhigh_urban = ifelse(Type_com == "high_urban", "2", "1")) %>%
+  mutate(Type_comrural = factor(Type_comrural, levels = c(1, 2), labels = c("no", "yes")),
+         Type_comlow_urban = factor(Type_comlow_urban, levels = c(1, 2), labels = c("no", "yes")),
+         Type_commedium_urban = factor(Type_commedium_urban, levels = c(1, 2), labels = c("no", "yes")),
+         Type_comhigh_urban = factor(Type_comhigh_urban, levels = c(1, 2), labels = c("no", "yes")))  %>%
   select(-c("Type_com"))
 
 ## SOCIAL MARGINALIZATION --------
@@ -47,16 +48,16 @@ conapo_2 <- read_excel(paste0(path,"conapo_2020.xls"), sheet = 2,col_names = TRU
 conapo_2 <- conapo_2 %>%
   select(c("CVE_ENT", "CVE_MUN", "GM_2020")) %>%
   mutate(CVE_MUN = substr(CVE_MUN, 3, nchar(CVE_MUN))) %>%
-  mutate(Marg15high = ifelse(GM_2020 == "Alto", "yes", "no"),
-         Marg15low = ifelse(GM_2020 == "Bajo", "yes", "no"),
-         Marg15medium = ifelse(GM_2020 == "Medio", "yes", "no"),
-         Marg15very_high = ifelse(GM_2020 == "Muy alto", "yes", "no"),
-         Marg15very_low = ifelse(GM_2020 == "Muy bajo", "yes", "no")) %>%
-  mutate(Marg15high = factor(Marg15high, levels = c("no", "yes")),
-         Marg15low = factor(Marg15low, levels = c("no", "yes")),
-         Marg15medium = factor(Marg15medium, levels = c("no", "yes")),
-         Marg15very_high = factor(Marg15very_high, levels = c("no", "yes")),
-         Marg15very_low = factor(Marg15very_low, levels = c("no", "yes")))  %>%
+  mutate(Marg15high = ifelse(GM_2020 == "Alto", "2", "1"),
+         Marg15low = ifelse(GM_2020 == "Bajo", "2", "1"),
+         Marg15medium = ifelse(GM_2020 == "Medio", "2", "1"),
+         Marg15very_high = ifelse(GM_2020 == "Muy alto", "2", "1"),
+         Marg15very_low = ifelse(GM_2020 == "Muy bajo", "2", "1")) %>%
+  mutate(Marg15high = factor(Marg15high, levels = c(1, 2), labels = c("no", "yes")),
+         Marg15low = factor(Marg15low, levels = c(1, 2), labels = c("no", "yes")),
+         Marg15medium = factor(Marg15medium, levels = c(1, 2), labels = c("no", "yes")),
+         Marg15very_high = factor(Marg15very_high, levels = c(1, 2), labels = c("no", "yes")),
+         Marg15very_low = factor(Marg15very_low, levels = c(1, 2), labels = c("no", "yes")))  %>%
   select(-c("GM_2020"))
 
 

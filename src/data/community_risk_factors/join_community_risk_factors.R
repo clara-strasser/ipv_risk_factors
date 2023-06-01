@@ -25,6 +25,6 @@ community_risk_factors <- left_join(comm_part2, community_public_part2, by = c("
 
 
 ## Save data -----
-path_rf <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/"
+path_rf <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/risk_factors/"
 save(community_risk_factors, file = paste0(path_rf,"community_risk_factors.RData"))
 
