@@ -65,9 +65,9 @@ head(vio_emo_df[, c(vio_emo)], n = 35)
 
 # Create variable "vio_emo_año"
 vio_emo_df <- vio_emo_df %>%
-  mutate(vio_emo_vida = ifelse(rowSums(select(., any_of(vio_emo)) <= "3", na.rm = TRUE) > 0, "1", 
-                              ifelse(rowSums(select(., any_of(vio_emo)) == "4", na.rm = TRUE) > 0, "2", NA_character_))) %>%
-  mutate(vio_emo_vida = factor(vio_emo_vida, levels = c("2", "1"), labels = c("no", "yes")))
+  mutate(vio_emo_vida = ifelse(rowSums(select(., any_of(vio_emo)) <= "3", na.rm = TRUE) > 0, "2", 
+                              ifelse(rowSums(select(., any_of(vio_emo)) == "4", na.rm = TRUE) > 0, "1", NA_character_))) %>%
+  mutate(vio_emo_vida = factor(vio_emo_vida, levels = c(1, 2), labels = c("no", "yes")))
 
 
 # Summary stat "vio_emo_año":

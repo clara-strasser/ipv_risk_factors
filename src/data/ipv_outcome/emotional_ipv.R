@@ -66,8 +66,8 @@ head(vio_emo_df[, c(vio_emo)], n = 35)
 # Create variable "vio_emo_año"
 # Remark: NAs are converted to 1 ("no)
 vio_emo_df <- vio_emo_df %>%
-  mutate(vio_emo_año = ifelse(rowSums(select(., any_of(vio_emo)) <= "3", na.rm = TRUE) > 0, "1", "2")) %>%
-  mutate(vio_emo_año = factor(vio_emo_año, levels = c("2", "1"), labels = c("no", "yes")))
+  mutate(vio_emo_año = ifelse(rowSums(select(., any_of(vio_emo)) <= "3", na.rm = TRUE) > 0, "2", "1")) %>%
+  mutate(vio_emo_año = factor(vio_emo_año, levels = c(1, 2), labels = c("no", "yes")))
 
 # Summary stat "vio_emo_año":
 head(vio_emo_df[, c(vio_emo, "vio_emo_año")], n = 65)
@@ -83,7 +83,7 @@ vio_emo_df <- vio_emo_df %>%
 # Finalize ------
 
 ## Set path -----
-path_outcome <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/"
+path_outcome <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/ipv/"
 
 
 ## Save data -----
