@@ -17,11 +17,11 @@ load(paste0(path, "emotional_ipv.RData"))
 ## Join -----
 
 # Join on individual level:
-endireh_2021 <- risk_factors %>% 
+endireh <- risk_factors %>% 
   left_join(emotional_ipv, by = c("ID_PER", "ID_VIV", "CVE_ENT", "CVE_MUN", "T_INSTRUM"))
 
 ## Save data -----
-save(endireh_2021, file = paste0(path,"endireh_2021.RData"))
+save(endireh, file = paste0(path,"endireh.RData"))
 
 
 

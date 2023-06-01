@@ -61,12 +61,11 @@ table(TB_SEC_IVaVD$eda_sex, useNA = "ifany") # 11682 NAs
 # Aim: create variable "con_sex"
 table(TB_SEC_IVaVD$P13_7, useNA = "ifany") # 8644 NAs
 TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
-  mutate(con_sex = factor(ifelse(P13_7 == 2, "no", ifelse(P13_7 == 1, "yes", NA)), 
-                          levels = c("no", "yes")))
+  mutate(con_sex = factor(ifelse(P13_7 == 2, "1", ifelse(P13_7 == 1, "2", NA)), 
+                          levels =c(1, 2), labels = c("no", "yes")))
 
 # Summary stat:
 table(TB_SEC_IVaVD$con_sex, useNA = "ifany") # 8665 NAs
-#  no   yes    NA 
 # 3787 97675  8665 
 
 

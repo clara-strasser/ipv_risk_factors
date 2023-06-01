@@ -15,7 +15,7 @@ load(paste0(path,"TB_SEC_IVaVD.RData"))
 
 # Risk Factors -----
 
-## CCT Receipent Women -----
+## CCT Recipient Women -----
 # Variable name: P4_8_6
 # Outcome:        1 - yes
 #                 2 - no
@@ -28,7 +28,42 @@ TB_SEC_IVaVD$cct_rec <- factor(ifelse(TB_SEC_IVaVD$P4_8_6 == "1", "1", "2"), lev
 table(TB_SEC_IVaVD$cct_rec, useNA = "ifany") # 0 NAs
 head(TB_SEC_IVaVD[, c("P4_8_6", "cct_rec")], n = 35)
 
-## Employment in the Last 12 Month Women -----
+# Employment Woman in Lifetime --------
+# Variable name: P8_1
+# Outcome:      1 - yes
+#               2 - no
+# Level: no (1), yes (2)
+# Aim: create variable "empleo_vida"
+table(TB_SEC_IVaVD$P8_1, useNA = "ifany") # 0 NAs --> 21367 never worked!
+TB_SEC_IVaVD$empleo_vida <- factor(ifelse(TB_SEC_IVaVD$P8_1 == "1", "1", "2"), levels = c("2", "1"), labels = c("no", "yes"))
+
+# Summary Stat:
+table(TB_SEC_IVaVD$empleo_vida, useNA = "ifany") # 0 NAs
+#  no   yes 
+# 21367 88760 
+head(TB_SEC_IVaVD[, c("P8_1", "empleo_vida")], n = 35)
+
+
+# Employment Woman Last 5 Years --------
+# Variable name: P8_2
+# Outcome:      1 - yes
+#               2 - no
+# Level: no (1), yes (2)
+# Aim: create variable "empleo_5_años"
+table(TB_SEC_IVaVD$P8_2, useNA = "ifany") # 21367 NAs
+TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
+  mutate(empleo_5_años = ifelse(TB_SEC_IVaVD$P8_2 == "1", "1", "2")) %>%
+  mutate(empleo_5_años = ifelse(P8_1 == 2, "2", empleo_5_años))
+TB_SEC_IVaVD$empleo_5_años <- factor(TB_SEC_IVaVD$empleo_5_años, levels = c("2", "1"), labels = c("no", "yes"))
+
+# Summary Stat:
+table(TB_SEC_IVaVD$empleo_5_años, useNA = "ifany") # 0 NAs
+#  no   yes 
+# 43041 67086 
+head(TB_SEC_IVaVD[, c("P8_1", "P8_2", "empleo_5_años")], n = 35)
+
+
+## Unemployment in the Last 12 Month Women -----
 # Variable name: P8_4
 # Outcome:     1 - yes
 #              2 - no
@@ -36,13 +71,19 @@ head(TB_SEC_IVaVD[, c("P4_8_6", "cct_rec")], n = 35)
 # Level: no (1), yes (2)
 # Aim: create variable "desempleo"
 table(TB_SEC_IVaVD$P8_4, useNA = "ifany") # 43041 NAs
-TB_SEC_IVaVD$desempleo <- factor(ifelse(TB_SEC_IVaVD$P8_4 == "2", "1", "2"), levels = c("2", "1"), labels = c("no", "yes"))
+table(TB_SEC_IVaVD$P8_2, useNA = "ifany") # 21367 NAs
+table(TB_SEC_IVaVD$empleo_vida, useNA = "ifany") #0 NAs
+TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
+  mutate(desempleo = ifelse(TB_SEC_IVaVD$P8_4 == "2", "1", "2")) %>%
+  mutate(desempleo = ifelse(P8_2 == 2, "1", desempleo)) %>%
+  mutate(desempleo = ifelse(P8_1 == 2, "1", desempleo))
+TB_SEC_IVaVD$desempleo <- factor(TB_SEC_IVaVD$desempleo, levels = c("2", "1"), labels = c("no", "yes"))
 
 # Summary Stat:
-table(TB_SEC_IVaVD$desempleo, useNA = "ifany") # 43041 NAs
+table(TB_SEC_IVaVD$desempleo, useNA = "ifany") # 0 NAs
 #   no   yes     NA 
 #  55328  11758 43041 
-head(TB_SEC_IVaVD[, c("P8_4", "desempleo")], n = 35)
+head(TB_SEC_IVaVD[, c("P8_1", "P8_2", "P8_4", "desempleo")], n = 35)
 
 ## Employment Type Last Job Women -----
 # Variable name: P8_5
@@ -57,6 +98,7 @@ head(TB_SEC_IVaVD[, c("P8_4", "desempleo")], n = 35)
 # Level: category
 # Aim: create variable "tipo_empl" 
 table(TB_SEC_IVaVD$P8_5, useNA = "ifany") # 54799 NAs
+table(TB_SEC_IVaVD$P8_6_CVE, useNA = "ifany") # 72331 NAs (too many missings!)
 
 TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
   mutate(tipo_empl = case_when(
@@ -75,6 +117,9 @@ table(TB_SEC_IVaVD$tipo_empl, useNA = "ifany") # 54799 NAs
 # Add new value
 TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
   mutate(tipo_empl = ifelse(desempleo == "yes" & is.na(tipo_empl), "desempleo", tipo_empl))
+
+# Summary Stat:
+table(TB_SEC_IVaVD$tipo_empl, useNA = "ifany") # 0 NAs
 
 ## Living Abroad Childhood Women -----
 # Variable name: P12_2
@@ -148,7 +193,7 @@ head(TB_SEC_IVaVD[, c("P13_16_10", "P13_16_11", "P13_16_13", "P13_16_14", "sep_e
 ## Subset data ------
 additional_risk_factors <- TB_SEC_IVaVD %>%
   select(c("ID_VIV", "ID_PER", "CVE_ENT", "CVE_MUN", "T_INSTRUM",
-           "cct_rec", "tipo_empl", "desempleo", "extr_inf", "pareja_prev",
+           "cct_rec","empleo_vida", "empleo_5_años", "tipo_empl", "desempleo", "extr_inf", "pareja_prev",
            "sep_ex"))
 
 ## Save data -----

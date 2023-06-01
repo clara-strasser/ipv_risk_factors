@@ -28,6 +28,7 @@ load(paste0(path, "TB_SEC_IVaVD.RData"))
 # Remarks: set to NA if >999997
 # Set to 0 if woman does not work (the reason why NA decreases from 61147 to 3995)
 table(TB_SEC_IVaVD$P4_2, useNA = "ifany") # 61147 NAs
+table(TB_SEC_IVaVD$P4_1, useNA = "ifany")
 TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
   mutate(ing_muj = as.numeric(as.character(P4_2)),
          ing_muj = ifelse(ing_muj > 999997, NA , ing_muj),
