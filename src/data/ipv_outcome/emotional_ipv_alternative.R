@@ -84,7 +84,7 @@ vio_emo_df <- vio_emo_df %>%
 # Finalize ------
 
 ## Set path -----
-path_outcome <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/"
+path_outcome <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/ipv/"
 
 
 ## Save data -----
