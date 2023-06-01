@@ -20,6 +20,6 @@ societal_risk_factors <- left_join(societal_public_security, societal_government
 
 
 ## Save data -----
-path_rf <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/"
+path_rf <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/risk_factors/"
 save(societal_risk_factors, file = paste0(path_rf,"societal_risk_factors.RData"))
 
