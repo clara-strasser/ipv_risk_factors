@@ -25,7 +25,7 @@ load(paste0(path,"TB_SEC_IVaVD.RData"))
 table(TB_SEC_IVaVD$P13_2, useNA = "ifany") # 22169 NAs
 TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
   mutate(eda_hij = as.numeric(as.character(P13_2)),
-         eda_hij = ifelse(eda_hij >= 98, NA_character_, eda_hij))
+         eda_hij = ifelse(eda_hij >= 98, NA, eda_hij))
 
 # Summary stat:
 table(TB_SEC_IVaVD$eda_hij, useNA = "ifany") # 22965 NAs
@@ -45,7 +45,7 @@ head(TB_SEC_IVaVD[, c("P13_2", "eda_hij")], n = 60)
 table(TB_SEC_IVaVD$P13_6, useNA = "ifany") # 4849 NAs
 TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
   mutate(eda_sex = as.numeric(as.character(P13_6)),
-         eda_sex = ifelse(eda_sex >= 98 | eda_sex == 00, NA_character_, eda_sex))
+         eda_sex = ifelse(eda_sex >= 98 | eda_sex == 00, NA, eda_sex))
 
 # Summary stat:
 table(TB_SEC_IVaVD$eda_sex, useNA = "ifany") # 11682 NAs
@@ -82,7 +82,7 @@ head(TB_SEC_IVaVD[, c("P13_7", "con_sex")], n = 80)
 table(TB_SEC_IVaVD$P13_9, useNA = "ifany") # 19436 NAs
 TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
   mutate(eda_mat = as.numeric(as.character(P13_9)),
-         eda_mat = ifelse(eda_mat >= 98, NA_character_, eda_mat))
+         eda_mat = ifelse(eda_mat >= 98, NA, eda_mat))
 
 # Summary stat:
 table(TB_SEC_IVaVD$eda_mat, useNA = "ifany") # 20812 NAs

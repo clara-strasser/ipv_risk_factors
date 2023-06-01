@@ -394,7 +394,7 @@ print(data.frame(Variable = names(emo_ipv_final),
 emo_ipv_final <- emo_ipv_final[complete.cases(emo_ipv_final), ]
 
 # Save data -----
-# Final data: 34751
+# Final data: 34.751
 save(emo_ipv_final, file = paste0(path,"emo_ipv_final.RData"))
 
 
