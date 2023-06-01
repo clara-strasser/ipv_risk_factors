@@ -22,7 +22,7 @@ load(paste0(path,"TB_SEC_IVaVD.RData"))
 # Level: no (1), yes (2)
 # Aim: create variable "cct_rec" (CCT Receipent)
 table(TB_SEC_IVaVD$P4_8_6, useNA = "ifany") # 0 NAs
-TB_SEC_IVaVD$cct_rec <- factor(ifelse(TB_SEC_IVaVD$P4_8_6 == "1", "1", "2"), levels = c("2", "1"), labels = c("no", "yes"))
+TB_SEC_IVaVD$cct_rec <- factor(ifelse(TB_SEC_IVaVD$P4_8_6 == "1", "2", "1"), levels = c(1, 2), labels = c("no", "yes"))
 
 # Summary Stat:
 table(TB_SEC_IVaVD$cct_rec, useNA = "ifany") # 0 NAs
@@ -35,7 +35,7 @@ head(TB_SEC_IVaVD[, c("P4_8_6", "cct_rec")], n = 35)
 # Level: no (1), yes (2)
 # Aim: create variable "empleo_vida"
 table(TB_SEC_IVaVD$P8_1, useNA = "ifany") # 0 NAs --> 21367 never worked!
-TB_SEC_IVaVD$empleo_vida <- factor(ifelse(TB_SEC_IVaVD$P8_1 == "1", "1", "2"), levels = c("2", "1"), labels = c("no", "yes"))
+TB_SEC_IVaVD$empleo_vida <- factor(ifelse(TB_SEC_IVaVD$P8_1 == "1", "2", "1"), levels = c(1, 2), labels = c("no", "yes"))
 
 # Summary Stat:
 table(TB_SEC_IVaVD$empleo_vida, useNA = "ifany") # 0 NAs
@@ -52,9 +52,9 @@ head(TB_SEC_IVaVD[, c("P8_1", "empleo_vida")], n = 35)
 # Aim: create variable "empleo_5_años"
 table(TB_SEC_IVaVD$P8_2, useNA = "ifany") # 21367 NAs
 TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
-  mutate(empleo_5_años = ifelse(TB_SEC_IVaVD$P8_2 == "1", "1", "2")) %>%
-  mutate(empleo_5_años = ifelse(P8_1 == 2, "2", empleo_5_años))
-TB_SEC_IVaVD$empleo_5_años <- factor(TB_SEC_IVaVD$empleo_5_años, levels = c("2", "1"), labels = c("no", "yes"))
+  mutate(empleo_5_años = ifelse(TB_SEC_IVaVD$P8_2 == "1", "2", "1")) %>%
+  mutate(empleo_5_años = ifelse(P8_1 == 2, "1", empleo_5_años))
+TB_SEC_IVaVD$empleo_5_años <- factor(TB_SEC_IVaVD$empleo_5_años, levels = c(1, 2), labels = c("no", "yes"))
 
 # Summary Stat:
 table(TB_SEC_IVaVD$empleo_5_años, useNA = "ifany") # 0 NAs
@@ -74,15 +74,15 @@ table(TB_SEC_IVaVD$P8_4, useNA = "ifany") # 43041 NAs
 table(TB_SEC_IVaVD$P8_2, useNA = "ifany") # 21367 NAs
 table(TB_SEC_IVaVD$empleo_vida, useNA = "ifany") #0 NAs
 TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
-  mutate(desempleo = ifelse(TB_SEC_IVaVD$P8_4 == "2", "1", "2")) %>%
-  mutate(desempleo = ifelse(P8_2 == 2, "1", desempleo)) %>%
-  mutate(desempleo = ifelse(P8_1 == 2, "1", desempleo))
-TB_SEC_IVaVD$desempleo <- factor(TB_SEC_IVaVD$desempleo, levels = c("2", "1"), labels = c("no", "yes"))
+  mutate(desempleo = ifelse(TB_SEC_IVaVD$P8_4 == "2", "2", "1")) %>%
+  mutate(desempleo = ifelse(P8_2 == 2, "2", desempleo)) %>%
+  mutate(desempleo = ifelse(P8_1 == 2, "2", desempleo))
+TB_SEC_IVaVD$desempleo <- factor(TB_SEC_IVaVD$desempleo, levels = c(1, 2), labels = c("no", "yes"))
 
 # Summary Stat:
 table(TB_SEC_IVaVD$desempleo, useNA = "ifany") # 0 NAs
-#   no   yes     NA 
-#  55328  11758 43041 
+#   no   yes     
+#  55328  11758  
 head(TB_SEC_IVaVD[, c("P8_1", "P8_2", "P8_4", "desempleo")], n = 35)
 
 ## Employment Type Last Job Women -----
@@ -130,7 +130,7 @@ table(TB_SEC_IVaVD$tipo_empl, useNA = "ifany") # 0 NAs
 # Level: no (1), yes (2)
 # Aim: create variable "extr_inf"
 table(TB_SEC_IVaVD$P12_2, useNA = "ifany") # 0 NAs
-TB_SEC_IVaVD$extr_inf <- factor(ifelse(TB_SEC_IVaVD$P12_2 == "3" | TB_SEC_IVaVD$P12_2 == "4", "1", "2"), levels = c("2", "1"), labels = c("no", "yes"))
+TB_SEC_IVaVD$extr_inf <- factor(ifelse(TB_SEC_IVaVD$P12_2 == "3" | TB_SEC_IVaVD$P12_2 == "4", "2", "1"), levels = c(1, 2), labels = c("no", "yes"))
 
 # Summary Stat:
 table(TB_SEC_IVaVD$extr_inf, useNA = "ifany") # 0 NAs
@@ -146,8 +146,9 @@ head(TB_SEC_IVaVD[, c("P12_2", "extr_inf")], n = 35)
 # Level: no (1), yes (2)
 # Aim: create variable "pareja_prev"
 table(TB_SEC_IVaVD$P13_13, useNA = "ifany") # 19436 NAs
-TB_SEC_IVaVD$pareja_prev <- ifelse(TB_SEC_IVaVD$P13_13 %in% c("2", "3", "4", "5", "6", "7", "8", "9"), "yes",
-                         ifelse(TB_SEC_IVaVD$P13_13 == "1", "no",NA))
+TB_SEC_IVaVD$pareja_prev <- ifelse(TB_SEC_IVaVD$P13_13 %in% c("2", "3", "4", "5", "6", "7", "8", "9"), "2",
+                         ifelse(TB_SEC_IVaVD$P13_13 == "1", "1", NA))
+TB_SEC_IVaVD$pareja_prev <- factor(TB_SEC_IVaVD$pareja_prev, levels = c(1, 2), labels = c("no", "yes"))
 
 # Summary Stat:
 table(TB_SEC_IVaVD$pareja_prev, useNA = "ifany") # 19436 NAs
@@ -180,9 +181,9 @@ sep_razon <- c("P13_16_10", "P13_16_11", "P13_16_13", "P13_16_14")
 
 # Create columns
 TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
-  mutate(sep_ex = ifelse(rowSums(select(., any_of(sep_razon)) == "1", na.rm = TRUE) > 0, "1", 
-                             ifelse(rowSums(select(., any_of(sep_razon)) == "0", na.rm = TRUE) > 0, "2", NA_character_))) %>%
-  mutate(sep_ex = factor(sep_ex, levels = c("2", "1"), labels = c("no", "yes")))
+  mutate(sep_ex = ifelse(rowSums(select(., any_of(sep_razon)) == "1", na.rm = TRUE) > 0, "2", 
+                             ifelse(rowSums(select(., any_of(sep_razon)) == "0", na.rm = TRUE) > 0, "1", NA_character_))) %>%
+  mutate(sep_ex = factor(sep_ex, levels = c(1, 2), labels = c("no", "yes")))
 
 # Summary Stat:
 table(TB_SEC_IVaVD$sep_ex, useNA = "ifany") # 85224 NAs
@@ -198,7 +199,7 @@ additional_risk_factors <- TB_SEC_IVaVD %>%
 
 ## Save data -----
 
-path_rf <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/"
+path_rf <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/risk_factors/"
 save(additional_risk_factors, file = paste0(path_rf,"additional_risk_factors.RData"))
 
 
