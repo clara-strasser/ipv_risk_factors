@@ -28,6 +28,7 @@ TSDem <- TSDem %>%
 
 # Summary Stat:
 table(TSDem$EDAD, useNA = "ifany") # 956 NAs
+head(TSDem[, c("EDAD")], n = 60)
 
 
 ## AGE WOMAN OF ONSET OF CURRENT MARRIAGE/ COHABITING ---------
@@ -44,6 +45,7 @@ TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
 
 # Summary stat:
 table(TB_SEC_IVaVD$eda_mat, useNA = "ifany") # 20812 NAs
+head(TB_SEC_IVaVD[, c("P13_9", "eda_mat")], n = 60)
 
 
 ## AGE PARTNER OF ONSET OF CURRENT MARRIAGE ---------
@@ -60,6 +62,7 @@ TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
 
 # Summary stat:
 table(TB_SEC_IVaVD$eda_par, useNA = "ifany") # 22484 NAs
+head(TB_SEC_IVaVD[, c("P13_10", "eda_par")], n = 60)
 
 
 ## AGE OF PARTNER --------
@@ -68,6 +71,7 @@ table(TB_SEC_IVaVD$eda_par, useNA = "ifany") # 22484 NAs
 TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
   left_join(TSDem %>% select(c("ID_VIV", "ID_PER","EDAD")), by = c("ID_VIV", "ID_PER"))
 TB_SEC_IVaVD$eda_par2 <- TB_SEC_IVaVD$eda_par + (TB_SEC_IVaVD$EDAD - TB_SEC_IVaVD$eda_mat)
+head(TB_SEC_IVaVD[, c("EDAD", "eda_mat", "eda_par", "eda_par2")], n = 60)
 
 
 ## EDUCATION PARTNER -----
@@ -104,10 +108,10 @@ table(TB_SEC_IVaVD$edu_par) # 73786 NAs
 
 # Create variables
 TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
-  mutate(edu_parlow = factor(ifelse(edu_par == "low", "yes", ifelse(edu_par == "NA", NA_character_, "no")), levels = c("no", "yes")),
-         edu_parmedium = factor(ifelse(edu_par == "medium", "yes", ifelse(edu_par == "NA", NA_character_, "no")), levels = c("no", "yes")),
-         edu_parhigh = factor(ifelse(edu_par == "high", "yes", ifelse(edu_par == "NA", NA_character_, "no")), levels = c("no", "yes")),
-         edu_parNA = factor(ifelse(edu_par == "NA", "yes", "no"), levels = c("no", "yes")))
+  mutate(edu_parlow = factor(ifelse(edu_par == "low", "2", ifelse(edu_par == "NA", NA_character_, "1")), levels = c(1, 2), labels = c("no", "yes")),
+         edu_parmedium = factor(ifelse(edu_par == "medium", "2", ifelse(edu_par == "NA", NA_character_, "1")), levels = c(1, 2), labels = c("no", "yes")),
+         edu_parhigh = factor(ifelse(edu_par == "high", "2", ifelse(edu_par == "NA", NA_character_, "1")), levels = c(1, 2), labels = c("no", "yes")),
+         edu_parNA = factor(ifelse(edu_par == "NA", "2", "1"), levels = c(1, 2), labels = c("no", "yes")))
 
 # Summary stat:
 head(TB_SEC_IVaVD[, c("P4BC_2", "edu_par", "edu_parlow", "edu_parmedium", "edu_parhigh")], n = 60)
@@ -123,15 +127,16 @@ table(TB_SEC_IVaVD$edu_parhigh)
 #           8 - no sabe       - NA
 #           b - blank         - NA
 # Create variable "ind_par"
-# Levels: 1 (yes), 2 (no)
+# Levels: no (1), yes (2)
 table(TB_SEC_IVaVD$P4BC_3, useNA = "ifany") # 73389 NAs
-TB_SEC_IVaVD$ind_par <- ifelse(TB_SEC_IVaVD$P4BC_3 %in% c("1", "2"), "yes",
-                               ifelse(TB_SEC_IVaVD$P4BC_3 == "3", "no",
+TB_SEC_IVaVD$ind_par <- ifelse(TB_SEC_IVaVD$P4BC_3 %in% c("1", "2"), "2",
+                               ifelse(TB_SEC_IVaVD$P4BC_3 == "3", "1",
                                       ifelse(TB_SEC_IVaVD$P4BC_3 == "8", NA, NA)))
-TB_SEC_IVaVD$ind_par <- factor(TB_SEC_IVaVD$ind_par, levels = c("no", "yes", NA))
+TB_SEC_IVaVD$ind_par <- factor(TB_SEC_IVaVD$ind_par, levels = c(1, 2), labels = c("no", "yes"))
 
 # Summary Stat:
 table(TB_SEC_IVaVD$ind_par, useNA = "ifany") # 76549 NAs
+head(TB_SEC_IVaVD[, c("P4BC_3", "ind_par")], n = 60)
 
 
 

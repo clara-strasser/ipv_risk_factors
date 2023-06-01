@@ -25,12 +25,13 @@ load(paste0(path,"TB_SEC_IVaVD.RData"))
 # Aim: create variable "par_sex"
 table(TB_SEC_IVaVD$P13_5, useNA = "ifany") # 4849 NAs
 TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
-  mutate(par_sex = factor(ifelse(P13_5 == 1, "male", ifelse(P13_5 == 2, "female", NA)), 
-                          levels = c("male", "female")))
+  mutate(par_sex = factor(ifelse(P13_5 == 1, "1", ifelse(P13_5 == 2, "2", NA)), 
+                          levels = c(1, 2), labels = c("male", "female")))
 table(TB_SEC_IVaVD$par_sex, useNA = "ifany") # 4911 NAs
 # Summary stat:
 #   male    female    NA 
 #  104656    560     4911 
+head(TB_SEC_IVaVD[, c("P13_5", "par_sex")], n = 60)
 
 
 ## VIOLENCE EXPERIENCE CHILDHOOD PARTNER -------
@@ -99,18 +100,18 @@ vio_eco <- paste0("P13_17_", 6)
 
 # Create columns
 TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
-  mutate(vio_fis_ex = ifelse(rowSums(select(., any_of(vio_fis)) == "1", na.rm = TRUE) > 0, "1", 
-                             ifelse(rowSums(select(., any_of(vio_fis)) == "2", na.rm = TRUE) > 0, "2", NA_character_)),
-         vio_emo_ex = ifelse(rowSums(select(., any_of(vio_emo)) == "1", na.rm = TRUE) > 0, "1", 
-                             ifelse(rowSums(select(., any_of(vio_emo)) == "2", na.rm = TRUE) > 0, "2", NA_character_)),
-         vio_sex_ex = ifelse(rowSums(select(., any_of(vio_sex)) == "1", na.rm = TRUE) > 0, "1", 
-                             ifelse(rowSums(select(., any_of(vio_sex)) == "2", na.rm = TRUE) > 0, "2", NA_character_)),
-         vio_eco_ex = ifelse(rowSums(select(., any_of(vio_eco)) == "1", na.rm = TRUE) > 0, "1", 
-                             ifelse(rowSums(select(., any_of(vio_eco)) == "2", na.rm = TRUE) > 0, "2", NA_character_))) %>%
-  mutate(vio_fis_ex = factor(vio_fis_ex, levels = c("2", "1"), labels = c("no", "yes")),
-         vio_emo_ex = factor(vio_emo_ex, levels = c("2", "1"), labels = c("no", "yes")),
-         vio_sex_ex = factor(vio_sex_ex, levels = c("2", "1"), labels = c("no", "yes")),
-         vio_eco_ex = factor(vio_eco_ex, levels = c("2", "1"), labels = c("no", "yes")))
+  mutate(vio_fis_ex = ifelse(rowSums(select(., any_of(vio_fis)) == "1", na.rm = TRUE) > 0, "2", 
+                             ifelse(rowSums(select(., any_of(vio_fis)) == "2", na.rm = TRUE) > 0, "1", NA_character_)),
+         vio_emo_ex = ifelse(rowSums(select(., any_of(vio_emo)) == "1", na.rm = TRUE) > 0, "2", 
+                             ifelse(rowSums(select(., any_of(vio_emo)) == "2", na.rm = TRUE) > 0, "1", NA_character_)),
+         vio_sex_ex = ifelse(rowSums(select(., any_of(vio_sex)) == "1", na.rm = TRUE) > 0, "2", 
+                             ifelse(rowSums(select(., any_of(vio_sex)) == "2", na.rm = TRUE) > 0, "1", NA_character_)),
+         vio_eco_ex = ifelse(rowSums(select(., any_of(vio_eco)) == "1", na.rm = TRUE) > 0, "2", 
+                             ifelse(rowSums(select(., any_of(vio_eco)) == "2", na.rm = TRUE) > 0, "1", NA_character_))) %>%
+  mutate(vio_fis_ex = factor(vio_fis_ex, levels = c(1, 2), labels = c("no", "yes")),
+         vio_emo_ex = factor(vio_emo_ex, levels = c(1, 2), labels = c("no", "yes")),
+         vio_sex_ex = factor(vio_sex_ex, levels = c(1, 2), labels = c("no", "yes")),
+         vio_eco_ex = factor(vio_eco_ex, levels = c(1, 2), labels = c("no", "yes")))
 
 # Summary stat:
 table(TB_SEC_IVaVD$vio_fis_ex, useNA = "ifany") # 85137 NAs
@@ -182,14 +183,14 @@ head(TB_SEC_IVaVD[, c("P15_1AB_12", "P15_1AB_13" ,"P15_1AB_14", "P15_1AB_15", "P
 # Remarks: in case "high" and "low" equal, it is set to "medium"
 
 TB_SEC_IVaVD <- TB_SEC_IVaVD %>% 
-  mutate(lib_sex_gradhigh = ifelse(lib_sex_grad == "high", "yes", "no"),
-         lib_sex_gradmedium = ifelse(lib_sex_grad == "medium", "yes", "no"),
-         lib_sex_gradlow = ifelse(lib_sex_grad == "low", "yes", "no"),
-         lib_sex_gradNA = ifelse(is.na(lib_sex_grad), "yes", "no")) %>%
-  mutate(lib_sex_gradhigh = factor(lib_sex_gradhigh, levels = c("no", "yes")),
-         lib_sex_gradmedium = factor(lib_sex_gradmedium, levels = c("no", "yes")),
-         lib_sex_gradlow = factor(lib_sex_gradlow, levels = c("no", "yes")),
-         lib_sex_gradNA = factor(lib_sex_gradNA, levels = c("no", "yes")))  
+  mutate(lib_sex_gradhigh = ifelse(lib_sex_grad == "high", "2", "1"),
+         lib_sex_gradmedium = ifelse(lib_sex_grad == "medium", "2", "1"),
+         lib_sex_gradlow = ifelse(lib_sex_grad == "low", "2", "1"),
+         lib_sex_gradNA = ifelse(is.na(lib_sex_grad), "2", "1")) %>%
+  mutate(lib_sex_gradhigh = factor(lib_sex_gradhigh, levels = c(1, 2), labels = c("no", "yes")),
+         lib_sex_gradmedium = factor(lib_sex_gradmedium, levels = c(1, 2), labels = c("no", "yes")),
+         lib_sex_gradlow = factor(lib_sex_gradlow, levels = c(1, 2), labels = c("no", "yes")),
+         lib_sex_gradNA = factor(lib_sex_gradNA, levels = c(1, 2), labels = c("no", "yes")))  
 
 # Summary stat:
 head(TB_SEC_IVaVD[, c("P15_1AB_12", "P15_1AB_13" ,"P15_1AB_14", "P15_1AB_15", "P15_1AB_16", "P15_1AB_17", "lib_sex_grad", "lib_sex_gradhigh", "lib_sex_gradmedium", "lib_sex_gradlow", "lib_sex_gradNA")], n = 35)
@@ -250,14 +251,14 @@ head(TB_SEC_IVaVD[, c("P15_1AB_1", "P15_1AB_3", "P15_1AB_4", "high_lib_eco", "me
 # Remarks: in case "high" and "low" equal, it is set to "medium"
 
 TB_SEC_IVaVD <- TB_SEC_IVaVD %>% 
-  mutate(lib_eco_gradhigh = ifelse(lib_eco_grad == "high", "yes", "no"),
-         lib_eco_gradmedium = ifelse(lib_eco_grad == "medium", "yes", "no"),
-         lib_eco_gradlow = ifelse(lib_eco_grad == "low", "yes", "no"),
-         lib_eco_gradNA = ifelse(is.na(lib_eco_grad), "yes", "no")) %>%
-  mutate(lib_eco_gradhigh = factor(lib_eco_gradhigh, levels = c("no", "yes")),
-         lib_eco_gradmedium = factor(lib_eco_gradmedium, levels = c("no", "yes")),
-         lib_eco_gradlow = factor(lib_eco_gradlow, levels = c("no", "yes")),
-         lib_eco_gradNA = factor(lib_eco_gradNA, levels = c("no", "yes")))  
+  mutate(lib_eco_gradhigh = ifelse(lib_eco_grad == "high", "2", "1"),
+         lib_eco_gradmedium = ifelse(lib_eco_grad == "medium", "2", "1"),
+         lib_eco_gradlow = ifelse(lib_eco_grad == "low", "2", "1"),
+         lib_eco_gradNA = ifelse(is.na(lib_eco_grad), "2", "1")) %>%
+  mutate(lib_eco_gradhigh = factor(lib_eco_gradhigh, levels = c(1, 2), labels = c("no", "yes")),
+         lib_eco_gradmedium = factor(lib_eco_gradmedium, levels = c(1, 2), labels = c("no", "yes")),
+         lib_eco_gradlow = factor(lib_eco_gradlow, levels = c(1, 2), labels = c("no", "yes")),
+         lib_eco_gradNA = factor(lib_eco_gradNA, levels = c(1, 2), labels = c("no", "yes")))  
 
 # Summary stat:
 head(TB_SEC_IVaVD[, c("P15_1AB_1", "P15_1AB_3", "P15_1AB_4", "lib_eco_grad", "lib_eco_gradhigh", "lib_eco_gradmedium", "lib_eco_gradlow","lib_eco_gradNA" )], n = 35)
@@ -322,14 +323,14 @@ head(TB_SEC_IVaVD[, c("P15_1AB_2", "P15_1AB_5", "P15_1AB_6", "P15_1AB_9", "high_
 # Remarks: in case "high" and "low" equal, it is set to "medium"
 
 TB_SEC_IVaVD <- TB_SEC_IVaVD %>% 
-  mutate(lib_soc_gradhigh = ifelse(lib_soc_grad == "high", "yes", "no"),
-         lib_soc_gradmedium = ifelse(lib_soc_grad == "medium", "yes", "no"),
-         lib_soc_gradlow = ifelse(lib_soc_grad == "low", "yes", "no"),
-         lib_soc_gradNA = ifelse(is.na(lib_soc_grad), "yes", "no")) %>%
-  mutate(lib_soc_gradhigh = factor(lib_soc_gradhigh, levels = c("no", "yes")),
-         lib_soc_gradmedium = factor(lib_soc_gradmedium, levels = c("no", "yes")),
-         lib_soc_gradlow = factor(lib_soc_gradlow, levels = c("no", "yes")),
-         lib_soc_gradNA = factor(lib_soc_gradNA, levels = c("no", "yes")))  
+  mutate(lib_soc_gradhigh = ifelse(lib_soc_grad == "high", "2", "1"),
+         lib_soc_gradmedium = ifelse(lib_soc_grad == "medium", "2", "1"),
+         lib_soc_gradlow = ifelse(lib_soc_grad == "low", "2", "1"),
+         lib_soc_gradNA = ifelse(is.na(lib_soc_grad), "2", "1")) %>%
+  mutate(lib_soc_gradhigh = factor(lib_soc_gradhigh, levels = c(1, 2), labels = c("no", "yes")),
+         lib_soc_gradmedium = factor(lib_soc_gradmedium, levels = c(1, 2), labels = c("no", "yes")),
+         lib_soc_gradlow = factor(lib_soc_gradlow, levels = c(1, 2), labels = c("no", "yes")),
+         lib_soc_gradNA = factor(lib_soc_gradNA, levels = c(1, 2), labels = c("no", "yes")))  
 
 # Summary stat:
 head(TB_SEC_IVaVD[, c("P15_1AB_2", "P15_1AB_5", "P15_1AB_6", "P15_1AB_9", "lib_soc_grad", "lib_soc_gradhigh", "lib_soc_gradmedium", "lib_soc_gradlow","lib_soc_gradNA" )], n = 35)

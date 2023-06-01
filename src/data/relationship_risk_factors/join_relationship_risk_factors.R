@@ -28,7 +28,7 @@ relationship_risk_factors <- left_join(rel_part4, relationship_womens_role, by =
 
 
 ## Save data -----
-path_rf <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/"
+path_rf <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/risk_factors/"
 save(relationship_risk_factors, file = paste0(path_rf,"relationship_risk_factors.RData"))
 
 

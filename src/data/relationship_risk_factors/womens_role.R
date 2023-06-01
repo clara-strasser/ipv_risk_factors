@@ -95,14 +95,14 @@ head(TB_SEC_IVaVD[, c("P17_1_1_1", "P17_1_1_2", "P17_1_1_3", "P17_1_2_1", "P17_1
 # Remarks: same threshold as authors
 
 TB_SEC_IVaVD <- TB_SEC_IVaVD %>% 
-  mutate(act_distfemales = ifelse(act_dist == "females", "yes", "no"),
-         act_distmales = ifelse(act_dist == "males", "yes", "no"),
-         act_distboth = ifelse(act_dist == "both", "yes", "no"),
-         act_distNA = ifelse(is.na(act_dist), "yes", "no")) %>%
-  mutate(act_distfemales = factor(act_distfemales, levels = c("no", "yes")),
-         act_distmales = factor(act_distmales, levels = c("no", "yes")),
-         act_distboth = factor(act_distboth, levels = c("no", "yes")),
-         act_distNA = factor(act_distNA, levels = c("no", "yes")))  
+  mutate(act_distfemales = ifelse(act_dist == "females", "2", "1"),
+         act_distmales = ifelse(act_dist == "males", "2", "1"),
+         act_distboth = ifelse(act_dist == "both", "2", "1"),
+         act_distNA = ifelse(is.na(act_dist), "2", "1")) %>%
+  mutate(act_distfemales = factor(act_distfemales, levels = c(1, 2), labels = c("no", "yes")),
+         act_distmales = factor(act_distmales, levels = c(1, 2), labels = c("no", "yes")),
+         act_distboth = factor(act_distboth, levels = c(1, 2), labels = c("no", "yes")),
+         act_distNA = factor(act_distNA, levels = c(1, 2), labels = c("no", "yes")))  
 
 head(TB_SEC_IVaVD[, c("females", "males", "both", "act_dist", "act_distfemales", "act_distmales", "act_distboth", "act_distNA")], n = 35)
 

@@ -67,12 +67,12 @@ head(TB_SEC_IVaVD[, c("P16_3_1_1", "P16_3_2_1", "P16_3_3_1", "P16_3_4_1", "P16_3
 # Remark: same thresholds as authors, same number of columns
 
 TB_SEC_IVaVD <- TB_SEC_IVaVD %>% 
-  mutate(redsoc_gradhigh = ifelse(redsoc_grad == "high", "yes", "no"),
-         redsoc_gradmedium = ifelse(redsoc_grad == "medium", "yes", "no"),
-         redsoc_gradlow = ifelse(redsoc_grad == "low", "yes", "no")) %>%
-  mutate(redsoc_gradhigh = factor(redsoc_gradhigh, levels = c("no", "yes")),
-         redsoc_gradmedium = factor(redsoc_gradmedium, levels = c("no", "yes")),
-         redsoc_gradlow = factor(redsoc_gradlow, levels = c("no", "yes")))  
+  mutate(redsoc_gradhigh = ifelse(redsoc_grad == "high", "2", "1"),
+         redsoc_gradmedium = ifelse(redsoc_grad == "medium", "2", "1"),
+         redsoc_gradlow = ifelse(redsoc_grad == "low", "2", "1")) %>%
+  mutate(redsoc_gradhigh = factor(redsoc_gradhigh, levels = c(1, 2), labels = c("no", "yes")),
+         redsoc_gradmedium = factor(redsoc_gradmedium, levels = c(1, 2), labels = c("no", "yes")),
+         redsoc_gradlow = factor(redsoc_gradlow, levels = c(1, 2), labels = c("no", "yes")))  
 
 # Summary stat:
 head(TB_SEC_IVaVD[, c("red_soc_yes", "red_soc_no", "redsoc_grad", "redsoc_gradhigh", "redsoc_gradmedium", "redsoc_gradlow")], n = 30)
@@ -119,12 +119,12 @@ head(TB_SEC_IVaVD[, c("P16_2_1", "P16_2_2", "P16_2_3", "P16_2_4", "P16_2_5", "P1
 # Remark: same thresholds as authors, same number of columns
 
 TB_SEC_IVaVD <- TB_SEC_IVaVD %>% 
-  mutate(rout_gradhigh = ifelse(rout_grad == "high", "yes", "no"),
-         rout_gradmedium = ifelse(rout_grad == "medium", "yes", "no"),
-         rout_gradlow = ifelse(rout_grad == "low", "yes", "no")) %>%
-  mutate(rout_gradhigh = factor(rout_gradhigh, levels = c("no", "yes")),
-         rout_gradmedium = factor(rout_gradmedium, levels = c("no", "yes")),
-         rout_gradlow = factor(rout_gradlow, levels = c("no", "yes")))  
+  mutate(rout_gradhigh = ifelse(rout_grad == "high", "2", "1"),
+         rout_gradmedium = ifelse(rout_grad == "medium", "2", "1"),
+         rout_gradlow = ifelse(rout_grad == "low", "2", "1")) %>%
+  mutate(rout_gradhigh = factor(rout_gradhigh, levels = c(1, 2), labels = c("no", "yes")),
+         rout_gradmedium = factor(rout_gradmedium, levels = c(1, 2), labels = c("no", "yes")),
+         rout_gradlow = factor(rout_gradlow, levels = c(1, 2), labels = c("no", "yes")))  
 
 # Summary stat:
 head(TB_SEC_IVaVD[, c("rout_yes", "rout_no", "rout_grad", "rout_gradhigh", "rout_gradmedium", "rout_gradlow")], n = 35)
