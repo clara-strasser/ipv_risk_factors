@@ -9,10 +9,12 @@ library(purrr)
 
 ## Set path -----
 path <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/"
+path_rf <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/risk_factors/"
+path_ipv <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/ipv/"
 
 ## Load data -------
-load(paste0(path, "risk_factors.RData"))
-load(paste0(path, "emotional_ipv.RData"))
+load(paste0(path_rf, "risk_factors.RData"))
+load(paste0(path_ipv, "emotional_ipv.RData"))
 
 ## Join -----
 

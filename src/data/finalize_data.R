@@ -9,11 +9,13 @@ library(purrr)
 
 ## Set path -----
 path <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/"
+path_rf <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/risk_factors/"
+path_ipv <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/ipv/"
 
 ## Load data -------
 load(paste0(path, "endireh.RData")) # main data set
-load(paste0(path, "additional_risk_factors.RData")) # additional risk factors
-load(paste0(path, "emotional_ipv_vida.RData")) # additional outcome variables
+load(paste0(path_rf, "additional_risk_factors.RData")) # additional risk factors
+load(paste0(path_ipv, "emotional_ipv_vida.RData")) # additional outcome variables
 
 ## Join additional risk factors ------
 endireh_2021 <- endireh %>%

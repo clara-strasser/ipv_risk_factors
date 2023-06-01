@@ -8,7 +8,7 @@ library(tidyr)
 library(purrr)
 
 ## Set path -----
-path <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/"
+path <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/risk_factors/"
 
 ## Load data -------
 load(paste0(path, "individual_risk_factors.RData"))
