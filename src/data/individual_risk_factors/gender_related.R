@@ -25,10 +25,11 @@ load(paste0(path,"TB_SEC_IVaVD.RData"))
 table(TB_SEC_IVaVD$P13_2, useNA = "ifany") # 22169 NAs
 TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
   mutate(eda_hij = as.numeric(as.character(P13_2)),
-         eda_hij = ifelse(eda_hij >= 98, NA, eda_hij))
+         eda_hij = ifelse(eda_hij >= 98, NA_character_, eda_hij))
 
 # Summary stat:
 table(TB_SEC_IVaVD$eda_hij, useNA = "ifany") # 22965 NAs
+head(TB_SEC_IVaVD[, c("P13_2", "eda_hij")], n = 60)
 
 
 ## AGE AT FIRST SEXUAL INTERCOURSE ---------
@@ -42,13 +43,13 @@ table(TB_SEC_IVaVD$eda_hij, useNA = "ifany") # 22965 NAs
 # Remarks: very young age (03 to 09) in the data set. Reason: experience of sexual
 # violence (P12_14_1 to P12_14_6 take values of 1) + did not consent to it (P13_7)
 table(TB_SEC_IVaVD$P13_6, useNA = "ifany") # 4849 NAs
-TB_SEC_IVaVD[TB_SEC_IVaVD$P13_6 == "03" & !is.na(TB_SEC_IVaVD$P13_6), ]
 TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
   mutate(eda_sex = as.numeric(as.character(P13_6)),
-         eda_sex = ifelse(eda_sex >= 98 | eda_sex == 00, NA, eda_sex))
+         eda_sex = ifelse(eda_sex >= 98 | eda_sex == 00, NA_character_, eda_sex))
 
 # Summary stat:
 table(TB_SEC_IVaVD$eda_sex, useNA = "ifany") # 11682 NAs
+head(TB_SEC_IVaVD[, c("P13_6", "eda_sex")], n = 60)
 
 
 ## CONSENT TO FIRST SEXUAL INTERCOURSE ----------
@@ -66,7 +67,9 @@ TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
 
 # Summary stat:
 table(TB_SEC_IVaVD$con_sex, useNA = "ifany") # 8665 NAs
-# 3787 97675  8665 
+head(TB_SEC_IVaVD[, c("P13_7", "con_sex")], n = 80)
+#  no   yes    NA 
+# 3787 97675  8665
 
 
 ## AGE OF ONSET OF CURRENT MARRIAGE/ COHABITING ---------
@@ -79,11 +82,11 @@ table(TB_SEC_IVaVD$con_sex, useNA = "ifany") # 8665 NAs
 table(TB_SEC_IVaVD$P13_9, useNA = "ifany") # 19436 NAs
 TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
   mutate(eda_mat = as.numeric(as.character(P13_9)),
-         eda_mat = ifelse(eda_mat >= 98, NA, eda_mat))
+         eda_mat = ifelse(eda_mat >= 98, NA_character_, eda_mat))
 
 # Summary stat:
 table(TB_SEC_IVaVD$eda_mat, useNA = "ifany") # 20812 NAs
-
+head(TB_SEC_IVaVD[, c("P13_9", "eda_mat")], n = 80)
 
 ## CONSENT TO MARRIAGE -------
 # Variable name: P13_11
@@ -99,13 +102,14 @@ table(TB_SEC_IVaVD$eda_mat, useNA = "ifany") # 20812 NAs
 # Aim: create variable "mot_mat" (consent to marriage)
 table(TB_SEC_IVaVD$P13_11, useNA = "ifany") # 19436 NAs
 TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
-  mutate(mot_mat = factor(ifelse(P13_11 == 1 | P13_11 == 3 | P13_11 == 4, "no", 
-                                 ifelse(P13_11 == 2 | P13_11 == 6, "yes", NA)), 
-                          levels = c("no", "yes")))
+  mutate(mot_mat = factor(ifelse(P13_11 == 1 | P13_11 == 3 | P13_11 == 4, "1", 
+                                 ifelse(P13_11 == 2 | P13_11 == 6, "2", NA_character_)), 
+                          levels = c(1, 2), labels = c("no", "yes")))
 # Summary stat: 
 table(TB_SEC_IVaVD$mot_mat, useNA = "ifany") # 22427 NAs
 #   no   yes   NA 
 #  2240 85460 22427
+head(TB_SEC_IVaVD[, c("P13_11", "mot_mat")], n = 100)
 
 
 ## NUMBER OF CHILDREN --------
@@ -122,6 +126,7 @@ TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
 
 # Summary stat:
 table(TB_SEC_IVaVD$num_hij, useNA = "ifany") # 4911 NAs
+head(TB_SEC_IVaVD[, c("P13_1", "num_hij")], n = 100)
 
 
 ## PRO-GENDER EQUALITY ATTITUDE WOMEN -----
@@ -208,7 +213,7 @@ head(TB_SEC_IVaVD[, c("feminist", "not_feminist", "feminist_grad", "feminist_gra
 # Aim: create variable "vio_inf"
 table(TB_SEC_IVaVD$P12_4, useNA = "ifany") # 0 NAs
 table(TB_SEC_IVaVD$P12_5, useNA = "ifany")# 0 NAs
-TB_SEC_IVaVD$vio_inf <- factor(ifelse(TB_SEC_IVaVD$P12_4 == "1" | TB_SEC_IVaVD$P12_5 == "1" | TB_SEC_IVaVD$P12_4 == "2" | TB_SEC_IVaVD$P12_5 == "2", "1", "2"), levels = c("2", "1"), labels = c("no", "yes"))
+TB_SEC_IVaVD$vio_inf <- factor(ifelse(TB_SEC_IVaVD$P12_4 == "1" | TB_SEC_IVaVD$P12_5 == "1" | TB_SEC_IVaVD$P12_4 == "2" | TB_SEC_IVaVD$P12_5 == "2", "2", "1"), levels = c("1", "2"), labels = c("no", "yes"))
 
 # Summary Stat:
 table(TB_SEC_IVaVD$vio_inf, useNA = "ifany") # 0 NAs
@@ -228,7 +233,7 @@ head(TB_SEC_IVaVD[, c("P12_4", "P12_5", "vio_inf")], n = 35)
 # Aim: create variable "vio_exp_inf"
 table(TB_SEC_IVaVD$P12_6, useNA = "ifany") # 0 NAs
 table(TB_SEC_IVaVD$P12_7, useNA = "ifany") # 0 NAs
-TB_SEC_IVaVD$vio_exp_inf <- factor(ifelse(TB_SEC_IVaVD$P12_6 == "1" | TB_SEC_IVaVD$P12_7 == "1" | TB_SEC_IVaVD$P12_7 == "2" | TB_SEC_IVaVD$P12_6 == "2", "1", "2"), levels = c("2", "1"), labels = c("no", "yes"))
+TB_SEC_IVaVD$vio_exp_inf <- factor(ifelse(TB_SEC_IVaVD$P12_6 == "1" | TB_SEC_IVaVD$P12_7 == "1" | TB_SEC_IVaVD$P12_7 == "2" | TB_SEC_IVaVD$P12_6 == "2", "2", "1"), levels = c("1", "2"), labels = c("no", "yes"))
 
 # Summary Stat:
 table(TB_SEC_IVaVD$vio_exp_inf, useNA = "ifany") # 0 NAs

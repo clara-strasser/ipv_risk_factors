@@ -35,7 +35,7 @@ TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
          ing_muj = ifelse(P4_1 == 2, 0, ing_muj))
 
 # Summary stat:
-table(TB_SEC_IVaVD$ing_muj, useNA = "ifany") # 3995 NAs
+table(TB_SEC_IVaVD$ing_muj, useNA = "ifany") # 3995 NAs, 61573 have income of 0
 head(TB_SEC_IVaVD[, c("P4_1", "P4_2", "ing_muj")], n = 60)
 
 # Remarks: take into account how often the income is earned
