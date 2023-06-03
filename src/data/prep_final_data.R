@@ -253,8 +253,9 @@ ggsave(paste0(path_save, "boxplot_age_partner.png"), plot = boxplot_age_partner)
 summary(emo_ipv_final$eda_par2 %in% boxplot.stats(emo_ipv_final$eda_par2)$out)
 emo_ipv_final[emo_ipv_final$eda_par2 %in% boxplot.stats(emo_ipv_final$eda_par2)$out, "eda_par2"] <- NA # 67 NA's introduced 
 
-## Boxplot - Average number of househod members in the dwelling
+## Average number of househod members in the dwelling
 summary(emo_ipv_final$hacin)
+table(emo_ipv_final$hacin)
 hist(emo_ipv_final$hacin, breaks = nrow(emo_ipv_final))
 
 # Create a boxplot with outliers marked
@@ -284,6 +285,40 @@ ggsave(paste0(path_save, "boxplot_hacin.png"), plot = boxplot_hacin)
 # Get outliers
 summary(emo_ipv_final$hacin %in% boxplot.stats(emo_ipv_final$hacin)$out)
 emo_ipv_final[emo_ipv_final$hacin %in% boxplot.stats(emo_ipv_final$hacin)$out, "hacin"] <- NA # 633 NA's introduced 
+
+## Number of children 
+summary(emo_ipv_final$num_hij)
+table(emo_ipv_final$num_hij)
+hist(emo_ipv_final$num_hij, breaks = nrow(emo_ipv_final))
+
+# Create a boxplot with outliers marked
+boxplot_num_hij <- ggplot(emo_ipv_final, aes(x = "", y = num_hij)) +
+  geom_boxplot(width = 0.5, fill = "#e9e9e9", color = "#002b58") +
+  stat_boxplot(geom='errorbar', width = 0.3) +
+  labs(x = "", y = "num_hij", title = "Number of Children") +
+  scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, 5)) +
+  theme_minimal() +
+  theme(panel.grid = element_blank(),
+        panel.border = element_blank(),
+        axis.line = element_line(color = "black"),
+        axis.title = element_text(size = 14),
+        axis.ticks.y = element_line(),
+        axis.ticks.x = element_line(),
+        plot.title = element_text(face = "bold", hjust = 0.5, size = 16),
+        legend.title = element_text(size = 12, face = "bold"),
+        legend.text = element_text(size = 13),
+        legend.key.size = unit(15, "points"),
+        legend.position = c(0.95, 0.95),
+        legend.justification = c(1, 1),
+        legend.box.just = "right")
+
+# Save png
+ggsave(paste0(path_save, "boxplot_num_hij.png"), plot = boxplot_num_hij)
+
+# Get outliers
+emo_ipv_final <- emo_ipv_final %>%
+  filter(num_hij <= 15)
+summary(emo_ipv_final$num_hij %in% boxplot.stats(emo_ipv_final$num_hij)$out) #  4609 outliers
 
 ## Income per Month Woman
 
@@ -381,7 +416,7 @@ income_distribution_partner <- ggplot(emo_ipv_final, aes(x = ingm_par)) +
 ggsave(paste0(path_save, "income_distribution_partner.png"), plot = income_distribution_partner)
 
 ## Finalisation -----
-# Data set: 39.914
+# Data set: 39.904
 
 # Keep complete cases ----
 
@@ -394,7 +429,7 @@ print(data.frame(Variable = names(emo_ipv_final),
 emo_ipv_final <- emo_ipv_final[complete.cases(emo_ipv_final), ]
 
 # Save data -----
-# Final data: 34.751
+# Final data: 34.742
 save(emo_ipv_final, file = paste0(path,"emo_ipv_final.RData"))
 
 
