@@ -33,7 +33,7 @@ relationship_num <- c("eda_par2", "ingm_par", "hacin")
 relationship_cat <- c("vio_inf_par", "vio_exp_inf_par", "act_distmales", "act_distfemales", "act_distboth", "lib_sex_gradlow", "lib_sex_gradmedium", "lib_sex_gradhigh", "lib_eco_gradlow", "lib_eco_gradmedium", "lib_eco_gradhigh", "lib_soc_gradlow", "lib_soc_gradmedium", "lib_soc_gradhigh", "redsoc_gradlow", "redsoc_gradmedium", "redsoc_gradhigh", "rout_gradlow", "rout_gradmedium", "rout_gradhigh")
 
 community_num <- c("mhr20", "fhr20", "ghr20", "phogjef_f", "pres_2020_f", "pres_2020_m", "gini20", "idh2020", "pea_f", "pea_m", "ParPolF")
-community_cat <- c("Marg15very_low", "Marg15low", "Marg15medium", "Marg15high", "Marg15very_high", "type_comrural", "type_comlow_urban", "type_commedium_urban", "type_comhigh_urban")
+community_cat <- c("Marg15very_low", "Marg15low", "Marg15medium", "Marg15high", "Marg15very_high", "Type_comrural", "Type_comlow_urban", "Type_commedium_urban", "Type_comhigh_urban")
 
 society_num <- c("MasPrev", "FemPrev", "MasNoDen", "FemNoDen", "cor19", "satis19")
 
