@@ -97,6 +97,13 @@
       ],
       "Hash": "f20c47fd52fae58b4e377c37bb8c335b"
     },
+    "corrplot": {
+      "Package": "corrplot",
+      "Version": "0.92",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "fcf11a91936fd5047b2ee9bc00595e36"
+    },
     "cpp11": {
       "Package": "cpp11",
       "Version": "0.4.3",
@@ -169,6 +176,25 @@
       ],
       "Hash": "15e9634c0fcd294799e9b2e929ed1b86"
     },
+    "gganimate": {
+      "Package": "gganimate",
+      "Version": "1.0.8",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "ggplot2",
+        "glue",
+        "grDevices",
+        "grid",
+        "progress",
+        "rlang",
+        "scales",
+        "stringi",
+        "tweenr",
+        "utils"
+      ],
+      "Hash": "8e627464910e6bcf6ccb62b0bdbffa35"
+    },
     "ggplot2": {
       "Package": "ggplot2",
       "Version": "3.4.2",
@@ -194,6 +220,22 @@
       ],
       "Hash": "3a147ee02e85a8941aad9909f1b43b7b"
     },
+    "ggplotify": {
+      "Package": "ggplotify",
+      "Version": "0.1.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "ggplot2",
+        "grDevices",
+        "graphics",
+        "grid",
+        "gridGraphics",
+        "yulab.utils"
+      ],
+      "Hash": "acbcedf783cdb8710168aa0edba42ac0"
+    },
     "glue": {
       "Package": "glue",
       "Version": "1.6.2",
@@ -204,6 +246,18 @@
         "methods"
       ],
       "Hash": "4f2596dfb05dac67b9dc558e5c6fba2e"
+    },
+    "gridGraphics": {
+      "Package": "gridGraphics",
+      "Version": "0.5-1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "grDevices",
+        "graphics",
+        "grid"
+      ],
+      "Hash": "5b79228594f02385d4df4979284879ae"
     },
     "gtable": {
       "Package": "gtable",
@@ -574,6 +628,21 @@
       ],
       "Hash": "79540e5fcd9e0435af547d885f184fd5"
     },
+    "tweenr": {
+      "Package": "tweenr",
+      "Version": "2.0.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "cpp11",
+        "farver",
+        "magrittr",
+        "rlang",
+        "vctrs"
+      ],
+      "Hash": "c16efcef4c72d3bff5e65031f3f1f841"
+    },
     "utf8": {
       "Package": "utf8",
       "Version": "1.2.3",
@@ -632,6 +701,17 @@
         "utils"
       ],
       "Hash": "b8acdf8af494d9ec19ccb2481a9b11c2"
+    },
+    "yulab.utils": {
+      "Package": "yulab.utils",
+      "Version": "0.0.6",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "stats",
+        "utils"
+      ],
+      "Hash": "0d0b7cc6da5efc21f07f6b8d966a9cc1"
     }
   }
 }
