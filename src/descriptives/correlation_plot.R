@@ -68,7 +68,7 @@ cor_matrix <- cor(numerical_df)
 upper_triangle <- upper.tri(cor_matrix)
 
 # Find correlations greater than 0.7
-cor_positive <- which(cor_matrix > 0.7 & upper_triangle, arr.ind = TRUE)
+cor_positive <- which(cor_matrix >= 0.7 & upper_triangle, arr.ind = TRUE)
 
 # Extract the variable pairs and their correlations
 cor_positive_table <- data.frame("Risk Factor 1" = rownames(cor_matrix)[cor_positive[,1]],
