@@ -10,6 +10,7 @@ library(ggplot2)
 library(scales)
 library(mice) # relevant for step 1
 library(VIM) # relevant for step 1
+library(naniar)
 
 
 ## Set path -----
@@ -40,9 +41,11 @@ print(data.frame(Variable = names(endireh_2021),
 # vio_emo_ex 
 # vio_sex_ex  
 # vio_eco_ex  
+# ing_par
+# ing_muj
 endireh_2021 <- endireh_2021 %>%
   select(-c("edu_parlow", "edu_parmedium", "edu_parhigh", "ind_par", 
-            "sep_ex", "vio_fis_ex", "vio_emo_ex", "vio_sex_ex", "vio_eco_ex"))
+            "sep_ex", "vio_fis_ex", "vio_emo_ex", "vio_sex_ex", "vio_eco_ex", "ing_par", "ing_muj"))
 
 # Distribution of emotional ipv
 # vio_emo_año:
@@ -61,10 +64,22 @@ table(endireh_2021$vio_emo_vida)
 endireh_missing <- endireh_2021 %>%
   select(where(~ any(is.na(.))))
 
+# See percent of missings
+gg_miss_var(endireh_missing)
+
 # Pattern of missing data
-missing_pattern <- md.pattern(endireh_missing)
-aggr(endireh_missing, combined = TRUE, numbers = TRUE, sortVars = TRUE, prop = FALSE, col=c('navyblue','red'))
-plot(aggr(endireh_missing, combined = TRUE, numbers = TRUE, sortVars = TRUE, prop = FALSE), col = c("blue", "red"))
+md.pattern(endireh_missing)
+
+# Plot missing data combinations
+gg_miss_upset(endireh_missing, nsets =30, nintersects = 60, 
+              sets.x.label = "Number of Missings by Variable", mainbar.y.label = "Number of Missings by Combination",
+              mb.ratio = c(0.4, 0.6), shade.alpha = 0.5, matrix.color = "#002b58", sets.bar.color = "#002b58",
+              main.bar.color = "#002b58")
+
+# Check for MCAR (Missing Completly at Random)
+mcar_df <- endireh_2021 %>% select(vio_inf_par, vio_exp_inf_par)
+mcar_test(mcar_df)
+marginplot(endireh_missing[c("vio_inf_par", "vio_exp_inf_par")])
 
 
 

@@ -136,7 +136,7 @@ head(TB_SEC_IVaVD[, c("P13_17_1", "P13_17_2", "vio_fis_ex", "P13_17_3", "vio_emo
 #                4 - both but her a bit more (high)
 #                5 - both equally (medium)
 #                6 - other people (low)
-#                7 - does not apply (only in the case of ex-husband) (NA)
+#                7 - does not apply (NA)
 #                b - blank (NA)
 # Label: high, medium, low
 # Level: 1 (no), 2 (yes)
