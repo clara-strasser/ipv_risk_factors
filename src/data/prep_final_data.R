@@ -8,6 +8,9 @@ library(tidyr)
 library(purrr)
 library(ggplot2)
 library(scales)
+library(mice) # relevant for step 1
+library(VIM) # relevant for step 1
+
 
 ## Set path -----
 path <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/"
@@ -27,7 +30,6 @@ print(data.frame(Variable = names(endireh_2021),
                  Count = sapply(endireh_2021, function(x) sum(is.na(x))), 
                  Percentage = sapply(endireh_2021, function(x) sum(is.na(x)) / length(x) * 100)))
 
-
 # Remove risk factors with missings > 20 %
 # edu_parlow
 # edu_parmedium
@@ -40,7 +42,7 @@ print(data.frame(Variable = names(endireh_2021),
 # vio_eco_ex  
 endireh_2021 <- endireh_2021 %>%
   select(-c("edu_parlow", "edu_parmedium", "edu_parhigh", "ind_par", 
-            "sep_ex", "vio_fis_ex", "vio_emo_ex", "vio_sex_ex", "vio_eco_ex", "vio_inf_par", "vio_exp_inf_par"))
+            "sep_ex", "vio_fis_ex", "vio_emo_ex", "vio_sex_ex", "vio_eco_ex"))
 
 # Distribution of emotional ipv
 # vio_emo_año:
@@ -54,6 +56,18 @@ table(endireh_2021$vio_emo_vida)
 #   no   yes 
 # 42728 20424
 # ratio no/yes: 2.1
+
+# Keep only columns with missing data
+endireh_missing <- endireh_2021 %>%
+  select(where(~ any(is.na(.))))
+
+# Pattern of missing data
+missing_pattern <- md.pattern(endireh_missing)
+aggr(endireh_missing, combined = TRUE, numbers = TRUE, sortVars = TRUE, prop = FALSE, col=c('navyblue','red'))
+plot(aggr(endireh_missing, combined = TRUE, numbers = TRUE, sortVars = TRUE, prop = FALSE), col = c("blue", "red"))
+
+
+
 
 # Keep complete cases
 # Meaning: remove all observations with min. one missing value in the covariates 
