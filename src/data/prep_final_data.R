@@ -31,7 +31,7 @@ print(data.frame(Variable = names(endireh_2021),
                  Count = sapply(endireh_2021, function(x) sum(is.na(x))), 
                  Percentage = sapply(endireh_2021, function(x) sum(is.na(x)) / length(x) * 100)))
 
-# Remove risk factors with missings > 20 %
+# Remove non-relevant risk factors 
 # edu_parlow
 # edu_parmedium
 # edu_parhigh        
@@ -43,9 +43,13 @@ print(data.frame(Variable = names(endireh_2021),
 # vio_eco_ex  
 # ing_par
 # ing_muj
+
 endireh_2021 <- endireh_2021 %>%
   select(-c("edu_parlow", "edu_parmedium", "edu_parhigh", "ind_par", 
             "sep_ex", "vio_fis_ex", "vio_emo_ex", "vio_sex_ex", "vio_eco_ex", "ing_par", "ing_muj"))
+
+# Remove multicollinear Variables
+
 
 # Distribution of emotional ipv
 # vio_emo_año:
@@ -76,10 +80,21 @@ gg_miss_upset(endireh_missing, nsets =30, nintersects = 60,
               mb.ratio = c(0.4, 0.6), shade.alpha = 0.5, matrix.color = "#002b58", sets.bar.color = "#002b58",
               main.bar.color = "#002b58")
 
-# Check for MCAR (Missing Completly at Random)
-mcar_df <- endireh_2021 %>% select(vio_inf_par, vio_exp_inf_par)
-mcar_test(mcar_df)
-marginplot(endireh_missing[c("vio_inf_par", "vio_exp_inf_par")])
+
+# Impute missing data using "predictive mean matching"
+endireh_missing <- endireh_missing %>%
+select(-c("eda_par2", "act_distfemales",  "act_distmales",  "act_distboth", "lib_sex_gradmedium",  "lib_sex_gradlow"))
+endireh_2021_no_missings <- mice(endireh_2021, m =1, method = "cart")
+endireh_2021_no_missings$imp$vio_exp_inf_par
+completedData <- complete(endireh_2021_no_missings,1)
+
+gg_miss_var(completedData)
+
+table(completedData$vio_exp_inf_par)
+
+
+
+
 
 
 
