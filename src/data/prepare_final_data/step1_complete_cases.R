@@ -1,4 +1,4 @@
-################### Step 1:  Prepare Data - Complete Cases ####################
+########################### Step 1: Complete Cases ###########################
 
 # Initiate -----
 
@@ -15,7 +15,7 @@ library(naniar)
 
 ## Set path -----
 path <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/"
-path_save <- "/Users/clara/Desktop/master_thesis/plots/descriptives/"
+path_save <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/prep_data/"
 
 
 ## Load data -------
@@ -23,8 +23,7 @@ load(paste0(path, "endireh_2021.RData")) # main data set
 
 # Data Preparation Process ------
 
-## Descriptives -----
-# Initial data set: 63.152
+## Prepare data -----
 
 # Convert characters to numeric
 endireh_2021 <- endireh_2021 %>%
@@ -37,12 +36,7 @@ endireh_2021 <- endireh_2021 %>%
          MasPrev = as.numeric(MasPrev),
          FemPrev = as.numeric(FemPrev))
 
-# Calculate NAs of all variables
-print(data.frame(Variable = names(endireh_2021), 
-                 Count = sapply(endireh_2021, function(x) sum(is.na(x))), 
-                 Percentage = sapply(endireh_2021, function(x) sum(is.na(x)) / length(x) * 100)))
-
-# Remove non-relevant risk factors 
+# Remove unnecessary risk factors 
 # edu_parlow
 # edu_parmedium
 # edu_parhigh        
@@ -54,10 +48,17 @@ print(data.frame(Variable = names(endireh_2021),
 # vio_eco_ex  
 # ing_par
 # ing_muj
-
 endireh_2021 <- endireh_2021 %>%
   select(-c("edu_parlow", "edu_parmedium", "edu_parhigh", "ind_par", 
             "sep_ex", "vio_fis_ex", "vio_emo_ex", "vio_sex_ex", "vio_eco_ex", "ing_par", "ing_muj"))
+
+## Initial Descriptives -----
+# Initial data set: 63.152
+
+# Calculate NAs of all variables
+print(data.frame(Variable = names(endireh_2021), 
+                 Count = sapply(endireh_2021, function(x) sum(is.na(x))), 
+                 Percentage = sapply(endireh_2021, function(x) sum(is.na(x)) / length(x) * 100)))
 
 # Keep only columns with missing data
 endireh_missing <- endireh_2021 %>%
@@ -67,7 +68,7 @@ endireh_missing <- endireh_2021 %>%
 gg_miss_var(endireh_missing)
 
 # Pattern of missing data
-md.pattern(endireh_missing)
+missing_pattern <- md.pattern(endireh_missing)
 
 # Plot missing data combinations
 gg_miss_upset(endireh_missing, nsets =30, nintersects = 60, 
@@ -78,36 +79,70 @@ gg_miss_upset(endireh_missing, nsets =30, nintersects = 60,
 
 ## Missing Data Imputation ------
 
-# Variant 1: Predictive Mean Matching
+### Variant 1: Predictive Mean Matching -----
 
-# remove non-necessary columns
+# Remove multi-collinear columns
 step1_df <- endireh_2021 %>%
-  select(-c("ID_VIV", "CVE_ENT", "CVE_MUN", "T_INSTRUM", "par_sex", "pea_m", "pres_2020_m", "tipo_empl"))
-step1_df <- step1_df %>% select(-ends_with("high"))
-step1_df <- step1_df %>% select(-ends_with("both"))
-step1_df <- mice(step1_df, m=1, maxit = 1, meth='pmm', seed=800)
+  select(-c("ID_VIV", "CVE_ENT", "CVE_MUN", "T_INSTRUM")) %>% # remove as constant
+  select(-ends_with("high")) %>%  # remove
+  select(-ends_with("both")) %>% # remove
+  select(-ends_with("comhigh_urban")) # remove
 
-completedData <- complete(step1_df, 1)
-densityplot(step1_df)
-propplot(step1_df)
+# Use "predictive mean matching" (pmm) to impute missing values
+step1_df <- mice(step1_df, m=1, maxit = 5, meth = "pmm", seed=800)
+
+# Create complete data set
+step1_completed <- complete(step1_df, 1)
+
+# Test
+summary(endireh_2021)
+summary(step1_completed)
+densityplot(step1_df) # for continous
+propplot(step1_df) # for factors
+
+# Create complete data set
+step1_endireh <- endireh_2021 %>%
+  mutate(across(everything(), ~ coalesce(., step1_completed[[cur_column()]])))
+
+# Replace NAs in factor variables
+step1_endireh <- step1_endireh %>%
+  mutate(lib_sex_gradhigh = factor(ifelse(lib_sex_gradmedium == "no" & lib_sex_gradlow == "no", 2, 1),
+                                   levels = c(1, 2),
+                                   labels = c("no", "yes"))) %>%
+  mutate(lib_eco_gradhigh = factor(ifelse(lib_eco_gradmedium == "no" & lib_eco_gradlow == "no", 2, 1),
+                                   levels = c(1, 2),
+                                   labels = c("no", "yes"))) %>%
+  mutate(lib_soc_gradhigh = factor(ifelse(lib_soc_gradmedium == "no" & lib_soc_gradlow == "no", 2, 1),
+                                   levels = c(1, 2),
+                                   labels = c("no", "yes"))) %>%
+  mutate(act_distboth = factor(ifelse(act_distfemales == "no" & act_distmales == "no", 2, 1),
+                                 levels = c(1, 2),
+                                 labels = c("no", "yes")))
+
+# Examples:
+# 0206256.01.1.02
+# 2360033.02.1.02
+# 3202611.06.1.02
+
+# Save data
+save(step1_endireh, file = paste0(path_save,"step1_endireh.RData"))
 
 
+### Variant 2: Classification and Regression Trees -----
 
+# Use "classification and regression trees" (cart) to impute missing values
+step1_df_alt <- mice(endireh_2021, m=1, maxit = 5, meth = "cart", seed=800)
 
+# Create complete data set
+step1_endireh_alt <- complete(step1_df_alt, 1)
 
-# Impute missing data using "predictive mean matching"
-endireh_missing <- endireh_missing %>%
-  select(-c("eda_par2", "act_distfemales",  "act_distmales",  "act_distboth", "lib_sex_gradmedium",  "lib_sex_gradlow"))
-endireh_2021_no_missings <- mice(endireh_2021, m =1, method = "cart")
-endireh_2021_no_missings$imp$vio_exp_inf_par
-completedData <- complete(endireh_2021_no_missings,1)
+# Test
+summary(endireh_2021)
+summary(step1_endireh_alt)
+densityplot(step1_df_alt) # for continuous
+propplot(step1_df_alt) # for factors
 
-gg_miss_var(completedData)
+# Save data
+# Save data
+save(step1_endireh_alt, file = paste0(path_save,"step1_endireh_alt.RData"))
 
-table(completedData$vio_exp_inf_par)
-
-
-
-# Keep complete cases
-# Meaning: remove all observations with min. one missing value in the covariates 
-emo_ipv_final <- endireh_2021[complete.cases(endireh_2021), ]
