@@ -12,6 +12,8 @@ library(mice) # relevant for step 1
 library(VIM) # relevant for step 1
 library(naniar)
 
+## Load functions -----
+source(file = "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/functions/propplot.R")
 
 ## Set path -----
 path <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/"
@@ -94,11 +96,14 @@ step1_df <- mice(step1_df, m=1, maxit = 5, meth = "pmm", seed=800)
 # Create complete data set
 step1_completed <- complete(step1_df, 1)
 
-# Test
+# Test Tabular
 summary(endireh_2021)
 summary(step1_completed)
-densityplot(step1_df) # for continous
+
+# Test Graph and save
+densityplot(step1_df) # for continuous
 propplot(step1_df) # for factors
+
 
 # Create complete data set
 step1_endireh <- endireh_2021 %>%
@@ -142,7 +147,6 @@ summary(step1_endireh_alt)
 densityplot(step1_df_alt) # for continuous
 propplot(step1_df_alt) # for factors
 
-# Save data
 # Save data
 save(step1_endireh_alt, file = paste0(path_save,"step1_endireh_alt.RData"))
 
