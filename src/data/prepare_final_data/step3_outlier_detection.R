@@ -325,38 +325,87 @@ ggsave(paste0(path_save, "income_distribution_partner.png"), plot = income_distr
 
 # Set Outlier Boundaries ---------
 
-
 # Age Woman
-# Notes: Age < 90 of interest
-edad_max <- 90
+# Notes: Age <= 85 of interest
+table(data$EDAD)
+quantile(data$EDAD, probs = 0.01)
+quantile(data$EDAD, probs = 0.99)
+edad_max <- 85
 
 # Age first child
-# Notes: Age child < 50
-eda_hij_max <- 50
+# Notes: Age child <= 45
+table(data$eda_hij)
+quantile(data$eda_hij, probs = 0.01)
+quantile(data$eda_hij, probs = 0.99)
+eda_hij_max <- 45
 
 # Age first sexual intercourse
 # Notes: Age sex <= 35
-eda_sex <- 35
+table(data$eda_sex)
+quantile(data$eda_sex, probs = 0.01)
+quantile(data$eda_sex, probs = 0.99)
+eda_sex_max <- 35
 
 # Age marriage
-# Notes:
+# Notes: Age marriage <= 45
+#        Age marriage >= 12
+table(data$eda_mat)
+quantile(data$eda_mat, probs = 0.01)
+quantile(data$eda_mat, probs = 0.99)
+eda_mat_max <- 45
+eda_mat_min <- 12
 
 # Number children
 # Notes: Number children <= 15
+table(data$num_hij)
+quantile(data$num_hij, probs = 0.01)
+quantile(data$num_hij, probs = 0.99)
 num_hij_max <- 15
 
 # Age partner
-# Notes: 
-
+# Notes: Age partner <= 90
+table(data$eda_par2)
+quantile(data$eda_par2, probs = 0.01)
+quantile(data$eda_par2, probs = 0.99)
+eda_par2_max <- 90
 
 # Household members per room
 # Notes: Members dwelling <=7
+table(data$hacin)
+quantile(data$hacin, probs = 0.01)
+quantile(data$hacin, probs = 0.99)
 hacin_max <- 7
+
+# Income per month woman
+# Notes: income < 800000
+table(data$ingm_muj)
+ingm_muj_max <- 800000
+
+# Income per month partner
+# Notes: income < 250000
+table(data$ingm_par)
+ingm_par_max <- 250000
+
+
+# Filer data ---------
+# Data set: 62.774
+data <- data %>%
+  filter(EDAD <= edad_max) %>%
+  filter(eda_hij <= eda_hij_max) %>%
+  filter(eda_sex <= eda_sex_max) %>%
+  filter(eda_mat >= eda_mat_min & eda_mat <= eda_mat_max) %>%
+  filter(num_hij <= num_hij_max) %>%
+  filter(eda_par2 <= eda_par2_max) %>%
+  filter(hacin <= hacin_max) %>%
+  filter(ingm_muj < ingm_muj_max)  %>%
+  filter(ingm_par < ingm_par_max)
+
 
 
 # Save data ----------
-# Data set: 62.774
-save(step2_endireh, file = paste0(path_data,"step2_endireh.RData"))
+# Data set: 61.205
+step3_endireh <- data
+save(step3_endireh, file = paste0(path_data,"step3_endireh.RData"))
 
 
 
