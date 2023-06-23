@@ -29,7 +29,12 @@ data <- step3_endireh
 
 ## Subset not needed -----
 data <- data %>%
-  select(-c("num_hij_par", "num_hij_par_muj"))
+  select(-c("num_hij_par", "num_hij_par_muj")) %>%
+  rename(Marg20high = Marg15high,
+         Marg20low = Marg15low,
+         Marg20medium = Marg15medium,
+         Marg20very_high = Marg15very_high,
+         Marg20very_low = Marg15very_low)
 
 
 ## Add spatial Variables --------
