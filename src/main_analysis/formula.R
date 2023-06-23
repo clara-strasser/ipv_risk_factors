@@ -27,7 +27,6 @@ data <- step3_endireh
 
 
 ## Main ------
-
 vio_emo_año <- vio_emo_año ~ 
   
   bols(intercept, intercept = FALSE) +  
