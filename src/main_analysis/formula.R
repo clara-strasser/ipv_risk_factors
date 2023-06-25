@@ -7,8 +7,11 @@
 ## Model 1 ------
 # Remarks: 
 # Model similar to Munguia and Zarzoso (2022)
-# Difference: 2021 version of ENDIREH, inclusion of further controls, inclusion of
-# terms in the interaction as parallel effects, exclusion of multicollinear variables
+# Differences: 
+# 1.) 2021 version of ENDIREH
+# 2.) Inclusion of further controls
+# 3.) Inclusion of terms in the interaction as parallel effects
+# 4.) Exclusion of multicollinear variables
 
 model_1 <- vio_emo_año ~ 
   

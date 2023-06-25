@@ -22,6 +22,10 @@ n_distinct(data$ID_VIV)
 n_distinct(data$cveent) # 32
 n_distinct(data$cvegeo) # 1262
 
+## Explore missings --------
+print(data.frame(Variable = names(data), 
+                 Count = sapply(data, function(x) sum(is.na(x))), 
+                 Percentage = sapply(data, function(x) sum(is.na(x)) / length(x) * 100)))
 
 
 
