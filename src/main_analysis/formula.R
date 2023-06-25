@@ -13,7 +13,7 @@
 # 3.) Inclusion of terms in the interaction as parallel effects
 # 4.) Exclusion of multicollinear variables
 
-model_1 <- vio_emo_año ~ 
+model <- vio_emo_año ~ 
   
   bols(intercept, intercept = FALSE) +  
   
@@ -131,8 +131,8 @@ model_1 <- vio_emo_año ~
   bols(phogjef_f, intercept = FALSE) +                                              
   bbs(phogjef_f, knots = 20, df = 1, center = TRUE) +                               
   
-  bols(pres2020_f, intercept = FALSE) +                                             
-  bbs(pres2020_f, knots = 20, df = 1, center = TRUE) +                              
+  bols(pres_2020_f, intercept = FALSE) +                                             
+  bbs(pres_2020_f, knots = 20, df = 1, center = TRUE) +                              
   
   bols(gini20, intercept = FALSE) +                                                 
   bbs(gini20, knots = 20, df = 1, center = TRUE) +                                  
@@ -170,11 +170,12 @@ model_1 <- vio_emo_año ~
   bols(FemNoDen, intercept = FALSE) +                                               
   bbs(FemNoDen, knots = 20, df = 1, center = TRUE) +                                
   
-  bols(cor15, intercept = FALSE) +                                                  
-  bbs(cor15, knots = 20, df = 1, center = TRUE) +                                   
+  bols(cor19, intercept = FALSE) +                                                  
+  bbs(cor19, knots = 20, df = 1, center = TRUE) +                                   
   
-  bols(satis15, intercept = FALSE) +                                                
-  bbs(satis15, knots = 20, df = 1, center = TRUE) +                                 
+  bols(satis19, intercept = FALSE) +                                                
+  bbs(satis19, knots = 20, df = 1, center = TRUE) +                                 
   
   bols(ParPolF, intercept = FALSE) +                                                
-  bbs(ParPolF, knots = 20, df = 1, center = TRUE)  
+  bbs(ParPolF, knots = 20, df = 1, center = TRUE) 
+

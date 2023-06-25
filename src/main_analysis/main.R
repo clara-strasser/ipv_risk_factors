@@ -50,11 +50,22 @@ for(i in c(numerical_var_names)){
   data[, i] <- scale(data[, i], center = TRUE, scale = FALSE)
 } 
 
+### Add intercept -------
+data <- data %>%
+  mutate(intercept = 1)
+
+### Convert outcome ------
+data <- data %>% 
+  mutate(vio_emo_año = recode(vio_emo_año, "no" = "0", "yes" = "1"))
+
+### Correct levels -----
+data$cvegeo <- droplevels(data$cvegeo)
+
 
 ## Run model ------
 
 ### Functional Gradient Descent Boosting ------
-modelemoipv <- gamboost(model_1,
+modelemoipv <- gamboost(model,
                         data = data,
                         control = boost_control(mstop = 2000, nu = 0.5, 
                                                 trace = TRUE, 
