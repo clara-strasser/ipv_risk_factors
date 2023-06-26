@@ -8,6 +8,7 @@ library(dplyr)
 library(tidyr)
 library(mboost)
 library(parallel)
+library(stabs)
 
 ## Set path -----
 path_data <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/final_data/"
@@ -56,22 +57,45 @@ data$cvegeo <- droplevels(data$cvegeo)
 ## Run model ------
 
 ### Functional Gradient Descent Boosting ------
-modelemoipv <- gamboost(model, 
+modelemoipv <- gamboost(model, # model specification
                         data = data,
-                        control = boost_control(mstop = 2000, nu = 0.5, 
-                                                trace = TRUE, 
+                        control = boost_control(mstop = 2000, nu = 0.5, # mstop = number of boosting iterations, nu = shrinkage parameter
+                                                trace = TRUE, # trace info during process
                                                 stopintern = TRUE),
-                        weights = data$FAC_MUJ,
+                        weights = data$FAC_MUJ, # weights for observations in the model
                         offset = pnorm(weighted.mean(x = as.numeric(as.character(data[, "vio_emo_año"])),
-                                                     w = data$FAC_MUJ))-0.5,
-                        family = Binomial(link = "probit"))
+                                                     w = data$FAC_MUJ))-0.5, # weighted mean = 0.2, probability observing a value less or equal to weighted mean = 0.59. Endresult = 0.09.
+                                                                             # probability value obtained from the weighted mean. This adjustment centers the distribution of the predictions around 0.
+                                                                             # offset used to account for the baseline prevalence of IPV in the population.
+                                                                             # it assists in accounting for the base rate of occurrence and can be particularly useful when the data is imbalanced or when specific prior knowledge about the prevalence is available.
+                        family = Binomial(link = "probit")) # family and link function for the GAM
+
+
+# Inspect
+# Number of boosting iterations: mstop = 2000 
+# Step size:  0.5 
+# Offset:  0.09093536 
+# Number of baselearners:  95 
+# Selection frequencies: 
+coef(modelemoipv) 
+names(coef(modelemoipv))
+summary(modelemoipv)
+par(mfrow = c(1,4))
+plot(modelemoipv)
 
 ### Cross-Validation ---------
 set.seed(1806)
+cvm <- cvrisk(modelemoipv, folds = cv(model.weights(modelemoipv), type = "kfold"),
+              papply = parallel::mclapply,
+              mc.cores = parallel::detectCores())
+mstop(cvm)
+AIC(modelemoipv)
+
 start_time <- Sys.time()
-cvemoipv <- cvrisk(modelemoipv, folds = cv(model.weights(modelemoipv), 
-                                           type = "subsampling"), 
-                   grid = 1:10000, 
+cvemoipv <- cvrisk(modelemoipv, folds = cv(model.weights(modelemoipv), # modelemoipv = model of gamboost(), cv() generated folds for cross-validation
+                                                                       # model.weights = influence of each observation in the model
+                                           type = "subsampling"), # subsampling = type of cross-validation where data randomly divided into folds
+                   grid = 1,  # grid of hyperparameters to be explored
                    papply = mclapply,
                    mc.cores = parallel::detectCores())
 
@@ -88,8 +112,8 @@ print(execution_time)
 #   1. mc.preschedule = TRUE: 3.625592 mins
 #   2. mc.preschedule = FALSE: 3.34062 mins
 #   3. lapply: Forever
-
-
+# with 20 cores and mc.preschedule = FALSE: 1.663221 mins
+# whole model, 1 grid: 
 
 stopemoipv <- mstop(cvemoipv)
 modelemoipv[stopemoipv]
@@ -120,4 +144,5 @@ confintemoipv <- confint(modelemoipv, B = 1000,
 
 # Save
 save(modelemoipv,  file = "../modelemoipv.RData")
+save(cvm,  file = "../cvm.RData")
 #save(confintemoipv, stabselemoipv, modelemoipv, stopemoipv, cvemoipv, file = "estimation_ipv.RData")
