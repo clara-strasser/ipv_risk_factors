@@ -7,6 +7,7 @@
 library(dplyr)
 library(tidyr)
 library(mboost)
+library(parallel)
 
 ## Set path -----
 path_data <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/final_data/"
@@ -21,24 +22,14 @@ rm(data_imp_pmm_m1)
 ## Prepare data ------
 
 ### Log transform -----
-summary(data$ingm_muj)
-summary(data$ingm_par)
 data <- data %>%
   mutate(log_ingm_muj = log1p(ingm_muj),
          log_ingm_par = log1p(ingm_par))
 
-summary(data$log_ingm_muj)
-summary(data$log_ingm_par)
-hist(data$log_ingm_muj, breaks = nrow(data))
-hist(data$log_ingm_par, breaks = nrow(data))
 
 ### Age difference -------
-summary(data$EDAD)
-summary(data$eda_par2)
 data <- data %>%
   mutate(edad_dif = eda_par2 - EDAD)
-summary(data$edad_dif)
-head(data[, c("EDAD", "eda_par2", "edad_dif")], n = 35)
 
 ### Demean --------
 numerical_var_names <- c("num_hij", "ingm_muj", "EDAD", "eda_hij", "eda_sex", "eda_mat", "eda_par2", "hacin",
@@ -65,7 +56,7 @@ data$cvegeo <- droplevels(data$cvegeo)
 ## Run model ------
 
 ### Functional Gradient Descent Boosting ------
-modelemoipv <- gamboost(model,
+modelemoipv <- gamboost(model, 
                         data = data,
                         control = boost_control(mstop = 2000, nu = 0.5, 
                                                 trace = TRUE, 
@@ -77,11 +68,28 @@ modelemoipv <- gamboost(model,
 
 ### Cross-Validation ---------
 set.seed(1806)
+start_time <- Sys.time()
 cvemoipv <- cvrisk(modelemoipv, folds = cv(model.weights(modelemoipv), 
                                            type = "subsampling"), 
                    grid = 1:10000, 
                    papply = mclapply,
                    mc.cores = parallel::detectCores())
+
+# End measuring execution time
+end_time <- Sys.time()
+# Calculate the execution time
+execution_time <- end_time - start_time
+# Print the execution time
+print(execution_time)
+
+# Test with grid = 1:3, 20 cores (10 physical)
+# Till variable: bbs(edad_dif, by = niv_edmedium, knots = 20, df = 1, center = TRUE)
+# Options:
+#   1. mc.preschedule = TRUE: 3.625592 mins
+#   2. mc.preschedule = FALSE: 3.34062 mins
+#   3. lapply: Forever
+
+
 
 stopemoipv <- mstop(cvemoipv)
 modelemoipv[stopemoipv]
@@ -110,4 +118,6 @@ confintemoipv <- confint(modelemoipv, B = 1000,
                          papply = mclapply, 
                          cvrisk_options = list(mc.cores = 25))
 
+# Save
+save(modelemoipv,  file = "../modelemoipv.RData")
 #save(confintemoipv, stabselemoipv, modelemoipv, stopemoipv, cvemoipv, file = "estimation_ipv.RData")
