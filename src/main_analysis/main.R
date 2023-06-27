@@ -93,6 +93,15 @@ cvm <- cvrisk(modelemoipv, folds = cv(model.weights(modelemoipv), type = "kfold"
               mc.cores = parallel::detectCores())
 end_time <- Sys.time()
 save(cvm,  file = "../cvm.RData")
+# Remarks:
+#Warning messages:
+#1: In papply(1:ncol(folds), function(i) try(dummyfct(weights = folds[,  :
+#1 function calls resulted in an error
+#2: In cvrisk.mboost(modelemoipv, folds = cv(model.weights(modelemoipv),  :
+#1 fold(s) encountered an error. Results are based on 9 folds only.
+#Original error message(s):
+#Error in chol.default(A) : 
+#the leading minor of order 19 is not positive definite
 
 # Option 2
 set.seed(1806)
@@ -104,7 +113,9 @@ cvm_strat <- cvrisk(modelemoipv, folds = cv(model.weights(modelemoipv),
               mc.cores = parallel::detectCores())
 end_time_strat <- Sys.time()
 save(cvm_strat,  file = "../cvm_strat.RData")
-
+# Remarks:
+mstop(cvm_strat) # 2000
+cvm_strat
 
 # Option 3
 set.seed(1806)
@@ -117,41 +128,22 @@ cvm_strat_grid <- cvrisk(modelemoipv, folds = cv(model.weights(modelemoipv),
                     mc.cores = parallel::detectCores())
 end_time_strat_2 <- Sys.time()
 save(cvm_strat_grid,  file = "../cvm_strat_grid.RData")
+mstop(cvm_strat_grid) # 4644
+cvm_strat_grid
 
-
-
-
-
-
-
-
-
-
-
+# Option 4
 start_time <- Sys.time()
 cvemoipv <- cvrisk(modelemoipv, folds = cv(model.weights(modelemoipv), # modelemoipv = model of gamboost(), cv() generated folds for cross-validation
                                                                        # model.weights = influence of each observation in the model
                                            type = "subsampling"), # subsampling = type of cross-validation where data randomly divided into folds
-                   grid = 1,  # grid of hyperparameters to be explored
+                   grid = 1:10000,  # grid of hyperparameters to be explored
                    papply = mclapply,
                    mc.cores = parallel::detectCores())
-
-# End measuring execution time
 end_time <- Sys.time()
-# Calculate the execution time
-execution_time <- end_time - start_time
-# Print the execution time
-print(execution_time)
 
-# Test with grid = 1:3, 20 cores (10 physical)
-# Till variable: bbs(edad_dif, by = niv_edmedium, knots = 20, df = 1, center = TRUE)
-# Options:
-#   1. mc.preschedule = TRUE: 3.625592 mins
-#   2. mc.preschedule = FALSE: 3.34062 mins
-#   3. lapply: Forever
-# with 20 cores and mc.preschedule = FALSE: 1.663221 mins
-# whole model, 1 grid: 
 
+
+# Set optimal mstop
 stopemoipv <- mstop(cvemoipv)
 modelemoipv[stopemoipv]
 
