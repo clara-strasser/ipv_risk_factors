@@ -84,12 +84,49 @@ par(mfrow = c(1,4))
 plot(modelemoipv)
 
 ### Cross-Validation ---------
+
+# Option 1
 set.seed(1806)
+start_time <- Sys.time()
 cvm <- cvrisk(modelemoipv, folds = cv(model.weights(modelemoipv), type = "kfold"),
               papply = parallel::mclapply,
               mc.cores = parallel::detectCores())
-mstop(cvm)
-AIC(modelemoipv)
+end_time <- Sys.time()
+save(cvm,  file = "../cvm.RData")
+
+# Option 2
+set.seed(1806)
+start_time_strat <- Sys.time()
+cvm_strat <- cvrisk(modelemoipv, folds = cv(model.weights(modelemoipv), 
+                                            type = "kfold",
+                                            strata = data$vio_emo_año),
+              papply = parallel::mclapply,
+              mc.cores = parallel::detectCores())
+end_time_strat <- Sys.time()
+save(cvm_strat,  file = "../cvm_strat.RData")
+
+
+# Option 3
+set.seed(1806)
+start_time_strat_2 <- Sys.time()
+cvm_strat_grid <- cvrisk(modelemoipv, folds = cv(model.weights(modelemoipv), 
+                                            type = "kfold",
+                                            strata = data$vio_emo_año),
+                    grid = 1:10000,
+                    papply = parallel::mclapply,
+                    mc.cores = parallel::detectCores())
+end_time_strat_2 <- Sys.time()
+save(cvm_strat_grid,  file = "../cvm_strat_grid.RData")
+
+
+
+
+
+
+
+
+
+
 
 start_time <- Sys.time()
 cvemoipv <- cvrisk(modelemoipv, folds = cv(model.weights(modelemoipv), # modelemoipv = model of gamboost(), cv() generated folds for cross-validation
