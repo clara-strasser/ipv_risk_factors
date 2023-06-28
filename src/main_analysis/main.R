@@ -57,6 +57,7 @@ data$cvegeo <- droplevels(data$cvegeo)
 ## Run model ------
 
 ### Functional Gradient Descent Boosting ------
+set.seed(1806)
 modelemoipv <- gamboost(model, # model specification
                         data = data,
                         control = boost_control(mstop = 2000, nu = 0.5, # mstop = number of boosting iterations, nu = shrinkage parameter
@@ -133,12 +134,8 @@ mstop(cvm_strat_grid) # 4644
 cvm_strat_grid
 plot.cvrisk(cvm_strat_grid)
 
-
-# Set optimal mstop
-stopemoipv <- mstop(cvm_strat_grid)
-modelemoipv[stopemoipv]
-
 # Option 4
+set.seed(1806)
 start_time_authors <- Sys.time()
 cvemoipv <- cvrisk(modelemoipv, folds = cv(model.weights(modelemoipv), # modelemoipv = model of gamboost(), cv() generated folds for cross-validation
                                                                        # model.weights = influence of each observation in the model
@@ -148,6 +145,11 @@ cvemoipv <- cvrisk(modelemoipv, folds = cv(model.weights(modelemoipv), # modelem
                    mc.cores = parallel::detectCores())
 end_time_authors <- Sys.time()
 save(cvemoipv,  file = "../cvemoipv.RData")
+
+
+### Set optimal mstop ------
+stopemoipv <- mstop(cvm_strat_grid)
+modelemoipv[stopemoipv]
 
 
 ### Stability selection -------
