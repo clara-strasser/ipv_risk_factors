@@ -116,6 +116,7 @@ save(cvm_strat,  file = "../cvm_strat.RData")
 # Remarks:
 mstop(cvm_strat) # 2000
 cvm_strat
+plot(cvm_strat)
 
 # Option 3
 set.seed(1806)
@@ -130,28 +131,33 @@ end_time_strat_2 <- Sys.time()
 save(cvm_strat_grid,  file = "../cvm_strat_grid.RData")
 mstop(cvm_strat_grid) # 4644
 cvm_strat_grid
+plot.cvrisk(cvm_strat_grid)
+
+
+# Set optimal mstop
+stopemoipv <- mstop(cvm_strat_grid)
+modelemoipv[stopemoipv]
 
 # Option 4
-start_time <- Sys.time()
+start_time_authors <- Sys.time()
 cvemoipv <- cvrisk(modelemoipv, folds = cv(model.weights(modelemoipv), # modelemoipv = model of gamboost(), cv() generated folds for cross-validation
                                                                        # model.weights = influence of each observation in the model
                                            type = "subsampling"), # subsampling = type of cross-validation where data randomly divided into folds
                    grid = 1:10000,  # grid of hyperparameters to be explored
                    papply = mclapply,
                    mc.cores = parallel::detectCores())
-end_time <- Sys.time()
+end_time_authors <- Sys.time()
+save(cvemoipv,  file = "../cvemoipv.RData")
 
-
-
-# Set optimal mstop
-stopemoipv <- mstop(cvemoipv)
-modelemoipv[stopemoipv]
 
 ### Stability selection -------
+set.seed(1806)
 p <- length(names(coef(modelemoipv, which = "")))
 stabsel_conf <- stabsel_parameters(p = p, 
                                    q = 20, 
                                    cutoff = 0.8)
+# Findings:
+# PFER (*):  3.47
 
 
 ### Stability selection with unimodality assumption ------
@@ -159,11 +165,17 @@ stabsel_conf <- stabsel_parameters(p = p,
 # (*) or expected number of low selection probability variables
 # PFER (specified upper bound):  3.743316 
 # PFER corresponds to signif. level 0.0425 (without multiplicity adjustment)
+# Method to extract selected variables
+start_time <- Sys.time()
+set.seed(1806)
 stabselemoipv <- stabsel(modelemoipv,
                          q = 20, 
                          cutoff = 0.8,
                          sampling.type = "SS",
+                         papply = mclapply,
                          mc.cores = parallel::detectCores())
+end_time<- Sys.time()
+save(stabselemoipv,  file = "../stabselemoipv.RData")
 
 ### Pointwise bootstrap confidence intervals -------
 confintemoipv <- confint(modelemoipv, B = 1000, 
