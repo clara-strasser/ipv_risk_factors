@@ -7,8 +7,6 @@
 library(dplyr)
 library(tidyr)
 library(mboost)
-library(parallel)
-library(stabs)
 
 ## Set path -----
 path_data <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/final_data/"
@@ -145,10 +143,11 @@ cvemoipv <- cvrisk(modelemoipv, folds = cv(model.weights(modelemoipv), # modelem
                    mc.cores = parallel::detectCores())
 end_time_authors <- Sys.time()
 save(cvemoipv,  file = "../cvemoipv.RData")
-
+mstop(cvemoipv) # 2282 
+plot.cvrisk(cvemoipv)
 
 ### Set optimal mstop ------
-stopemoipv <- mstop(cvm_strat_grid)
+stopemoipv <- mstop(cvemoipv)
 modelemoipv[stopemoipv]
 
 
@@ -158,6 +157,7 @@ p <- length(names(coef(modelemoipv, which = "")))
 stabsel_conf <- stabsel_parameters(p = p, 
                                    q = 20, 
                                    cutoff = 0.8)
+stabsel_conf
 # Findings:
 # PFER (*):  3.47
 
@@ -170,14 +170,12 @@ stabsel_conf <- stabsel_parameters(p = p,
 # Method to extract selected variables
 start_time <- Sys.time()
 set.seed(1806)
-stabselemoipv <- stabsel(modelemoipv,
+stabselemoipv_3 <- stabsel(modelemoipv,
                          q = 20, 
                          cutoff = 0.8,
-                         sampling.type = "SS",
-                         papply = mclapply,
-                         mc.cores = parallel::detectCores())
+                         sampling.type = "SS")
 end_time<- Sys.time()
-save(stabselemoipv,  file = "../stabselemoipv.RData")
+save(stabselemoipv_3,  file = "../stabselemoipv_3.RData")
 
 ### Pointwise bootstrap confidence intervals -------
 confintemoipv <- confint(modelemoipv, B = 1000, 
