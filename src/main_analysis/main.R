@@ -7,6 +7,8 @@
 library(dplyr)
 library(tidyr)
 library(mboost)
+library(parallel)
+library(stabs)
 
 ## Set path -----
 path_data <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/final_data/"
@@ -58,7 +60,7 @@ data$cvegeo <- droplevels(data$cvegeo)
 set.seed(1806)
 modelemoipv <- gamboost(model, # model specification
                         data = data,
-                        control = boost_control(mstop = 2000, nu = 0.5, # mstop = number of boosting iterations, nu = shrinkage parameter
+                        control = boost_control(mstop = 5000, nu = 0.5, # mstop = number of boosting iterations, nu = shrinkage parameter
                                                 trace = TRUE, # trace info during process
                                                 stopintern = TRUE),
                         weights = data$FAC_MUJ, # weights for observations in the model
@@ -68,7 +70,7 @@ modelemoipv <- gamboost(model, # model specification
                                                                              # offset used to account for the baseline prevalence of IPV in the population.
                                                                              # it assists in accounting for the base rate of occurrence and can be particularly useful when the data is imbalanced or when specific prior knowledge about the prevalence is available.
                         family = Binomial(link = "probit")) # family and link function for the GAM
-
+save(modelemoipv_mboost5000,  file = "../model_boosting/modelemoipv_mboost5000.RData")
 
 # Inspect
 # Number of boosting iterations: mstop = 2000 
@@ -135,14 +137,13 @@ plot.cvrisk(cvm_strat_grid)
 # Option 4
 set.seed(1806)
 start_time_authors <- Sys.time()
-cvemoipv <- cvrisk(modelemoipv, folds = cv(model.weights(modelemoipv), # modelemoipv = model of gamboost(), cv() generated folds for cross-validation
-                                                                       # model.weights = influence of each observation in the model
-                                           type = "subsampling"), # subsampling = type of cross-validation where data randomly divided into folds
-                   grid = 1:10000,  # grid of hyperparameters to be explored
+cvemoipv <- cvrisk(modelemoipv_mboost5000, folds = cv(model.weights(modelemoipv_mboost5000), 
+                                           type = "subsampling"), 
+                   grid = 1:10000, 
                    papply = mclapply,
                    mc.cores = parallel::detectCores())
 end_time_authors <- Sys.time()
-save(cvemoipv,  file = "../cvemoipv.RData")
+save(cvemoipv,  file = "../cross_validation/cvemoipv_mboost5000.RData")
 mstop(cvemoipv) # 2282 
 plot.cvrisk(cvemoipv)
 
@@ -173,7 +174,8 @@ set.seed(1806)
 stabselemoipv_3 <- stabsel(modelemoipv,
                          q = 20, 
                          cutoff = 0.8,
-                         sampling.type = "SS")
+                         sampling.type = "SS",
+                         mc.cores = parallel::detectCores())
 end_time<- Sys.time()
 save(stabselemoipv_3,  file = "../stabselemoipv_3.RData")
 

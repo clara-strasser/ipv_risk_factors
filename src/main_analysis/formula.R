@@ -55,7 +55,6 @@ model <- vio_emo_año ~
   bols(eda_hij, intercept = FALSE) +                                                
   bbs(eda_hij, knots = 20, df = 1, center = TRUE) +                                 
   
-  bols(eda_hij, by = edad_dif, intercept = FALSE) +
   bspatial(eda_hij, edad_dif, center = TRUE, differences = 1, knots = 20, df = 1) +     
   
   bols(eda_sex, intercept = FALSE) +                                                
@@ -66,7 +65,6 @@ model <- vio_emo_año ~
   bols(eda_sex, by = con_sex, intercept = FALSE) +                                  
   bbs(eda_sex, by = con_sex, knots = 20, df = 1, center = TRUE) +                   
   
-  bols(eda_sex, by = edad_dif, intercept = FALSE) +
   bspatial(eda_sex, edad_dif, center = TRUE, differences = 1, knots = 20, df = 1) +     
   
   bols(eda_mat, intercept = FALSE) +                                                
@@ -77,7 +75,6 @@ model <- vio_emo_año ~
   bols(eda_mat, by = mot_mat, intercept = FALSE) +                                  
   bbs(eda_mat, by = mot_mat, knots = 20, df = 1, center = TRUE) +                   
   
-  bols(eda_mat, by = edad_dif, intercept = FALSE) +
   bspatial(eda_mat, edad_dif, center = TRUE, differences = 1, knots = 20, df = 1) +     
   
   bols(vio_inf_par, intercept = FALSE, df = 1) +
@@ -121,7 +118,6 @@ model <- vio_emo_año ~
   bols(log_ingm_par, intercept = FALSE) +                                                
   bbs(log_ingm_par, knots = 20, df = 1, center = TRUE) +                                 
   
-  bols(log_ingm_muj, by = log_ingm_par, intercept = FALSE) +
   bspatial(log_ingm_muj, log_ingm_par, center = TRUE, differences = 1, knots = 20, df = 1) +
   
   brandom(cvegeo, df = 1) +                                                         
