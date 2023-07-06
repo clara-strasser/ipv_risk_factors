@@ -17,7 +17,7 @@ load("~/cvemoipv.RData") # cross-validation results
 # Plot -----
 
 # Number of boosting iterations
-plot(cvemoipv,
+cross_validation_model1 <- plot(cvemoipv,
      ylim = c(0.45, 0.55),
      xlab = "Number of Boosting Iterations",
      ylab = "Average Empirical Risk",
@@ -26,7 +26,7 @@ plot(cvemoipv,
 # Save ----
 
 # Save in folder
-
+ggsave("~/ipv_risk_factors/results/plots/cross_validation_model1.png")
 
 
 
