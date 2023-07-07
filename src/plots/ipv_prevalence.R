@@ -7,10 +7,16 @@ library(dplyr)
 library(ggplot2)
 library(survey)
 library(stringr)
+library(gghighlight)
+library(ggrepel)
 
 ## Load data -------
-load("~/ipv_risk_factors/data/final_data/data_imp_pmm_m1.RData")
-load("~/data_endireh/TVIV.RData")
+load("~/ipv_risk_factors/data/final_data/data_imp_pmm_m1.RData") # main data
+load("~/data_endireh/TVIV.RData") # TVIV for weights
+shape_data <- st_read(dsn = paste0("/Users/clara/Desktop/master_thesis/data/marco_geoestadistico/889463770541_s/mg2022_integrado/conjunto_de_datos/00ent.shp"))
+
+## Directory save --------
+save_directory <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/results/plots/"
 
 ## Rename data -----
 data <- data_imp_pmm_m1
@@ -23,16 +29,16 @@ data <- data %>%
 ## Add relevant columns -----
 # Thereof: UPM_DIS (TVIV), EST_DIS (TVIV)
 data <- data %>%
-  left_join(TVIV %>% select(c("UPM_DIS", "EST_DIS", "ID_VIV", "NOM_ENT")), by = ("ID_VIV"))
-
-#data <- data %>%
-  #left_join(TB_SEC_IVaVD %>% select(c("FAC_MUJ", "ID_PER")), by = c("ID_PER"))
+  left_join(TVIV %>% select(c("UPM_DIS", "EST_DIS", "ID_VIV", "NOM_ENT", "CVE_ENT")), by = c("ID_VIV", "CVE_ENT"))
 
 ## Modify for design
 data$women <- ifelse((data$T_INSTRUM%in%c('A1','A2')), 1, 0) 
 data$vio_emo_año_numeric <- as.numeric(data$vio_emo_año)
 data <- data %>%
   mutate(vio_emo_año_numeric = ifelse(vio_emo_año_numeric == 2, 1,0))
+
+## Modify shape data
+shapefile_df <- st_transform(shape_data, crs = st_crs(4326))
 
 # Prevalence -----
 
@@ -45,10 +51,6 @@ design <- subset(design, subset = !(EST_DIS %in% c("0567", "0356", "0550"))) # A
 
 # Survey mean
 svymean(~vio_emo_año_numeric, design=design)
-
-# Prepare por results
-prevalence <- vector(mode = "list")
-
 
 # National Prevalence 
 prevalence_national <- svyratio(~vio_emo_año_numeric, denominator=~women, design, na.rm = TRUE)  
@@ -64,7 +66,7 @@ colnames(prevalence_state)[3] <- "se"
 prevalence_state$NOM_ENT <- str_to_title(tolower(prevalence_state$NOM_ENT))
 prevalence_state$NOM_ENT <- factor(prevalence_state$NOM_ENT, levels = prevalence_state$NOM_ENT[order(prevalence_state$prevalence, decreasing = TRUE)])
 
-# Plot
+# Plot 
 prevalence_line_plot <- ggplot(prevalence_state, aes(x = NOM_ENT, y = prevalence)) +
   geom_vline(aes(xintercept = NOM_ENT), linetype = "dashed", color = "gray") +
   geom_point(color = "#620042") +
@@ -83,13 +85,37 @@ prevalence_line_plot <- ggplot(prevalence_state, aes(x = NOM_ENT, y = prevalence
         legend.position = c(0.95, 0.95),  # Adjust the position as needed
         legend.justification = c(1, 1),
         legend.box.just = "right")
-
 prevalence_line_plot
-# Specify the directory to save the plots
-save_directory <- "~/ipv_risk_factors/results/plots/"
 
-# Save the plots
-ggsave(plot = prevalence_line_plot, filename = "prevalence_line_plot.png", path = save_directory, width = 15, height = 8) # Save the plot file by copying it
+# Plot map
+
+# Get prevalence state again (for CVE_ENT)
+prevalence_state  <- svyby(~vio_emo_año_numeric, denominator=~women, by=~CVE_ENT,
+                           design, svyratio, na.rm = TRUE) 
+
+# Modify
+prevalence_state <- as.data.frame(prevalence_state)  
+colnames(prevalence_state)[2] <- "prevalence"
+colnames(prevalence_state)[3] <- "se"
+
+# Left join
+prevalence <- shapefile_df %>%
+  left_join(prevalence_state, by = c("CVE_ENT"))
+
+# Plot
+prevalence_map_plot <- ggplot() +
+  geom_sf(data = prevalence, aes(fill = prevalence), color = "black") +
+  geom_sf_label(data = prevalence, aes(label = CVE_ENT),
+                fill = "violet", size = 1.5, nudge_y = 0.02, parse = TRUE) +
+  scale_fill_gradient2("Emotional IPV Prevalence",high = "#2e0b57", 
+                       limits= c(0,0.3), 
+                       breaks = c(0, 0.1, 0.2,0.3),
+                       labels = c("0", "0.1", "0.2","0.3")) +
+  theme_void() 
+
+
+# Save the plots -----
+ggsave(plot = prevalence_map_plot, filename = "prevalence_map_plot.png", path = save_directory, width = 15, height = 8) # Save the plot file by copying it
 
 
 
