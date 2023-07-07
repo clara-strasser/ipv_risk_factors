@@ -18,6 +18,7 @@ load(paste0(path_data, "data_imp_pmm_m1.RData")) # main data
 
 ## Change data name -----
 data <- data_imp_pmm_m1
+data <- data_no_imp
 rm(data_imp_pmm_m1)
 
 ## Prepare data ------
@@ -38,6 +39,8 @@ numerical_var_names <- c("num_hij", "ingm_muj", "EDAD", "eda_hij", "eda_sex", "e
                          "phogjef_f", "ParPolF", "ghr20", "mhr20", "fhr20", "MasNoDen", "FemNoDen", "MasPrev",
                          "FemPrev", "cor19", "satis19", "lon", "lat", "log_ingm_muj", "log_ingm_par",
                          "edad_dif")
+data <- data %>%
+  mutate_at(vars(all_of(numerical_var_names)), as.numeric)
 for(i in c(numerical_var_names)){
   data[, i] <- scale(data[, i], center = TRUE, scale = FALSE)
 } 
@@ -71,6 +74,7 @@ modelemoipv <- gamboost(model, # model specification
                                                                              # it assists in accounting for the base rate of occurrence and can be particularly useful when the data is imbalanced or when specific prior knowledge about the prevalence is available.
                         family = Binomial(link = "probit")) # family and link function for the GAM
 save(modelemoipv_mboost5000,  file = "../model_boosting/modelemoipv_mboost5000.RData")
+save(modelemoipv,  file = "/Users/clara/Desktop/models/modelemoipv_mboost5000_nonimputed.RData")
 
 # Inspect
 # Number of boosting iterations: mstop = 2000 
