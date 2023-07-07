@@ -84,11 +84,30 @@ prevalence_line_plot <- ggplot(prevalence_state, aes(x = NOM_ENT, y = prevalence
         legend.justification = c(1, 1),
         legend.box.just = "right")
 
+prevalence_line_plot
 # Specify the directory to save the plots
 save_directory <- "~/ipv_risk_factors/results/plots/"
 
 # Save the plots
-ggsave(plot = prevalence_line_plot, filename = "prevalence_line_plot.png", path = save_directory) # Save the plot file by copying it
+ggsave(plot = prevalence_line_plot, filename = "prevalence_line_plot.png", path = save_directory, width = 15, height = 8) # Save the plot file by copying it
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
