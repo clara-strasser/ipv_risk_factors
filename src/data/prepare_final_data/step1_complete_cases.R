@@ -133,20 +133,4 @@ step1_endireh <- step1_endireh %>%
 save(step1_endireh, file = paste0(path_save,"step1_endireh.RData"))
 
 
-### Variant 2: Classification and Regression Trees -----
-
-# Use "classification and regression trees" (cart) to impute missing values
-step1_df_alt <- mice(endireh_2021, m=1, maxit = 5, meth = "cart", seed=800)
-
-# Create complete data set
-step1_endireh_alt <- complete(step1_df_alt, 1)
-
-# Test
-summary(endireh_2021)
-summary(step1_endireh_alt)
-densityplot(step1_df_alt) # for continuous
-propplot(step1_df_alt) # for factors
-
-# Save data
-save(step1_endireh_alt, file = paste0(path_save,"step1_endireh_alt.RData"))
 

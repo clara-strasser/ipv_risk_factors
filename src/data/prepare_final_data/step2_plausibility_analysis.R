@@ -21,7 +21,7 @@ data <- step1_endireh
 
 
 # Part I: Implausible Results ---------
-# Initial data set: 63152
+# Initial data set: 63.152
 
 # Create an empty vector to store implausible IDs
 implausible <- integer()

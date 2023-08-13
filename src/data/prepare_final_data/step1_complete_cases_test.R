@@ -20,7 +20,7 @@ path_save <- "/Users/clara/Desktop/master_thesis/plots/descriptives/imputed_vs_n
 ## Load data -------
 load(paste0(path, "endireh_2021.RData")) # main data set
 load(paste0(path_data, "step1_endireh.RData"))
-load(paste0(path_data, "step1_endireh_alt.RData"))
+
 
 ## Prepare data -----
 

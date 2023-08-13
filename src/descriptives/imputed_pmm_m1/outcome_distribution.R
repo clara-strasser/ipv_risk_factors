@@ -63,7 +63,7 @@ bar_chart_vio_emo_año <- ggplot(freq_df, aes(x = category, y = Freq_per, fill =
         legend.justification = c(1,1),
         legend.box.just = "right") +
   scale_y_continuous(breaks = seq(0, 100, by = 10), limits = c(0, 100)) +
-  geom_text(aes(label = paste0("n = ", Freq)), vjust = -0.5) +
+  #geom_text(aes(label = paste0("n = ", Freq)), vjust = -0.5) +
   guides(fill = guide_legend(title = "Categories"))
 
 # Save the ggplot as a PNG image
