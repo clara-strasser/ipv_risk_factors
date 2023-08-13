@@ -7,6 +7,7 @@ library(dplyr)
 library(tidyr)
 library(purrr)
 library(scales)
+library(ggplot2)
 
 
 ## Set path -----
