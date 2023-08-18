@@ -12,18 +12,22 @@ library(ggplot2)
 library(scales)
 library(xtable)
 library(psych)
+library(tabular)
 
 
 ## Set path -----
-path <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/"
+path <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/prep_data_robustness/"
 path_save <- "/Users/clara/Desktop/master_thesis/plots/descriptives/"
 
 
 ## Load data -------
-load(paste0(path, "emo_ipv_final.RData")) # main data set
+load(paste0(path, "step3_endireh.RData")) # main data set
+
+## Change data name -----
+data <- step3_endireh
 
 ## Summary Stat --------
-summary(emo_ipv_final)
+summary(data)
 
 ## Create vectors -----
 individual_num <- c("EDAD","ingm_muj","num_hij", "eda_hij", "eda_sex", "eda_mat")
@@ -39,22 +43,22 @@ society_num <- c("MasPrev", "FemPrev", "MasNoDen", "FemNoDen", "cor19", "satis19
 
 
 # Convert to numerical
-emo_ipv_final[individual_num] <- lapply(emo_ipv_final[individual_num], as.numeric)
-emo_ipv_final[community_num] <- lapply(emo_ipv_final[community_num], as.numeric)
-emo_ipv_final[society_num] <- lapply(emo_ipv_final[society_num], as.numeric)
+data[individual_num] <- lapply(data[individual_num], as.numeric)
+data[community_num] <- lapply(data[community_num], as.numeric)
+data[society_num] <- lapply(data[society_num], as.numeric)
 
 
 # Summary Stat: Continuous Variables ------
 
 ## Individual Risk Factors ------
 summary_stats_individual <- data.frame(
-  SD = apply(emo_ipv_final[individual_num], 2, sd),
-  Min. = apply(emo_ipv_final[individual_num], 2, min),
-  Q1 = apply(emo_ipv_final[individual_num], 2, quantile, probs = 0.25),
-  Median = apply(emo_ipv_final[individual_num], 2, median),
-  Mean = apply(emo_ipv_final[individual_num], 2, mean),
-  Q3 = apply(emo_ipv_final[individual_num], 2, quantile, probs = 0.75),
-  Max. = apply(emo_ipv_final[individual_num], 2, max)
+  SD = apply(data[individual_num], 2, sd),
+  Min. = apply(data[individual_num], 2, min),
+  Q1 = apply(data[individual_num], 2, quantile, probs = 0.25),
+  Median = apply(data[individual_num], 2, median),
+  Mean = apply(data[individual_num], 2, mean),
+  Q3 = apply(data[individual_num], 2, quantile, probs = 0.75),
+  Max. = apply(data[individual_num], 2, max)
 )
 
 # Convert DataFrame to LaTeX table
@@ -66,13 +70,13 @@ print(latex_table_ind)
 
 ## Relationship Risk Factors ------
 summary_stats_relationship <- data.frame(
-  SD = apply(emo_ipv_final[relationship_num], 2, sd),
-  Min. = apply(emo_ipv_final[relationship_num], 2, min),
-  Q1 = apply(emo_ipv_final[relationship_num], 2, quantile, probs = 0.25),
-  Median = apply(emo_ipv_final[relationship_num], 2, median),
-  Mean = apply(emo_ipv_final[relationship_num], 2, mean),
-  Q3 = apply(emo_ipv_final[relationship_num], 2, quantile, probs = 0.75),
-  Max. = apply(emo_ipv_final[relationship_num], 2, max)
+  SD = apply(data[relationship_num], 2, sd),
+  Min. = apply(data[relationship_num], 2, min),
+  Q1 = apply(data[relationship_num], 2, quantile, probs = 0.25),
+  Median = apply(data[relationship_num], 2, median),
+  Mean = apply(data[relationship_num], 2, mean),
+  Q3 = apply(data[relationship_num], 2, quantile, probs = 0.75),
+  Max. = apply(data[relationship_num], 2, max)
 )
 
 # Convert DataFrame to LaTeX table
@@ -84,13 +88,13 @@ print(latex_table_relationship)
 
 ## Community Risk Factors ------
 summary_stats_community <- data.frame(
-  SD = apply(emo_ipv_final[community_num], 2, sd),
-  Min. = apply(emo_ipv_final[community_num], 2, min),
-  Q1 = apply(emo_ipv_final[community_num], 2, quantile, probs = 0.25),
-  Median = apply(emo_ipv_final[community_num], 2, median),
-  Mean = apply(emo_ipv_final[community_num], 2, mean),
-  Q3 = apply(emo_ipv_final[community_num], 2, quantile, probs = 0.75),
-  Max. = apply(emo_ipv_final[community_num], 2, max)
+  SD = apply(data[community_num], 2, sd),
+  Min. = apply(data[community_num], 2, min),
+  Q1 = apply(data[community_num], 2, quantile, probs = 0.25),
+  Median = apply(data[community_num], 2, median),
+  Mean = apply(data[community_num], 2, mean),
+  Q3 = apply(data[community_num], 2, quantile, probs = 0.75),
+  Max. = apply(data[community_num], 2, max)
 )
 
 # Convert DataFrame to LaTeX table
@@ -102,13 +106,13 @@ print(latex_table_community)
 
 ## Society Risk Factors ------
 summary_stats_society <- data.frame(
-  SD = apply(emo_ipv_final[society_num], 2, sd),
-  Min. = apply(emo_ipv_final[society_num], 2, min),
-  Q1 = apply(emo_ipv_final[society_num], 2, quantile, probs = 0.25),
-  Median = apply(emo_ipv_final[society_num], 2, median),
-  Mean = apply(emo_ipv_final[society_num], 2, mean),
-  Q3 = apply(emo_ipv_final[society_num], 2, quantile, probs = 0.75),
-  Max. = apply(emo_ipv_final[society_num], 2, max)
+  SD = apply(data[society_num], 2, sd),
+  Min. = apply(data[society_num], 2, min),
+  Q1 = apply(data[society_num], 2, quantile, probs = 0.25),
+  Median = apply(data[society_num], 2, median),
+  Mean = apply(data[society_num], 2, mean),
+  Q3 = apply(data[society_num], 2, quantile, probs = 0.75),
+  Max. = apply(data[society_num], 2, max)
 )
 
 # Convert DataFrame to LaTeX table
@@ -131,7 +135,7 @@ summary_stats_individual <- data.frame(
 )
 
 for (var in individual_cat) {
-  var_counts <- table(emo_ipv_final[[var]])
+  var_counts <- table(data[[var]])
   var_perc <- var_counts / sum(var_counts) * 100
   
   var_summary <- data.frame(
@@ -162,7 +166,7 @@ summary_stats_relationship <- data.frame(
 )
 
 for (var in relationship_cat) {
-  var_counts <- table(emo_ipv_final[[var]])
+  var_counts <- table(data[[var]])
   var_perc <- var_counts / sum(var_counts) * 100
   
   var_summary <- data.frame(
@@ -194,7 +198,7 @@ summary_stats_community <- data.frame(
 )
 
 for (var in community_cat) {
-  var_counts <- table(emo_ipv_final[[var]])
+  var_counts <- table(data[[var]])
   var_perc <- var_counts / sum(var_counts) * 100
   
   var_summary <- data.frame(
