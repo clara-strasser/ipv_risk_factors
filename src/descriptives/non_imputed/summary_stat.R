@@ -12,7 +12,7 @@ library(ggplot2)
 library(scales)
 library(xtable)
 library(psych)
-library(tabular)
+
 
 
 ## Set path -----
@@ -85,7 +85,6 @@ latex_table_relationship <- xtable::xtable(summary_stats_relationship, caption =
 # Print
 print(latex_table_relationship)
 
-
 ## Community Risk Factors ------
 summary_stats_community <- data.frame(
   SD = apply(data[community_num], 2, sd),
@@ -121,6 +120,8 @@ latex_table_society <- xtable::xtable(summary_stats_society, caption = "Summary 
 # Print
 print(latex_table_society)
 
+## Combine ----
+combine_table <- rbind(latex_table_ind, latex_table_relationship, latex_table_community, latex_table_society)
 
 # Summary Stat: Categorical Variables ------
 
@@ -217,6 +218,9 @@ latex_table_community <- xtable::xtable(summary_stats_community, caption = "Summ
 
 # Print
 print(latex_table_community)
+
+## Combine ----
+combine_table <- rbind(latex_table_individual, latex_table_relationship, latex_table_community)
 
 
 
