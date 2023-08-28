@@ -40,8 +40,6 @@ model <- vio_emo_año ~
   
   bols(desempleo, intercept = FALSE, df = 1) + 
   
-  bols(extr_inf, intercept = FALSE, df = 1) + 
-  
   bols(pareja_prev, intercept = FALSE, df = 1) + 
   
   bols(vio_inf, intercept = FALSE, df = 1) + 
@@ -189,7 +187,7 @@ model <- vio_emo_año ~
 # 2.) Inclusion of further controls
 # 3.) Inclusion of terms in the interaction as parallel effects
 # 4.) Exclusion of multicollinear variables
-model2 <- vio_emo_año ~ 
+model <- vio_emo_año ~ 
   
   bols(intercept, intercept = FALSE) +  
   
@@ -214,8 +212,6 @@ model2 <- vio_emo_año ~
   bols(cct_rec, intercept = FALSE, df = 1) +
   
   bols(desempleo, intercept = FALSE, df = 1) + 
-  
-  bols(extr_inf, intercept = FALSE, df = 1) + 
   
   bols(pareja_prev, intercept = FALSE, df = 1) + 
   
