@@ -16,7 +16,7 @@ load(paste0(path_data, "data_imp_pmm_m1.RData")) # main data
 ## Change name ------
 data <- data_imp_pmm_m1
 # for non-missing: data <- data_no_imp
-
+# for robustness: data <- data_imp_pmm_m1_rob
 ## Explore ------
 n_distinct(data$ID_PER)
 n_distinct(data$ID_VIV)
