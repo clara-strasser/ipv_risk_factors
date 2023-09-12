@@ -41,7 +41,7 @@ numerical_var_names <- c("num_hij", "ingm_muj", "EDAD", "eda_hij", "eda_sex", "e
                          "ingm_par", "POB_TOT", "pres_2020_f", "pres_2020_m", "gini20", "idh2020", "pea_f", "pea_m",
                          "phogjef_f", "ParPolF", "ghr20", "mhr20", "fhr20", "MasNoDen", "FemNoDen", "MasPrev",
                          "FemPrev", "cor19", "satis19", "lon", "lat", "log_ingm_muj", "log_ingm_par",
-                         "edad_dif")
+                         "edad_dif", "ingm_dif")
 data <- data %>%
   mutate_at(vars(all_of(numerical_var_names)), as.numeric)
 for(i in c(numerical_var_names)){
@@ -76,7 +76,7 @@ modelemoipv <- gamboost(model, # model specification
                                                                              # offset used to account for the baseline prevalence of IPV in the population.
                                                                              # it assists in accounting for the base rate of occurrence and can be particularly useful when the data is imbalanced or when specific prior knowledge about the prevalence is available.
                         family = Binomial(link = "probit")) # family and link function for the GAM
-save(modelemoipv,  file = "model2.RData")
+save(modelemoipv,  file = "model1_1.RData")
 #save(modelemoipv,  file = "/Users/clara/Desktop/models/model1.RData")
 
 # Inspect
