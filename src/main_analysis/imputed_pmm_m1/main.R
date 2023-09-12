@@ -23,11 +23,14 @@ rm(data_imp_pmm_m1)
 
 ## Prepare data ------
 
+### Income difference -----
+data <- data %>%
+  mutate(ingm_dif = ingm_par - ingm_muj)
+
 ### Log transform -----
 data <- data %>%
   mutate(log_ingm_muj = log1p(ingm_muj),
          log_ingm_par = log1p(ingm_par))
-
 
 ### Age difference -------
 data <- data %>%
