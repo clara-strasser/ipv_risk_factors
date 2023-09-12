@@ -187,7 +187,7 @@ model <- vio_emo_año ~
 # 2.) Inclusion of further controls
 # 3.) Inclusion of terms in the interaction as parallel effects
 # 4.) Exclusion of multicollinear variables
-# 5.) Inclusion of "ingm_dif" instead of linear and spatial effects
+# 5.) Inclusion of "ingm_dif" instead of linear and spatial effects for "ingm_muj" and "ingm_par"
 
 model <- vio_emo_año ~ 
   
