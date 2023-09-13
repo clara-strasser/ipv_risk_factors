@@ -1,4 +1,4 @@
-###########################  Factor Analysis ###########################
+####################### Confirmatory Factor Analysis ###########################
 
 # Initiate -----
 
@@ -7,8 +7,7 @@ library(dplyr)
 library(tidyr)
 library(purrr)
 library(corrplot)
-library(psych)
-library(GPArotation)
+library(lavaan)
 
 ## Set path -----
 path <- "/Users/clara/Desktop/master_thesis/data/"
@@ -52,63 +51,51 @@ data <- data %>%
 data <- data %>%
   mutate_at(vars(all_of(vio_emo)), ~factor(.x, levels = c("1", "2", "3", "4")))
 
-# Correlation Plot ------
-
 # Convert columns to numeric
 data <- data %>%
   mutate_at(vars(all_of(vio_emo)), as.numeric)
-
-# Plot
-corr <- cor(na.omit(data[, vio_emo]))
-corrplot(corr)
-
-
-# Factor Analysis ------
 
 # Remove columns
 factor_data <- data %>%
   select(-c("ID_VIV", "ID_PER", "CVE_ENT", "CVE_MUN", "T_INSTRUM"))
 
-# Randomly split data in half
-smp_size <- floor(0.7 * nrow(factor_data))
-set.seed(123)
-factor_ind <- sample(seq_len(nrow(factor_data)), size = smp_size)
-factor_data_train <- factor_data[factor_ind, ]
-factor_data_test <- factor_data[-factor_ind, ]
+# Confirmatory Factor Analysis ------
 
-## Set optimal number of factors -----
+# Keep columns
+# Your vector of values
+values <- c("P14_3_10", "P14_3_11", "P14_3_12", "P14_3_13", "P14_3_14", "P14_3_15",
+            "P14_3_16", "P14_3_17", "P14_3_18", "P14_3_19", "P14_3_20", "P14_3_21",
+            "P14_3_22", "P14_3_23AB", "P14_3_24AB")
 
-# 1) Parallel Analysis
-# Results: 3
-fa.parallel(factor_data, fa = "pc") # use principal component
+# Concatenate the values with a plus sign between each value
+result <- paste(values, collapse = " + ")
 
-# 2) Eigenvalues, Criterium of Kaiser
-# Results: 3
-ev <- eigen(cor(na.omit(factor_data)))
-ev$values
-
-# 3) Scree Plot
-# Results: 3
-scree(factor_data, pc = FALSE)
-
-# Overall result: three factors seem reasonable
-
-# Factor analysis with 2 factors, oblique rotation, estimation with maximum-likelihood
-f <- fa(factor_data, nfactors = 3, rotate = "oblimin")
-fa.organize(f)
-fa.diagram(f, main = "Factor analysis with three factors and ML estimation")
+# Print the result
+cat(result)
 
 
+## One-Factor Model ------
 
-f_train <- fa(factor_data_train, nfactors = 3, rotate = "oblimin")
-fa.organize(f_train)
-fa.diagram(f_train, main = "Factor analysis with three factors and ML estimation")
+# Model
+one_fac_model <- "psych_vio =~ P14_3_10 + P14_3_11 + P14_3_12 +
+P14_3_13 + P14_3_14 + P14_3_15 + P14_3_16 + P14_3_17 + P14_3_18 + 
+P14_3_19 + P14_3_20 + P14_3_21 + P14_3_22 + P14_3_23AB + P14_3_24AB"
 
+# Fit
+fit_one <- cfa(one_fac_model, data = factor_data_test)
 
+# Results
+summary(fit_one)
 
+## Two-Factor Model ------
 
+## Three-Factor Model ------
+three_fac_model <- "emo_abuse =~ P14_3_10 + P14_3_11 + P14_3_13 + P14_3_14 + P14_3_23AB + P14_3_24AB
+                 threats =~ P14_3_15 + P14_3_18 + P14_3_19 + P14_3_20
+                  surv =~ P14_3_12 + P14_3_16 + P14_3_17 + P14_3_22"
 
+# Fit
+fit_three <- cfa(three_fac_model, data = factor_data_test)
 
-
-
-
+# Results
+summary(fit_three, fit.measures = TRUE)
