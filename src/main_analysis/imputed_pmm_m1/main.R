@@ -76,7 +76,7 @@ modelemoipv <- gamboost(model, # model specification
                                                                              # offset used to account for the baseline prevalence of IPV in the population.
                                                                              # it assists in accounting for the base rate of occurrence and can be particularly useful when the data is imbalanced or when specific prior knowledge about the prevalence is available.
                         family = Binomial(link = "probit")) # family and link function for the GAM
-save(modelemoipv,  file = "model1_1.RData")
+save(modelemoipv,  file = "model1.RData")
 #save(modelemoipv,  file = "/Users/clara/Desktop/models/model1.RData")
 
 # Inspect
@@ -89,7 +89,7 @@ coef(modelemoipv)
 names(coef(modelemoipv))
 summary(modelemoipv)
 par(mfrow = c(1,4))
-plot(modelemoipv)
+plot(modelemoipv, which ="mot_mat")
 
 ### Resampling Method ---------
 
@@ -140,9 +140,9 @@ save(stabselemoipv,  file = "stabsel2.RData")
 confintemoipv <- confint(modelemoipv, B = 1000, 
                          level = 0.95, B.mstop = 0,
                          papply = mclapply, 
-                         cvrisk_options = list(mc.cores = 25))
+                         cvrisk_options = list(mc.cores = 20))
 
 # Save
-save(modelemoipv,  file = "../modelemoipv.RData")
+save(confintemoipv,  file = "confintemoipv1.RData")
 save(cvm,  file = "../cvm.RData")
 #save(confintemoipv, stabselemoipv, modelemoipv, stopemoipv, cvemoipv, file = "estimation_ipv.RData")
