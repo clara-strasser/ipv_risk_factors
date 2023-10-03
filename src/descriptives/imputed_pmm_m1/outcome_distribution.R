@@ -46,7 +46,7 @@ freq_df$category <- fct_reorder(freq_df$category, freq_df$Freq_per, .desc = TRUE
 bar_chart_vio_emo_año <- ggplot(freq_df, aes(x = category, y = Freq_per, fill = category)) +
   geom_bar(stat = "identity") +
   scale_fill_manual(values = c("no" = "#002b58", "yes" = "#620042")) +
-  labs(x = "Emotional Intimate Partner Violence Occurrence", y = "Relative Frequency (%)") +
+  labs(x = "Psychological Intimate Partner Violence Occurrence", y = "Relative Frequency (%)") +
   theme_minimal() +
   theme(panel.grid = element_blank(),
         panel.border = element_blank(),

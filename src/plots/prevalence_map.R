@@ -40,8 +40,8 @@ data <- TB_SEC_IVaVD[,variables]
     #muj$P14_3_35AB %in% c('1', '2', '3') | muj$P14_3_36AB %in% c('1', '2', '3') |
     #muj$P14_3_37AB %in% c('1', '2', '3') | muj$P14_3_38AB %in% c('1', '2', '3'), 1, 0) # for total IPV
 data$vpar_12m_con <- ifelse(
-  apply(muj[, paste0("P14_3_", c(10:22))], 1, function(row) any(row %in% c('1', '2', '3'))) |
-  muj$P14_3_23AB %in% c('1', '2', '3') | muj$P14_3_24AB %in% c('1', '2', '3'), 1, 0) # for emotional IPV
+  apply(data[, paste0("P14_3_", c(10:22))], 1, function(row) any(row %in% c('1', '2', '3'))) |
+  data$P14_3_23AB %in% c('1', '2', '3') | data$P14_3_24AB %in% c('1', '2', '3'), 1, 0) # for emotional IPV
   
 
 ## Women subset -----
@@ -82,7 +82,7 @@ prevalence_line_plot <- ggplot(prevalence_state, aes(x = NOM_ENT, y = prevalence
   geom_vline(aes(xintercept = NOM_ENT), linetype = "dashed", color = "gray") +
   geom_point(color = "#620042") +
   geom_errorbar(aes(ymin = Lower_CI, ymax = Upper_CI), width = 0.2, color = "#620042") +
-  labs(x = "Federal State", y = "State Level Prevalence of Emotional IPV") +
+  labs(x = "Federal State", y = "State Level Prevalence of Psychological IPV") +
   theme_minimal() +
   theme(axis.line = element_line(color = "black"),
         axis.title = element_text(size = 16),
@@ -117,9 +117,9 @@ prevalence <- shapefile_df %>%
 # Plot
 prevalence_map_plot <- ggplot() +
   geom_sf(data = prevalence, aes(fill = prevalence), color = "black") +
-  geom_sf_label(data = prevalence, aes(label = CVE_ENT),
-                fill = "violet", size = 2, nudge_y = 0.02, parse = TRUE) +
-  scale_fill_gradient2("Emotional IPV Prevalence",high = "#1a0946", 
+  #geom_sf_label(data = prevalence, aes(label = CVE_ENT),
+                #fill = "violet", size = 2, nudge_y = 0.02, parse = TRUE) +
+  scale_fill_gradient2("Psychological IPV Prevalence",high = "#1a0946", 
                        limits= c(0,0.5), 
                        breaks = c(0, 0.1, 0.2,0.3,0.4,0.5),
                        labels = c("0", "0.1", "0.2","0.3", "0.4", "0.5")) +
