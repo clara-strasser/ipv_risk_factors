@@ -137,10 +137,14 @@ end_time<- Sys.time()
 save(stabselemoipv,  file = "stabsel2.RData")
 
 ### Pointwise bootstrap confidence intervals -------
-confintemoipv <- confint(modelemoipv, B = 1000, 
+start_time <- Sys.time()
+confintemoipv <- confint(modelemoipv,  B = 1000, 
                          level = 0.95, B.mstop = 0,
                          papply = mclapply, 
-                         cvrisk_options = list(mc.cores = 20))
+                         mc.cores = parallel::detectCores(),
+                         cvrisk_options = list(mc.cores = parallel::detectCores()))
+end_time<- Sys.time()
+save(confintemoipv,  file = "confintemoipv.RData")
 
 # Save
 save(confintemoipv,  file = "confintemoipv1.RData")
