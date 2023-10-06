@@ -11,96 +11,64 @@ library(parallel)
 library(stabs)
 
 ## Set path -----
-path_data <- "" # include
+path_data <- "" # include path
 
 ## Load data -------
 load(paste0(path_data, "confintemoipv.RData")) # include confidence interval info from confint()
 
-# Coefficients -----
+## Load function -----
+source("") # include path
+
+# CI -----
+
+## Table ------
+
+# Create a list of the factor variables
+which_values <- c(14, 16, 17, 18, 26, 32, 36, 37, 40, 41, 44, 46, 51, 52)
+
+# Initialize an empty list to store the results
+result_list <- list()
+
+# Loop through each which value and call the conf_table function
+for (which_value in which_values) {
+  result_list[[as.character(which_value)]] <- conf_table(confintemoipv, which = which_value)
+}
+
+# Combine the results into a single data frame
+result_df <- do.call(rbind, result_list)
+
+# Print the resulting data frame
+print(result_df)
+
 
 ## Plot ------
 
-# Individual Level:
-# Unemployment - 14
-plot(confintemoipv, which =14, col = "#002b58", xlab="Unemployment")
-# Vio Inf - 16
-plot(confintemoipv, which =16, col = "#002b58", xlab="Violence Witnessed in Childhood")
-# Vio Inf Exp - 17
-plot(confintemoipv, which =17, col = "#002b58", xlab="Violence Experienced in Childhood")
-# Sex Vio Inf Exp - 17
-plot(confintemoipv, which =18, col = "#002b58", xlab="Sexual Violence Experienced in Childhood")
-# Consent to Sex - 26
-plot(confintemoipv, which =26, col = "#002b58", xlab="Consent to Sex at First Sexual Intercourse")
-# Eda Sex - 27
-plot(confintemoipv, which =27, col = "#002b58", xlab="Women's Age at First Sexual Intercourse by Consent to Sex Yes")
-# Con Marr - 32
-plot(confintemoipv, which =32, col = "#002b58", xlab="Consent to Current Marriage or Cohabitation")
+# Define Plots
+plots <- list(
+  list(which = 14, xlab = "Unemployment"),
+  list(which = 16, xlab = "Violence Witnessed in Childhood"),
+  list(which = 17, xlab = "Violence Experienced in Childhood"),
+  list(which = 18, xlab = "Sexual Violence Experienced in Childhood"),
+  list(which = 26, xlab = "Consent to Sex at First Sexual Intercourse"),
+  list(which = 27, xlab = "Women's Age at First Sexual Intercourse by Consent to Sex Yes"),
+  list(which = 32, xlab = "Consent to Current Marriage or Cohabitation"),
+  list(which = 36, xlab = "Violence Witnessed by Partner in Childhood"),
+  list(which = 37, xlab = "Violence Experienced by Partner in Childhood"),
+  list(which = 40, xlab = "Division of Housework Among Both"),
+  list(which = 41, xlab = "Division of Housework Among Men"),
+  list(which = 44, xlab = "Woman’s Level Autonomy about Sex Life Medium"),
+  list(which = 46, xlab = "Woman’s Level Autonomy about Economic Resources Medium"),
+  list(which = 51, xlab = "Women’s Perception About Support from Social Network High"),
+  list(which = 52, xlab = "Level of Social Interaction Medium"),
+  list(which = 85, xlab = "Share of Non-Reported Common Crimes Against Men")
+)
 
-# Relationship Level:
-
-# Vio inf par - 36
-plot(confintemoipv, which =36, col = "#002b58", xlab="Violence Witnessed by Partner in Childhood")
-# Vio exp par - 37
-plot(confintemoipv, which =37, col = "#002b58", xlab="Violence Experienced by Partner in Childhood")
-# Div both - 40
-plot(confintemoipv, which =40, col = "#002b58", xlab="Division of Housework Among Both")
-# Div men - 41
-plot(confintemoipv, which =41, col = "#002b58", xlab="Division of Housework Among Men")
-# Aut sex med - 44
-plot(confintemoipv, which =44, col = "#002b58", xlab="Woman’s Level Autonomy about Sex Life Medium")
-# Aut eco med - 46 
-plot(confintemoipv, which =46, col = "#002b58", xlab="Woman’s Level Autonomy about Economic Resources Medium")
-# Sup high - 51
-plot(confintemoipv, which =51, col = "#002b58", xlab="Women’s Perception About Support from Social Network High")
-# Soc med - 52
-plot(confintemoipv, which =52, col = "#002b58", xlab="Level of Social Interaction Medium")
-
-# Societal Level
-
-# share non rep - 85 
-plot(confintemoipv, which =85, col = "#002b58", xlab="Share of Non Reported Common Crimes Against Men")
-
-
-
-# Set the layout for the subplots (5 rows, 3 columns)
-par(mfrow = c(6, 3))
-
-# Create and arrange your plots in a grid
-plot1 <- plot(confintemoipv, which = 14, col = "#002b58", xlab = "Unemployment")
-plot2 <- plot(confintemoipv, which = 16, col = "#002b58", xlab = "Violence Witnessed in Childhood")
-plot3 <- plot(confintemoipv, which = 17, col = "#002b58", xlab = "Violence Experienced in Childhood")
-plot4 <- plot(confintemoipv, which = 18, col = "#002b58", xlab = "Sexual Violence Experienced in Childhood")
-plot5 <- plot(confintemoipv, which = 26, col = "#002b58", xlab = "Consent to Sex at First Sexual Intercourse")
-plot6 <- plot(confintemoipv, which = 27, col = "#002b58", xlab = "Women's Age at First Sexual Intercourse by Consent to Sex Yes")
-plot7 <- plot(confintemoipv, which = 32, col = "#002b58", xlab = "Consent to Current Marriage or Cohabitation")
-plot8 <- plot(confintemoipv, which = 36, col = "#002b58", xlab = "Violence Witnessed by Partner in Childhood")
-plot9 <- plot(confintemoipv, which = 37, col = "#002b58", xlab = "Violence Experienced by Partner in Childhood")
-plot10 <- plot(confintemoipv, which = 40, col = "#002b58", xlab = "Division of Housework Among Both")
-plot11 <- plot(confintemoipv, which = 41, col = "#002b58", xlab = "Division of Housework Among Men")
-plot12 <- plot(confintemoipv, which = 44, col = "#002b58", xlab = "Woman’s Level Autonomy about Sex Life Medium")
-plot13 <- plot(confintemoipv, which = 46, col = "#002b58", xlab = "Woman’s Level Autonomy about Economic Resources Medium")
-plot14 <- plot(confintemoipv, which = 51, col = "#002b58", xlab = "Women’s Perception About Support from Social Network High")
-plot15 <- plot(confintemoipv, which = 52, col = "#002b58", xlab = "Level of Social Interaction Medium")
-plot16 <- plot(confintemoipv, which = 85, col = "#002b58", xlab = "Share of Non Reported Common Crimes Against Men")
-
-# Arrange the subplots in a grid
-plots_grid <- arrangeGrob(plot1, plot2, plot3, plot4, plot5, plot6, plot7, plot8, plot9,
-                          plot10, plot11, plot12, plot13, plot14, plot15, plot16, ncol = 3)
-
-# Save the combined plot using ggsave
-ggsave(filename = "ci_plots.png",
-       plot = plots_grid,
-       dpi = 600,
-       width = 200, height = 260,
-       units = "mm", device = "png",
-       bg = "transparent")
-
-
-
-
-
-
-
-
-
-
+# Loop through the list of plots and generate and save each plot
+for (plot_info in plots) {
+  # Set up plot parameters
+  filename <- paste("plot", plot_info$which, ".png", sep = "")
+  png(filename, width = 800, height = 800)
+  par(cex.lab = 2.5, cex.axis = 2.5, cex.main = 3, cex.sub = 3, mar = c(6, 6, 4, 2), font = 2 )
+  plot(confintemoipv, which = plot_info$which, col = "#002b58", xlab = plot_info$xlab)
+  dev.off()
+}
