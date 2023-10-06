@@ -38,8 +38,8 @@ for (which_value in which_values) {
 result_df <- do.call(rbind, result_list)
 
 # Print the resulting data frame
+result_df[, 2:3] <- round(result_df[, 2:3], 3)
 print(result_df)
-
 
 ## Plot ------
 
@@ -57,8 +57,8 @@ plots <- list(
   list(which = 40, xlab = "Division of Housework Among Both"),
   list(which = 41, xlab = "Division of Housework Among Men"),
   list(which = 44, xlab = "Woman’s Level Autonomy about Sex Life Medium"),
-  list(which = 46, xlab = "Woman’s Level Autonomy about Economic Resources Medium"),
-  list(which = 51, xlab = "Women’s Perception About Support from Social Network High"),
+  list(which = 46, xlab = "Woman’s Level Autonomy about Economic Res. Medium"),
+  list(which = 51, xlab = "Women’s Social Network Support High"),
   list(which = 52, xlab = "Level of Social Interaction Medium"),
   list(which = 85, xlab = "Share of Non-Reported Common Crimes Against Men")
 )

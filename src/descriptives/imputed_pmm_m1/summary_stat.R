@@ -21,6 +21,7 @@ load(paste0(path_data, "step3_endireh.RData"))
 
 ## Change data name -----
 data <- step3_endireh
+data <- data_imp_pmm_m1
 
 ## Subset not needed -----
 data <- data %>%
