@@ -18,7 +18,7 @@ load(paste0(path_data, "data_imp_pmm_m1.RData")) # main data
 
 ## Change data name -----
 data <- data_imp_pmm_m1
-# data <- data_no_imp
+#data <- data_no_imp2
 rm(data_imp_pmm_m1)
 
 ## Prepare data ------
