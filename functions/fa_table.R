@@ -1,3 +1,6 @@
+############################ EFA Table #############################
+
+
 # Function: fa_table()
 # Aim: Creates a table for the exploratory factor analysis results
 # Source: https://www.anthonyschmidt.co/post/2020-09-27-efa-tables-in-r/

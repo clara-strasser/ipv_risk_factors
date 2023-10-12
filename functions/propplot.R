@@ -1,3 +1,9 @@
+############################ Imputed and Non Imputed Plot #############################
+
+# Aim: Compare proportions in categorical variables between observed and imputed data
+# Source: https://gist.github.com/NErler/0d00375da460dd33839b98faeee2fdab
+
+
 propplot <- function(x, formula, facet = "wrap", ...) {
   library(ggplot2)
   

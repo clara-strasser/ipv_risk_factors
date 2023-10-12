@@ -1,9 +1,9 @@
 ############################ Confidence Intervals #############################
 
-# Source and credits: https://github.com/boost-R/mboost/blob/master/R/confint.R
-# Reason: for gamboost only plots for the confidence intervals can be generated
 # Aim: Print confidence intervals for the specified categorical variables, so they can
 # be included in the table
+# Reason: for gamboost only plots for the confidence intervals can be generated
+# Source and credits: https://github.com/boost-R/mboost/blob/master/R/confint.R
 # Remark: work in progress!
 
 

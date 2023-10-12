@@ -1,9 +1,13 @@
 ######################### Read Data and Save ##################################
 
+# Requirement:
+# Download data set from: https://www.inegi.org.mx/programas/endireh/2021/
+# The data set is saved in my path.
+
 # Prepare ----
 
 ## Set path ----
-path <- "/Users/clara/Desktop/master_thesis/data/"
+path <- "/Users/clara/Desktop/master_thesis/data/" 
 
 ## Load data ----
 load(paste0(path,"bd_endireh_2021.RData"))

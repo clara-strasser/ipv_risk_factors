@@ -1,4 +1,4 @@
-############################ Main Analysis #############################
+############################ Robustness Analysis #############################
 
 
 # Initiate -----
@@ -14,11 +14,11 @@ library(stabs)
 path_data <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/final_data/"
 
 ## Load data -------
-load(paste0(path_data, "data_imp_pmm_m1.RData")) # main data
+load(paste0(path_data, "data_no_imp2.RData")) # main data
 
 ## Change data name -----
-data <- data_imp_pmm_m1
-rm(data_imp_pmm_m1)
+data <- data_no_imp2
+rm(data_no_imp2)
 
 ## Prepare data ------
 
@@ -75,14 +75,9 @@ modelemoipv <- gamboost(model, # model specification
                                                                              # offset used to account for the baseline prevalence of IPV in the population.
                                                                              # it assists in accounting for the base rate of occurrence and can be particularly useful when the data is imbalanced or when specific prior knowledge about the prevalence is available.
                         family = Binomial(link = "probit")) # family and link function for the GAM
-save(modelemoipv,  file = "model1.RData")
+save(modelemoipv,  file = "model2.RData")
 
 # Inspect
-# Number of boosting iterations: mstop = 2000 
-# Step size:  0.5 
-# Offset:  0.09093536 
-# Number of baselearners:  95 
-# Selection frequencies: 
 coef(modelemoipv) 
 names(coef(modelemoipv))
 summary(modelemoipv)
@@ -96,8 +91,8 @@ cvemoipv <- cvrisk(modelemoipv, folds = cv(model.weights(modelemoipv),
                    grid = 1:10000, 
                    papply = mclapply,
                    mc.cores = parallel::detectCores())
-save(cvemoipv,  file = "cv1.RData")
-mstop(cvemoipv) 
+save(cvemoipv,  file = "cv2.RData")
+mstop(cvemoipv)
 plot.cvrisk(cvemoipv)
 
 ### Set optimal mstop ------
@@ -127,7 +122,7 @@ stabselemoipv <- stabsel(modelemoipv,
                          sampling.type = "SS",
                          mc.cores = parallel::detectCores())
 end_time<- Sys.time()
-save(stabselemoipv,  file = "stabsel1.RData")
+save(stabselemoipv,  file = "stabsel2.RData")
 
 ### Pointwise bootstrap confidence intervals -------
 start_time <- Sys.time()
@@ -137,5 +132,5 @@ confintemoipv <- confint(modelemoipv,  B = 1000,
                          mc.cores = parallel::detectCores(),
                          cvrisk_options = list(mc.cores = parallel::detectCores()))
 end_time<- Sys.time()
-save(confintemoipv,  file = "confintemoipv1.RData")
+save(confintemoipv,  file = "confintemoipv2.RData")
 

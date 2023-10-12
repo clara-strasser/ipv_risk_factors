@@ -1,3 +1,9 @@
+############################ Partial Effects #############################
+
+# Aim: Create partial effect plots for the boosting effects.
+# Inspiration source: https://github.com/adamdsmith/NanSound_EcolEvol/blob/master/R/ggplot_effects.R
+
+
 partial_effects <- function(model, data, variables) {
   
   # generate empty plot
