@@ -28,7 +28,7 @@ shapefile_df <- st_transform(shape_data, crs = st_crs(4326))
 ## Set variables -----
 # P14_3<-paste0("P14_3_",1:38); P14_3[c(23,24,35:38)]<-paste0(P14_3[c(23,24,35:38)],"AB") # for total IPV in the last 12 months
 P14_3 <- paste0("P14_3_", c(10:22, "23AB", "24AB")) # for emotional IPV in the last 12 months
-variables <- c("ID_PER","UPM_DIS","EST_DIS","FAC_MUJ","CVE_ENT", "NOM_ENT","T_INSTRUM", P14_3) 
+variables <- c("ID_PER","UPM_DIS","EST_DIS","FAC_MUJ","CVE_ENT", "NOM_ENT","T_INSTRUM", "P13_C_1", P14_3) 
 
 ## Subset data ------
 data <- TB_SEC_IVaVD[,variables] 
@@ -115,15 +115,20 @@ prevalence <- shapefile_df %>%
   left_join(prevalence_state, by = c("CVE_ENT"))
 
 # Plot
+# Filter the data to include only the relevant states
+filtered_prevalence <- prevalence %>%
+  filter(prevalence > 0.4030549 | prevalence < 0.28)
+
+# Create the plot
 prevalence_map_plot <- ggplot() +
   geom_sf(data = prevalence, aes(fill = prevalence), color = "black") +
-  #geom_sf_label(data = prevalence, aes(label = CVE_ENT),
-                #fill = "violet", size = 2, nudge_y = 0.02, parse = TRUE) +
-  scale_fill_gradient2("Psychological IPV Prevalence",high = "#1a0946", 
-                       limits= c(0,0.5), 
-                       breaks = c(0, 0.1, 0.2,0.3,0.4,0.5),
-                       labels = c("0", "0.1", "0.2","0.3", "0.4", "0.5")) +
-  theme_void()+
+  geom_sf_label(data = filtered_prevalence, aes(label = as.character(CVE_ENT)),
+                fill = "violet", size = 3, nudge_y = 0.02, parse = TRUE) +
+  scale_fill_gradient2("Psychological IPV Prevalence", high = "#1a0946",
+                       limits = c(0, 0.5),
+                       breaks = c(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+                       labels = c("0", "0.1", "0.2", "0.3", "0.4", "0.5")) +
+  theme_void() +
   theme(legend.title = element_text(size = 20, face = "bold"),
         legend.text = element_text(size = 13),
         legend.key.size = unit(15, "points"),
