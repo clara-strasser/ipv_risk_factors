@@ -2,9 +2,11 @@
 This project was created for my master thesis at the LMU Munich.
 
 **Thesis Title**
+
 Unveiling the Determinants of Psychological Intimate Partner Violence (IPV) Against Mothers in Mexico - Insights from Model-Based Boosting
 
 **Abstract**
+
 Psychological violence is the most prevalent form of intimate partner violence (IPV) against
 women in Mexico. This study aims to uncover the risk and protective factors of psychological
 IPV, with a particular focus on women with children. For this purpose, an ecological approach
@@ -21,28 +23,43 @@ distributed.
 
 **Framework**
 My master thesis extends the paper by Torres Munguia and Martinez-Zarzoso (2022).
+
 The code to replicate the analysis can be provided by the authors upon request.
 
 **Requirements**
+
 - The main data set is publicly available: [ENDIREH 2021](https://www.inegi.org.mx/programas/endireh/2021/)
+
 - Other data sets are: 
                       * [Homicidios](https://www.inegi.org.mx/sistemas/olap/proyectos/bd/continuas/mortalidad/defuncioneshom.asp?s=est/)
+                      
                       * [Intercensal](https://en.www.inegi.org.mx/app/descarga/)
+                      
                       * [Migración](https://www.inegi.org.mx/temas/migracion/)
+                      
                       * [CONEVAL](https://www.coneval.org.mx/Medicion/Paginas/Cohesion_Social.aspx)
+                      
                       * [UNDP](https://www.idhmunicipalmexico.org/)
+                      
                       * [CONAPO](https://www.gob.mx/conapo/documentos/indices-de-marginacion-2020-284372)
+                      
                       * [CNGMD](https://www.inegi.org.mx/programas/cngmd/2015/)
+                      
                       * [INEGI](https://www.inegi.org.mx/temas/mg/)
+                      
                       * [ENVIPE](https://www.inegi.org.mx/programas/envipe/2022/)
+                      
                       * [ENCIG](https://www.inegi.org.mx/programas/encig/2019/)
                       
 
 **R-Packages**
+
 The *renv* R-package is used to create reproducible environments for the R-project.
+
 See more about renv: [renv](https://rstudio.github.io/renv/articles/renv.html)
 
 **Code Structure**
+
 The code structure is documented in the *doc.txt*.
 
 **References**
