@@ -22,6 +22,7 @@ and economic lives, as well as for those living in households where housework is
 distributed.
 
 **Framework**
+
 My master thesis extends the paper by Torres Munguia and Martinez-Zarzoso (2022).
 
 The code to replicate the analysis can be provided by the authors upon request.
@@ -30,26 +31,18 @@ The code to replicate the analysis can be provided by the authors upon request.
 
 - The main data set is publicly available: [ENDIREH 2021](https://www.inegi.org.mx/programas/endireh/2021/)
 
-- Other data sets are: 
-                      * [Homicidios](https://www.inegi.org.mx/sistemas/olap/proyectos/bd/continuas/mortalidad/defuncioneshom.asp?s=est/)
-                      
-                      * [Intercensal](https://en.www.inegi.org.mx/app/descarga/)
-                      
-                      * [Migración](https://www.inegi.org.mx/temas/migracion/)
-                      
-                      * [CONEVAL](https://www.coneval.org.mx/Medicion/Paginas/Cohesion_Social.aspx)
-                      
-                      * [UNDP](https://www.idhmunicipalmexico.org/)
-                      
-                      * [CONAPO](https://www.gob.mx/conapo/documentos/indices-de-marginacion-2020-284372)
-                      
-                      * [CNGMD](https://www.inegi.org.mx/programas/cngmd/2015/)
-                      
-                      * [INEGI](https://www.inegi.org.mx/temas/mg/)
-                      
-                      * [ENVIPE](https://www.inegi.org.mx/programas/envipe/2022/)
-                      
-                      * [ENCIG](https://www.inegi.org.mx/programas/encig/2019/)
+- Other data sets are:
+  - [Homicidios](https://www.inegi.org.mx/sistemas/olap/proyectos/bd/continuas/mortalidad/defuncioneshom.asp?s=est/)
+  - [Intercensal](https://en.www.inegi.org.mx/app/descarga/)
+  - [Migración](https://www.inegi.org.mx/temas/migracion/)
+  - [CONEVAL](https://www.coneval.org.mx/Medicion/Paginas/Cohesion_Social.aspx)
+  - [UNDP](https://www.idhmunicipalmexico.org/)
+  - [CONAPO](https://www.gob.mx/conapo/documentos/indices-de-marginacion-2020-284372)
+  - [CNGMD](https://www.inegi.org.mx/programas/cngmd/2015/)
+  - [INEGI](https://www.inegi.org.mx/temas/mg/)
+  - [ENVIPE](https://www.inegi.org.mx/programas/envipe/2022/)
+  - [ENCIG](https://www.inegi.org.mx/programas/encig/2019/)
+
                       
 
 **R-Packages**
