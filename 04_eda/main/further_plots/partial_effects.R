@@ -1,35 +1,34 @@
-############################ Estimated Effects ################################
+############################ Partial Effects ################################
 
 
-# Initiate -----
-
-## Load packages ------
+## Load packages ---------------------------------------------------------------
 library(dplyr)
 library(ggplot2)
 library(mboost)
 library(data.table)
 
-## Set path -----
-path_data <- ""
+## Set path --------------------------------------------------------------------
+path_data <- "/Users/clarastrasser/ipv_data/data/final_data/"
+path_model <- "/Users/clarastrasser/ipv_data/results/main/"
 
-## Load data -------
-load("~/ipv_risk_factors/data/final_data/data_imp_pmm_m1.RData")# main data
-load("~/cvemoipv.RData") # cv
-load("~/modelemoipv.RData") # model
+## Load data -------------------------------------------------------------------
+load(paste0(path_data,"data_imp_pmm_m1.RData"))
+load(paste0(path_model,"model.RData"))
+load(paste0(path_model,"cv.RData"))  
 
-## Change data name -----
+## Change data name-------------------------------------------------------------
 data <- data_imp_pmm_m1
 rm(data_imp_pmm_m1)
 
-## Prepare data ------
+## Prepare data ----------------------------------------------------------------
 
-### Log transform -----
+### Log transform --------------------------------------------------------------
 data <- data %>%
   mutate(log_ingm_muj = log1p(ingm_muj),
          log_ingm_par = log1p(ingm_par))
 
 
-### Age difference -------
+### Age difference -------------------------------------------------------------
 data <- data %>%
   mutate(edad_dif = eda_par2 - EDAD)
 
@@ -43,21 +42,21 @@ for(i in c(numerical_var_names)){
   data[, i] <- scale(data[, i], center = TRUE, scale = FALSE)
 } 
 
-### Add intercept -------
+### Add intercept --------------------------------------------------------------
 data <- data %>%
   mutate(intercept = 1)
 
-### Convert outcome ------
+### Convert outcome ------------------------------------------------------------
 data <- data %>% 
   mutate(vio_emo_año = recode(vio_emo_año, "no" = "0", "yes" = "1"))
 
-### Correct levels -----
+### Correct levels -------------------------------------------------------------
 data$cvegeo <- droplevels(data$cvegeo)
 
-## Load function -----
-source("~/ipv_risk_factors/functions/partial_effects.R")
+## Load function ---------------------------------------------------------------
+source("src/partial_effects.R")
 
-## Prep data --------
+## Prep data -------------------------------------------------------------------
 
 # Set optimal mstop
 stopemoipv <- mstop(cvemoipv)

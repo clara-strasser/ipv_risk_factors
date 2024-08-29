@@ -1,9 +1,6 @@
-######################## Analysis - Linear Regression #########################
+################################## GLM Analysis ################################
 
-
-# Initiate -----
-
-## Load packages ------
+## Load packages ---------------------------------------------------------------
 library(dplyr)
 library(tidyr)
 library(mgcv)
@@ -13,17 +10,18 @@ library(survey)
 library(xtable)
 library(stargazer)
 
-## Set path -----
-path_data <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/final_data/"
+## Set path --------------------------------------------------------------------
+path_data <- "/Users/clarastrasser/ipv_data/data/final_data/"
+path_save <- "/Users/clarastrasser/ipv_data/results/robustness/"
 
-## Load data -------
+## Load data -------------------------------------------------------------------
 load(paste0(path_data, "data_imp_pmm_m1.RData")) # main data
 
-## Change data name -----
+## Change data name ------------------------------------------------------------
 data <- data_imp_pmm_m1
 rm(data_imp_pmm_m1)
 
-## Prepare data ------
+## Prepare data ----------------------------------------------------------------
 
 ### Income difference -----
 data <- data %>%
@@ -53,14 +51,14 @@ for(i in c(numerical_var_names)){
   data[, i] <- scale(data[, i], center = TRUE, scale = FALSE)
 } 
 
-## Run model ------
+## Run model -------------------------------------------------------------------
 
-### GLM with linear effects ------
+### GLM with linear effects ----------------------------------------------------
 offset_var <- rep(pnorm(weighted.mean(x = as.numeric(as.character(data[, "vio_emo_año"])),
                                       w = data$FAC_MUJ))-0.5, nrow(data))
 
 dstrat<-svydesign(id=~1,weights=~data$FAC_MUJ, data=data)
-model1 <- svyglm(vio_emo_año ~ desempleo + vio_inf + vio_exp_inf + 
+model_glm <- svyglm(vio_emo_año ~ desempleo + vio_inf + vio_exp_inf + 
                vio_sex_inf + con_sex*eda_sex + mot_mat + vio_inf_par + 
                vio_exp_inf_par + act_distboth + act_distmales + lib_sex_gradmedium +
                lib_eco_gradmedium + redsoc_gradhigh + rout_gradmedium + MasNoDen, 
@@ -68,9 +66,9 @@ model1 <- svyglm(vio_emo_año ~ desempleo + vio_inf + vio_exp_inf +
              family = binomial(link = "probit"), 
              offset = offset_var,
              data = data)
-summary(model1)
+summary(model_glm)
 
-### GAM with linear effects ------
+### GAM with linear effects ----------------------------------------------------
 model_gam <- gam(vio_emo_año ~ indigena + edad_dif*niv_edmedium + niv_edhigh +
                 cct_rec + desempleo + vio_inf + vio_exp_inf + vio_sex_inf + 
                 s(num_hij, bs="ps") + con_sex*eda_sex + ti(eda_sex,edad_dif) +
@@ -89,13 +87,15 @@ model_gam <- gam(vio_emo_año ~ indigena + edad_dif*niv_edmedium + niv_edhigh +
               offset = offset_var,
               data = data)
 summary(model_gam)
-save(model_gam,  file = "model_gam.RData")
 
-### Save Effects
+### Save Effects ----------------------------------------------------------------
 
 # Model 1
-xtable(model1)
-model1
+xtable(model_glm)
+
+
+# Model 2
+xtable(model_gam)
 
 
 

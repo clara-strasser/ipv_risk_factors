@@ -1,12 +1,10 @@
 ############################ Formula ################################
 
-
-# Set Formula ------------------------------------------------------------------
-
+# Set Formula -------
 
 ## Model 1 ------
 # Remarks: 
-# Model similar to Torres Munguía & Martínez-Zarzoso (2022)
+# Model similar to Munguia and Zarzoso (2022)
 # Differences: 
 # For: imputed data that has variable "vio_inf_par" and "vio_exp_inf_par"
 # 1.) 2021 version of ENDIREH

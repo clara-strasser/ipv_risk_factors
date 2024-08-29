@@ -1,27 +1,28 @@
-############################ Main Analysis #############################
+############################ Robustness Analysis #############################
 # Source:
 # Torres Munguía & Martínez-Zarzoso (2022)
 
+# Initiate -----
 
-## Load packages ---------------------------------------------------------------
+## Load packages ------
 library(dplyr)
 library(tidyr)
 library(mboost)
 library(parallel)
 library(stabs)
 
-## Set path --------------------------------------------------------------------
-path_data <- "/Users/clarastrasser/ipv_data/data/final_data/"
-path_save <- "/Users/clarastrasser/ipv_data/results/main/"
+## Set path -----
+path_data <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/final_data/"
+path_save <- "/Users/clarastrasser/ipv_data/results/robustness/"
 
-## Load data -------------------------------------------------------------------
-load(paste0(path_data, "data_imp_pmm_m1.RData")) # main data
+## Load data -------
+load(paste0(path_data, "data_no_imp2.RData")) # main data
 
-## Change data name ------------------------------------------------------------
-data <- data_imp_pmm_m1
-rm(data_imp_pmm_m1)
+## Change data name -----
+data <- data_no_imp2
+rm(data_no_imp2)
 
-## Prepare data ----------------------------------------------------------------
+## Prepare data ------
 
 ### Income difference -----
 data <- data %>%
@@ -60,10 +61,10 @@ data <- data %>%
 data$cvegeo <- droplevels(data$cvegeo)
 
 
-## Run model -------------------------------------------------------------------
+## Run model ------
 
 # REQUIREMENT:
-# RUN 02_02_formula first!
+# RUN 03_formula first!
 
 ### Functional Gradient Descent Boosting ------
 set.seed(1806)
@@ -82,16 +83,11 @@ modelemoipv <- gamboost(model, # model specification
 save(modelemoipv,  file = paste0(path_save, "model1.RData"))
 
 # Inspect
-# Number of boosting iterations: mstop = 2000 
-# Step size:  0.5 
-# Offset:  0.09093536 
-# Number of baselearners:  95 
-# Selection frequencies: 
 coef(modelemoipv) 
 names(coef(modelemoipv))
 summary(modelemoipv)
 
-### Resampling Method ----------------------------------------------------------
+### Resampling Method ---------
 
 # Subsampling
 set.seed(1806)
@@ -101,15 +97,15 @@ cvemoipv <- cvrisk(modelemoipv, folds = cv(model.weights(modelemoipv),
                    papply = mclapply,
                    mc.cores = parallel::detectCores())
 save(cvemoipv,  file = paste0(path_save,"cv1.RData"))
-mstop(cvemoipv) 
+mstop(cvemoipv)
 plot.cvrisk(cvemoipv)
 
-### Optimal mstop --------------------------------------------------------------
+### Set optimal mstop ------
 stopemoipv <- mstop(cvemoipv)
 modelemoipv[stopemoipv]
 
 
-### Stability selection --------------------------------------------------------
+### Stability selection -------
 set.seed(1806)
 p <- length(names(coef(modelemoipv, which = "")))
 stabsel_conf <- stabsel_parameters(p = p, 
@@ -117,6 +113,7 @@ stabsel_conf <- stabsel_parameters(p = p,
                                    cutoff = 0.8)
 stabsel_conf
 
+### Stability selection with unimodality assumption ------
 # Cutoff: 0.8; q: 20; PFER (*):  3.74 
 # (*) or expected number of low selection probability variables
 # PFER (specified upper bound):  3.743316 
@@ -132,7 +129,7 @@ stabselemoipv <- stabsel(modelemoipv,
 end_time<- Sys.time()
 save(stabselemoipv,  file = paste0(path_save,"stabsel1.RData"))
 
-### Pointwise bootstrap confidence intervals -----------------------------------
+### Pointwise bootstrap confidence intervals -------
 start_time <- Sys.time()
 confintemoipv <- confint(modelemoipv,  B = 1000, 
                          level = 0.95, B.mstop = 0,

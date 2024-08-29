@@ -1,8 +1,6 @@
 ############################ Correlation Matrix ################################
 
-# Initiate -----
-
-## Load packages ------
+## Load packages ---------------------------------------------------------------
 library(dplyr)
 library(tidyr)
 library(purrr)
@@ -18,17 +16,17 @@ library(vcd)
 library(vcdExtra)
 library(rcompanion)
 
-## Set path -----
+## Set path --------------------------------------------------------------------
 path_data <- "/Users/clara/Desktop/master_thesis/r_projects/ipv_risk_factors/data/prep_data/"
 path_save <- "/Users/clara/Desktop/master_thesis/plots/descriptives/imputed_pmm_m1/corrplot/"
 
-## Load data -------
+## Load data -------------------------------------------------------------------
 load(paste0(path_data, "step3_endireh.RData"))
 
-## Change data name -----
+## Change data name ------------------------------------------------------------
 data <- step3_endireh
 
-## Subset not needed -----
+## Subset not needed -----------------------------------------------------------
 data <- data %>%
   select(-c("num_hij_par", "num_hij_par_muj"))
 
@@ -47,7 +45,7 @@ data[society_num] <- lapply(data[society_num], as.numeric)
 
 # Continuous Variables ------
 
-## Correlation Plot --------
+## Correlation Plot ------------------------------------------------------------
 
 # Subset the data set to include only numerical variables
 numerical_df <- data[, sapply(data, is.numeric)]
@@ -61,7 +59,7 @@ corr <- {corrplot(cor_matrix, tl.col = "black"); recordPlot()}
 # Save plot
 #ggsave(plot = replayPlot(corr), filename=paste0(path_save, "correlation_continous.png"))
 
-## Correlation Table -----
+## Correlation Table -----------------------------------------------------------
 
 # Positive correlation:
 

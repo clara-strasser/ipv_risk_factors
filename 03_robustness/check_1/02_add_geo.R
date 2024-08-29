@@ -1,25 +1,24 @@
 ###################### Add Spatial Variables and FAC_MUJ #########################
 
-
 ## Load packages ---------------------------------------------------------------
 library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(readxl)
 
-## Set path --------------------------------------------------------------------
-path_data <- "/Users/clarastrasser/ipv_data/data/prep_data/"
+## Set path---------------------------------------------------------------------
+path_data <- "/Users/clarastrasser/ipv_data/data/prep_data_robustness/"
 path_additionals_main <- "/Users/clarastrasser/ipv_data/raw_data/main_source/"
 path_additionals_other <- "/Users/clarastrasser/ipv_data/raw_data/other_sources/"
 path_save <- "/Users/clarastrasser/ipv_data/data/final_data/"
 
-## Load data ------------------------------------------------------------------
+## Load data -------------------------------------------------------------------
 load(paste0(path_data, "step3_endireh.RData")) # main data
 load(paste0(path_additionals_main,"TB_SEC_IVaVD.RData")) # FAC_MUJ
 centroids <- read_excel(paste0(path_additionals_other,"inegi_municipios_geo.xlsx"), sheet = 1, col_names = TRUE) # Centroids
 
 
-## Prep data -------------------------------------------------------------------
+## Prep data --------------------------------------------------------------------
 
 # centroids
 centroids <- centroids %>%
@@ -36,7 +35,6 @@ data <- step3_endireh
 
 ## Subset not needed -----
 data <- data %>%
-  select(-c("num_hij_par", "num_hij_par_muj")) %>%
   rename(Marg20high = Marg15high,
          Marg20low = Marg15low,
          Marg20medium = Marg15medium,
@@ -60,15 +58,9 @@ data <- data %>%
   left_join(fac_muj, by= c("ID_PER"))
 
 
-# Save data ----------
-# Data set: 61.205 with geo information + FAC_MUJ
-data_imp_pmm_m1 <- data
-save(data_imp_pmm_m1, file = paste0(path_save,"data_imp_pmm_m1.RData"))
-
-
-
-
-
+# Save data --------------------------------------------------------------------
+data_no_imp <- data
+save(data_no_imp, file = paste0(path_save,"data_no_imp.RData"))
 
 
 

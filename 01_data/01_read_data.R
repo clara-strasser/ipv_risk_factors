@@ -2,8 +2,6 @@
 # Aim: Read main ENDIREH 2021 data set
 # Requirement:
 # Download data set from: https://www.inegi.org.mx/programas/endireh/2021/
-# The data set is saved in: 
-
 
 # Define paths -----------------------------------------------------------------
 base_path <- "/Users/clarastrasser/ipv_data/raw_data"
