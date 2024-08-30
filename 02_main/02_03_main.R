@@ -1,6 +1,5 @@
 ############################ Main Analysis #############################
-# Source:
-# Torres Munguía & Martínez-Zarzoso (2022)
+# See also: Torres Munguía & Martínez-Zarzoso (2022)
 
 
 ## Load packages ---------------------------------------------------------------
@@ -63,22 +62,19 @@ data$cvegeo <- droplevels(data$cvegeo)
 ## Run model -------------------------------------------------------------------
 
 # REQUIREMENT:
-# RUN 02_02_formula first!
+# RUN formula first!
 
 ### Functional Gradient Descent Boosting ------
 set.seed(1806)
 modelemoipv <- gamboost(model, # model specification
                         data = data,
-                        control = boost_control(mstop = 2000, nu = 0.5, # mstop = number of boosting iterations, nu = shrinkage parameter
-                                                trace = TRUE, # trace info during process
+                        control = boost_control(mstop = 2000, nu = 0.5, 
+                                                trace = TRUE, 
                                                 stopintern = TRUE),
-                        weights = data$FAC_MUJ, # weights for observations in the model
+                        weights = data$FAC_MUJ, 
                         offset = pnorm(weighted.mean(x = as.numeric(as.character(data[, "vio_emo_año"])),
-                                                     w = data$FAC_MUJ))-0.5, # weighted mean = 0.2, probability observing a value less or equal to weighted mean = 0.59. Endresult = 0.09.
-                                                                             # probability value obtained from the weighted mean. This adjustment centers the distribution of the predictions around 0.
-                                                                             # offset used to account for the baseline prevalence of IPV in the population.
-                                                                             # it assists in accounting for the base rate of occurrence and can be particularly useful when the data is imbalanced or when specific prior knowledge about the prevalence is available.
-                        family = Binomial(link = "probit")) # family and link function for the GAM
+                                                     w = data$FAC_MUJ))-0.5, 
+                        family = Binomial(link = "probit")) 
 save(modelemoipv,  file = paste0(path_save, "model1.RData"))
 
 # Inspect

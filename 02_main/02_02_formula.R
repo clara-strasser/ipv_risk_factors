@@ -1,18 +1,8 @@
-############################ Formula ################################
+############################### Formula ########################################
+# See also: Torres Munguía & Martínez-Zarzoso (2022)
 
+# Model ------------------------------------------------------------------------
 
-# Set Formula ------------------------------------------------------------------
-
-
-## Model 1 ------
-# Remarks: 
-# Model similar to Torres Munguía & Martínez-Zarzoso (2022)
-# Differences: 
-# For: imputed data that has variable "vio_inf_par" and "vio_exp_inf_par"
-# 1.) 2021 version of ENDIREH
-# 2.) Inclusion of further controls
-# 3.) Inclusion of terms in the interaction as parallel effects
-# 4.) Exclusion of multicollinear variables
 
 model <- vio_emo_año ~ 
   
