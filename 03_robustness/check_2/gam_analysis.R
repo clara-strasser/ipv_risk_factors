@@ -6,6 +6,7 @@ library(tidyr)
 library(mgcv)
 library(margins)
 library(stats)
+if (!requireNamespace("survey", quietly = TRUE)) install.packages("survey", type = "binary")
 library(survey)
 library(xtable)
 library(stargazer)
@@ -68,6 +69,9 @@ model_glm <- svyglm(vio_emo_año ~ desempleo + vio_inf + vio_exp_inf +
              data = data)
 summary(model_glm)
 
+margins_glm <- summary(margins(model_glm, design = dstrat))
+print(margins_glm)
+
 ### GAM with linear effects ----------------------------------------------------
 model_gam <- gam(vio_emo_año ~ indigena + edad_dif*niv_edmedium + niv_edhigh +
                 cct_rec + desempleo + vio_inf + vio_exp_inf + vio_sex_inf + 
@@ -96,6 +100,8 @@ xtable(model_glm)
 
 # Model 2
 xtable(model_gam)
+
+
 
 
 

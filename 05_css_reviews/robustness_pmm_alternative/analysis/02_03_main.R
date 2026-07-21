@@ -17,7 +17,7 @@ path_data <- "/Users/clarastrasser/ipv_data/data/final_data/"
 load(paste0(path_data, "data_imp_pmm_m1.RData")) # main data
 
 ## Change data name ------------------------------------------------------------
-data <- data_imp_pmm_m1
+data <- data_imp_pmm_alt
 rm(data_imp_pmm_m1)
 
 ## Prepare data ----------------------------------------------------------------

@@ -8,15 +8,15 @@ library(ggplot2)
 
 
 ## Set path --------------------------------------------------------------------
-path_data <- "/Users/clarastrasser/ipv_data/data/prep_data/"
+path_data <- "/Users/clarastrasser/ipv_data/data/final_data/rob_pmm_alt/"
 
 ## Load data -------------------------------------------------------------------
-load(paste0(path_data, "step1_endireh.RData"))
+load(paste0(path_data, "step1_endireh_pmm_alt.RData"))
 
 
 ## Change data name ------------------------------------------------------------
 data <- step1_endireh
-#data <- endireh_2021
+
 
 # Part I: Implausible Results ---------
 # Initial data set: 63.152
@@ -62,7 +62,7 @@ implausible <- c(implausible, plaus_5$ID_PER)
 
 
 ## ingm_muj and empleo_vida
-plaus_6 <- data[which(data$ingm_muj > 0 & data$empleo_vida == "no"), ]
+plaus_6 <- data[data$ingm_muj > 0 & data$empleo_vida == "no", ] # 154
 
 # Add implausible IDs to the vector
 implausible <- c(implausible, plaus_6$ID_PER)

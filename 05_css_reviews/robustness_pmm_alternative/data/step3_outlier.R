@@ -8,7 +8,7 @@ library(purrr)
 library(ggplot2)
 
 ## Set path --------------------------------------------------------------------
-path_data <- "/Users/clarastrasser/ipv_data/data/prep_data/"
+path_data <- "/Users/clarastrasser/ipv_data/data/final_data/rob_pmm_alt/"
 path_save <- "/Users/clarastrasser/ipv_data/results/plots/"
 
 ## Load data -------------------------------------------------------------------
@@ -348,7 +348,8 @@ eda_sex_max <- 35
 # Age marriage
 # Notes: Age marriage <= 45
 #        Age marriage >= 12
-table(data$eda_mat)quantile(data$eda_mat, probs = 0.01)
+table(data$eda_mat)
+quantile(data$eda_mat, probs = 0.01)
 quantile(data$eda_mat, probs = 0.99)
 eda_mat_max <- 45
 eda_mat_min <- 12
@@ -385,38 +386,18 @@ table(data$ingm_par)
 ingm_par_max <- 250000
 
 
-# Filter data with stepwise row counts ---------
-cat(sprintf("Initial:               %d\n", nrow(data)))
-
-data <- data %>% filter(EDAD <= edad_max)
-cat(sprintf("After EDAD <= %d:     %d (removed %d)\n", edad_max, nrow(data), 62774 - nrow(data)))
-n <- nrow(data)
-
-data <- data %>% filter(eda_hij <= eda_hij_max)
-cat(sprintf("After eda_hij <= %d:  %d (removed %d)\n", eda_hij_max, nrow(data), n - nrow(data))); n <- nrow(data)
-
-data <- data %>% filter(eda_sex <= eda_sex_max)
-cat(sprintf("After eda_sex <= %d:  %d (removed %d)\n", eda_sex_max, nrow(data), n - nrow(data))); n <- nrow(data)
-
-data <- data %>% filter(eda_mat >= eda_mat_min & eda_mat <= eda_mat_max)
-cat(sprintf("After eda_mat [%d,%d]: %d (removed %d)\n", eda_mat_min, eda_mat_max, nrow(data), n - nrow(data))); n <- nrow(data)
-
-data <- data %>% filter(num_hij <= num_hij_max)
-cat(sprintf("After num_hij <= %d:  %d (removed %d)\n", num_hij_max, nrow(data), n - nrow(data))); n <- nrow(data)
-
-data <- data %>% filter(eda_par2 <= eda_par2_max)
-cat(sprintf("After eda_par2 <= %d: %d (removed %d)\n", eda_par2_max, nrow(data), n - nrow(data))); n <- nrow(data)
-
-data <- data %>% filter(hacin <= hacin_max)
-cat(sprintf("After hacin <= %d:    %d (removed %d)\n", hacin_max, nrow(data), n - nrow(data))); n <- nrow(data)
-
-data <- data %>% filter(ingm_muj < ingm_muj_max)
-cat(sprintf("After ingm_muj < %d: %d (removed %d)\n", ingm_muj_max, nrow(data), n - nrow(data))); n <- nrow(data)
-
-data <- data %>% filter(ingm_par < ingm_par_max)
-cat(sprintf("After ingm_par < %d: %d (removed %d)\n", ingm_par_max, nrow(data), n - nrow(data)))
-
-cat(sprintf("Total removed: %d\n", 62774 - nrow(data)))
+# Filer data ---------
+# Data set: 62.774
+data <- data %>%
+  filter(EDAD <= edad_max) %>%
+  filter(eda_hij <= eda_hij_max) %>%
+  filter(eda_sex <= eda_sex_max) %>%
+  filter(eda_mat >= eda_mat_min & eda_mat <= eda_mat_max) %>%
+  filter(num_hij <= num_hij_max) %>%
+  filter(eda_par2 <= eda_par2_max) %>%
+  filter(hacin <= hacin_max) %>%
+  filter(ingm_muj < ingm_muj_max)  %>%
+  filter(ingm_par < ingm_par_max)
 
 
 

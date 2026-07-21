@@ -1,24 +1,97 @@
-########################### Step 3: Outlier Detection ###########################
+##############################  Prepare Data ##################################
 
+# Initiate -----
 
-## Load packages ---------------------------------------------------------------
+## Load packages ------
 library(dplyr)
 library(tidyr)
 library(purrr)
+library(scales)
 library(ggplot2)
 
+
 ## Set path --------------------------------------------------------------------
-path_data <- "/Users/clarastrasser/ipv_data/data/prep_data/"
-path_save <- "/Users/clarastrasser/ipv_data/results/plots/"
+path <- "/Users/clarastrasser/ipv_data/data/"
+path_save <- "/Users/clarastrasser/ipv_data/data/prep_data_robustness/"
+
 
 ## Load data -------------------------------------------------------------------
-load(paste0(path_data, "step2_endireh.RData"))
+load(paste0(path, "endireh_2021.RData")) # main data set
 
-## Change data name ------------------------------------------------------------
-data <- step2_endireh
+# Data Preparation Process ------
 
-# Visualize Outliers -----------------------------------------------------------
-# Initial data set: 62.774
+## STEP 1: Remove NA Observations -----
+# Initial data set: 63.152
+
+# Calculate NAs of all variables
+print(data.frame(Variable = names(endireh_2021), 
+                 Count = sapply(endireh_2021, function(x) sum(is.na(x))), 
+                 Percentage = sapply(endireh_2021, function(x) sum(is.na(x)) / length(x) * 100)))
+
+# Remove non-relevant risk factors 
+# edu_parlow
+# edu_parmedium
+# edu_parhigh        
+# ind_par 
+# sep_ex 
+# vio_fis_ex 
+# vio_emo_ex 
+# vio_sex_ex  
+# vio_eco_ex  
+# ing_par
+# ing_muj
+
+endireh_2021 <- endireh_2021 %>%
+  select(-c("edu_parlow", "edu_parmedium", "edu_parhigh", "ind_par", 
+            "sep_ex", "vio_fis_ex", "vio_emo_ex", "vio_sex_ex", "vio_eco_ex", "ing_par", "ing_muj"))
+
+
+# Keep only columns with missing data
+endireh_missing <- endireh_2021 %>%
+  select(where(~ any(is.na(.))))
+
+# Keep complete cases
+# Meaning: remove all observations with min. one missing value in the covariates 
+data <- endireh_2021[complete.cases(endireh_2021), ]
+data <- endireh_2021
+## STEP 2: Plausibility Analysis ---------
+# Initial data set: 27.554
+
+## vio_emo_año and vio_emo_vida
+# Explanation: vio_emo_año may not be "yes" if vio_emo_vida is "no"
+plaus_1a <- data[data$vio_emo_año_alt == "yes" & data$vio_emo_vida == "no", ]
+plaus_1b <- data[data$vio_emo_año == "yes" & !is.na(data$vio_emo_año) & data$vio_emo_vida == "no", ]
+
+## eda_sex
+# Explanation: Women’s age at first sexual intercourse cannot be greater than women’s age at the time of being surveyed
+plaus_2 <- data[!is.na(data$eda_sex) & !is.na(data$EDAD) & data$eda_sex > data$EDAD, ] 
+
+## eda_mat
+# Explanation: Women’s age at first marriage (or at cohabitation) cannot be greater than women’s age at the time of being surveyed
+plaus_3 <- data[!is.na(data$eda_mat) & !is.na(data$EDAD) & data$eda_mat > data$EDAD, ] 
+
+## eda_hij
+# Explanation: Women’s age at first childbirth cannot be greater than women’s age at the time of being surveyed
+plaus_4 <- data[!is.na(data$eda_hij) & !is.na(data$EDAD) & data$eda_hij > data$EDAD, ] 
+
+plaus_5 <- data[!is.na(data$eda_sex) & !is.na(data$eda_hij) & data$eda_sex > data$eda_hij, ] # 176
+
+
+## ingm_muj and empleo_vida
+plaus_6 <- data[data$ingm_muj > 0 & data$empleo_vida == "no", ] # 57 implausible results
+implausbile <- plaus_5$ID_PER
+
+
+
+rm(plaus_1a, plaus_1b, plaus_2, plaus_3, plaus_4, plaus_5)
+
+# Results: 94 implausible results
+
+# Remove implausible observations
+data <- data[!(data$ID_PER %in% implausbile),]
+
+## STEP 3: Outlier Detection --------
+# Initial data set: 27.497
 
 ## Age Woman
 summary(data$EDAD)
@@ -322,7 +395,7 @@ ggsave(paste0(path_save, "income_distribution_partner.png"), plot = income_distr
 
 
 
-# Set Outlier Boundaries ---------
+### Set Outlier Boundaries ---------
 
 # Age Woman
 # Notes: Age <= 85 of interest
@@ -348,7 +421,8 @@ eda_sex_max <- 35
 # Age marriage
 # Notes: Age marriage <= 45
 #        Age marriage >= 12
-table(data$eda_mat)quantile(data$eda_mat, probs = 0.01)
+table(data$eda_mat)
+quantile(data$eda_mat, probs = 0.01)
 quantile(data$eda_mat, probs = 0.99)
 eda_mat_max <- 45
 eda_mat_min <- 12
@@ -385,45 +459,37 @@ table(data$ingm_par)
 ingm_par_max <- 250000
 
 
-# Filter data with stepwise row counts ---------
-cat(sprintf("Initial:               %d\n", nrow(data)))
+# Filer data ---------
+# Data set: 38.971
+data <- data %>%
+  filter(EDAD <= edad_max) %>%
+  filter(eda_hij <= eda_hij_max) %>%
+  filter(eda_sex <= eda_sex_max) %>%
+  filter(eda_mat >= eda_mat_min & eda_mat <= eda_mat_max) %>%
+  filter(num_hij <= num_hij_max) %>%
+  filter(eda_par2 <= eda_par2_max) %>%
+  filter(hacin <= hacin_max) %>%
+  filter(ingm_muj < ingm_muj_max)  %>%
+  filter(ingm_par < ingm_par_max)
 
-data <- data %>% filter(EDAD <= edad_max)
-cat(sprintf("After EDAD <= %d:     %d (removed %d)\n", edad_max, nrow(data), 62774 - nrow(data)))
-n <- nrow(data)
+# Finalisation -----
+# Data set: 26.889
 
-data <- data %>% filter(eda_hij <= eda_hij_max)
-cat(sprintf("After eda_hij <= %d:  %d (removed %d)\n", eda_hij_max, nrow(data), n - nrow(data))); n <- nrow(data)
+# Check missings:
+print(data.frame(Variable = names(data), 
+                 Count = sapply(data, function(x) sum(is.na(x))), 
+                 Percentage = sapply(data, function(x) sum(is.na(x)) / length(x) * 100)))
 
-data <- data %>% filter(eda_sex <= eda_sex_max)
-cat(sprintf("After eda_sex <= %d:  %d (removed %d)\n", eda_sex_max, nrow(data), n - nrow(data))); n <- nrow(data)
+# Complete cases:
+data <- data[complete.cases(data), ]
 
-data <- data %>% filter(eda_mat >= eda_mat_min & eda_mat <= eda_mat_max)
-cat(sprintf("After eda_mat [%d,%d]: %d (removed %d)\n", eda_mat_min, eda_mat_max, nrow(data), n - nrow(data))); n <- nrow(data)
-
-data <- data %>% filter(num_hij <= num_hij_max)
-cat(sprintf("After num_hij <= %d:  %d (removed %d)\n", num_hij_max, nrow(data), n - nrow(data))); n <- nrow(data)
-
-data <- data %>% filter(eda_par2 <= eda_par2_max)
-cat(sprintf("After eda_par2 <= %d: %d (removed %d)\n", eda_par2_max, nrow(data), n - nrow(data))); n <- nrow(data)
-
-data <- data %>% filter(hacin <= hacin_max)
-cat(sprintf("After hacin <= %d:    %d (removed %d)\n", hacin_max, nrow(data), n - nrow(data))); n <- nrow(data)
-
-data <- data %>% filter(ingm_muj < ingm_muj_max)
-cat(sprintf("After ingm_muj < %d: %d (removed %d)\n", ingm_muj_max, nrow(data), n - nrow(data))); n <- nrow(data)
-
-data <- data %>% filter(ingm_par < ingm_par_max)
-cat(sprintf("After ingm_par < %d: %d (removed %d)\n", ingm_par_max, nrow(data), n - nrow(data)))
-
-cat(sprintf("Total removed: %d\n", 62774 - nrow(data)))
-
-
-
-# Save data ----------
-# Data set: 61.205
+# Save data -----
+# Final data: 26.889
 step3_endireh <- data
-save(step3_endireh, file = paste0(path_data,"step3_endireh.RData"))
+save(step3_endireh, file = paste0(path_data_save,"step3_endireh.RData"))
+
+
+
 
 
 

@@ -62,7 +62,7 @@ TB_SEC_IVaVD <- TB_SEC_IVaVD %>%
 
 # Summary stat:
 table(TB_SEC_IVaVD$ingm_muj, useNA = "ifany") #  4029 NAs (more NAs as P4_2_1 may be 8 or 9)
-head(TB_SEC_IVaVD[, c("P4_1", "P4_2", "ing_muj", "P4_2_1",  "P4_2_1_new", "ingm_muj")], n = 60)
+head(TB_SEC_IVaVD[, c("P4_1", "P4_2", "ing_muj", "P4_2_1",  "P4_2_1_new", "ingm_muj")], n = 500)
 
 # Finalize ---------------------------------------------------------------------
 
