@@ -12,8 +12,8 @@ library(xtable)
 library(stargazer)
 
 ## Set path --------------------------------------------------------------------
-path_data <- "/Users/clarastrasser/ipv_data/data/final_data/"
-path_save <- "/Users/clarastrasser/ipv_data/results/robustness/"
+path_data <- "/dss/dsshome1/0B/ru23kek2/data/final_data/"
+path_save <- "/dss/dsshome1/0B/ru23kek2/data/final_data/"
 
 ## Load data -------------------------------------------------------------------
 load(paste0(path_data, "data_imp_pmm_m1.RData")) # main data
@@ -92,14 +92,80 @@ model_gam <- gam(vio_emo_año ~ indigena + edad_dif*niv_edmedium + niv_edhigh +
               data = data)
 summary(model_gam)
 
+### AME and 95% CI for the GAM --------------------------------------------------
+
+# margins / marginaleffects do not support mgcv::gam objects, so the average
+# marginal effects of the parametric terms are computed directly:
+#   AME_j = mean_w(phi(eta)) * beta_j
+# with phi() the standard normal density and eta the linear predictor
+# (offset included). The standard error follows from the delta method, where
+# the gradient of AME_j w.r.t. the full coefficient vector is
+#   grad = mean_w(phi'(eta) * X) * beta_j + mean_w(phi(eta)) * e_j
+# and phi'(z) = -z * phi(z). Weights are the survey weights (FAC_MUJ), so the
+# AME refers to the population rather than the sample.
+# Smooth / spatial / random terms are excluded: their effect is nonlinear and
+# not summarised by a single number.
+
+ame_gam <- function(model, level = 0.95) {
+  X    <- predict(model, type = "lpmatrix")   # n x p design matrix
+  beta <- coef(model)
+  V    <- vcov(model)
+  eta  <- model$linear.predictors             # includes the offset
+  w    <- model$prior.weights
+  w    <- w / sum(w)
+
+  phi       <- dnorm(eta)
+  phi_prime <- -eta * phi
+  scale_factor <- sum(w * phi)
+
+  # parametric coefficients come first in mgcv; drop the intercept
+  para_idx <- seq_len(model$nsdf)
+  para_idx <- para_idx[names(beta)[para_idx] != "(Intercept)"]
+
+  base_grad <- as.vector(crossprod(X, w * phi_prime))  # mean_w(phi'(eta) * X)
+
+  est <- se <- numeric(length(para_idx))
+  for (k in seq_along(para_idx)) {
+    j <- para_idx[k]
+    est[k] <- scale_factor * beta[j]
+
+    grad     <- base_grad * beta[j]
+    grad[j]  <- grad[j] + scale_factor
+    se[k]    <- sqrt(as.numeric(t(grad) %*% V %*% grad))
+  }
+
+  z <- qnorm(1 - (1 - level) / 2)
+  data.frame(
+    factor    = names(beta)[para_idx],
+    AME       = est,
+    SE        = se,
+    z         = est / se,
+    p         = 2 * pnorm(-abs(est / se)),
+    lower     = est - z * se,
+    upper     = est + z * se,
+    row.names = NULL,
+    stringsAsFactors = FALSE
+  )
+}
+
+margins_gam <- ame_gam(model_gam)
+print(margins_gam, digits = 4)
+
+# NOTE: for variables entering an interaction (edad_dif x niv_edmedium,
+# con_sex x eda_sex, log_ingm_muj x log_ingm_par) the value above is the effect
+# holding the interaction partner at its (demeaned) sample value of 0, not the
+# total marginal effect.
+
 ### Save Effects ----------------------------------------------------------------
 
 # Model 1
 xtable(model_glm)
+xtable(margins_glm)
 
 
 # Model 2
 xtable(model_gam)
+xtable(margins_gam)
 
 
 
